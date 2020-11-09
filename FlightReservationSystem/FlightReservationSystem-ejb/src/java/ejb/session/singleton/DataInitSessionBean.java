@@ -5,10 +5,23 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.EmployeeSessionBeanLocal;
+import entity.AircraftType;
+import entity.Airport;
+import entity.Employee;
+import entity.Partner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
 import javax.ejb.Startup;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import util.enumeration.EmployeeType;
+import util.exception.EmployeeExistException;
+import util.exception.GeneralException;
 
 /**
  *
@@ -19,11 +32,61 @@ import javax.ejb.Startup;
 @Startup
 public class DataInitSessionBean {
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    @EJB(name = "EmployeeSessionBeanLocal")
+    private EmployeeSessionBeanLocal employeeSessionBeanLocal;
+
+    @PersistenceContext(unitName = "FlightReservationSystem-ejbPU")
+    private EntityManager em;
+
+    
+    public DataInitSessionBean()
+    {
+    }
+
     
     @PostConstruct
-    public void postConstruct() {
+    public void postConstruct()
+    {
+        if(em.find(Employee.class, 1l) == null)
+        {
+            initialiseEmployee();
+        }
+        if(em.find(Partner.class, 1l) == null)
+        {
+            initialisePartner();
+        }
+        if(em.find(Airport.class, 1l) == null)
+        {
+            initialiseAirport();
+        }
+        if(em.find(AircraftType.class, 1l) == null)
+        {
+            initialiseAircraftType();
+        }
+    }
+    
+    public void initialiseEmployee()
+    {
+        try {
+            employeeSessionBeanLocal.createNewEmployee(new Employee("employee", "employeetest", "password", EmployeeType.SALESMANAGER));
+        } catch (EmployeeExistException | GeneralException ex) {
+            
+        }
+    }
+    
+    public void initialisePartner()
+    {
         
     }
+    
+    public void initialiseAirport()
+    {
+        
+    }
+    
+    public void initialiseAircraftType()
+    {
+        
+    }
+
 }
