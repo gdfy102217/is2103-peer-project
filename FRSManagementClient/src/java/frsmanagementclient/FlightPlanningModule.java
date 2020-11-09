@@ -5,8 +5,10 @@
  */
 package frsmanagementclient;
 
+import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
 import entity.AircraftConfiguration;
 import entity.CabinClassConfiguration;
+import entity.Employee;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +20,7 @@ import util.exception.ExceedMaximumSeatCapacityException;
  * @author Administrator
  */
 public class FlightPlanningModule {
+    private AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
     
     private Employee employee;
 
@@ -62,7 +65,7 @@ public class FlightPlanningModule {
                 }
                 else if(response == 3)
                 {
-                    doViewAllStaffs();
+                    viewAircraftConfigurationDetails();
                 }
                 else if(response == 4)
                 {
@@ -155,8 +158,13 @@ public class FlightPlanningModule {
     }
     
     private void viewAllAircraftConfigurations() {
-        
+        System.out.println("*** FRSManagement :: Flight Planning :: View All Aircraft Configurations ***\n");
+        for (AircraftConfiguration aircraftConfiguration: aircraftConfigurationSessionBeanRemote.viewAllAircraftConfigurations()){
+            System.out.println(aircraftConfiguration);
+        }
     }
     
-    
+    private void viewAircraftConfigurationDetails() {
+        
+    }
 }
