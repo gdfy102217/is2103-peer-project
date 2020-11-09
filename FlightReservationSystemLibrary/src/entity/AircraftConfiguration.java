@@ -143,7 +143,8 @@ public class AircraftConfiguration implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.AircraftConfiguration[ id=" + aircraftConfigurationId + " ]";
+        return "Aircraft Configuration Name = " + aircraftConfigurationName + ", Num Of Cabin Classes = " + numOfCabinClasses 
+                + ", Aircraft Type = " + aircraftType + ", Flight = " + flight;
     }
     
 }

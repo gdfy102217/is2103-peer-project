@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Airport;
 import javax.ejb.Remote;
 import util.exception.AirportExistException;
+import util.exception.AirportNotFoundException;
 import util.exception.GeneralException;
 
 /**
@@ -18,5 +19,7 @@ import util.exception.GeneralException;
 public interface AirportSessionBeanRemote {
     
     public Airport createNewAirport(Airport airport) throws AirportExistException, GeneralException;
+    
+    public Airport retrieveAirportByIataCode(String iataCode) throws AirportNotFoundException;
     
 }

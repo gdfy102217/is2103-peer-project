@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.AircraftConfigurationNotFoundException;
 
 /**
  *
@@ -41,9 +42,25 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
     }
     
     @Override
-    public List<AircraftConfiguration> viewAllAircraftConfigurations() {
+    public List<AircraftConfiguration> retrieveAllAircraftConfigurations() {
         Query query = em.createQuery("SELECT ac FROM AircraftConfiguration ac ORDER BY ac.aircraftType, ac.aircraftConfigurationName");
         
         return query.getResultList();
+    }
+    
+    @Override
+    public AircraftConfiguration retrieveAircraftConfigurationByName(String name) throws AircraftConfigurationNotFoundException
+    {
+        Query query = em.createQuery("SELECT ac FROM AircraftConfiguration ac WHERE ac.aircraftConfigurationName = :name");
+        query.setParameter(":name", name);
+        
+        if(query.getSingleResult() != null)
+        {
+            return (AircraftConfiguration) query.getSingleResult();
+        }
+        else
+        {
+            throw new AircraftConfigurationNotFoundException("Aircraft configuration " + name + " does not exist!");
+        }                
     }
 }

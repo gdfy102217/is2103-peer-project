@@ -6,14 +6,24 @@
 package frsmanagementclient;
 
 import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
+import ejb.session.stateless.AirportSessionBeanRemote;
+import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import entity.AircraftConfiguration;
+import entity.Airport;
 import entity.CabinClassConfiguration;
 import entity.Employee;
+import entity.FlightRoute;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.enumeration.CabinClassType;
+import util.exception.AircraftConfigurationNotFoundException;
+import util.exception.AirportNotFoundException;
+import util.exception.DeleteFlightRouteException;
 import util.exception.ExceedMaximumSeatCapacityException;
+import util.exception.FlightRouteExistException;
+import util.exception.FlightRouteNotFoundException;
+import util.exception.GeneralException;
 
 /**
  *
@@ -21,6 +31,8 @@ import util.exception.ExceedMaximumSeatCapacityException;
  */
 public class FlightPlanningModule {
     private AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
+    private AirportSessionBeanRemote airportSessionBeanRemote;
+    private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
     
     private Employee employee;
 
@@ -35,12 +47,12 @@ public class FlightPlanningModule {
         {
             System.out.println("*** FRSManagement :: Flight Planning Module ***\n");
             System.out.println("1: Create Aircraft Configuration");
-            System.out.println("2: View Staff Details");
-            System.out.println("3: View All Staffs");
+            System.out.println("2: View All Aircraft Configurations");
+            System.out.println("3: View Aircraft Configuration Details");
             System.out.println("-----------------------");
-            System.out.println("4: Create New Product");
-            System.out.println("5: View Product Details");
-            System.out.println("6: View All Products");
+            System.out.println("4: Create Flight Route");
+            System.out.println("5: View All Flight Routes");
+            System.out.println("6: Delete Flight Route");
             System.out.println("-----------------------");
             System.out.println("7: Back\n");
             response = 0;
@@ -65,19 +77,31 @@ public class FlightPlanningModule {
                 }
                 else if(response == 3)
                 {
-                    viewAircraftConfigurationDetails();
+                    try {
+                        viewAircraftConfigurationDetails();
+                    } catch (AircraftConfigurationNotFoundException ex) {
+                        System.out.println(ex);
+                    }
                 }
                 else if(response == 4)
                 {
-                    doCreateNewProduct();
+                    try {
+                        doCreateNewFlightRoute();
+                    } catch (AirportNotFoundException | FlightRouteExistException | GeneralException ex) {
+                        System.out.println(ex);
+                    }
                 }
                 else if(response == 5)
                 {
-                    doViewProductDetails();
+                    doViewAllFlightRoutes();
                 }
                 else if(response == 6)
                 {
-                    doViewAllProducts();
+                    try {
+                        doDeleteFlightRoute();
+                    } catch (FlightRouteNotFoundException | DeleteFlightRouteException ex) {
+                        System.out.println(ex);
+                    }
                 }
                 else if (response == 7)
                 {
@@ -100,7 +124,7 @@ public class FlightPlanningModule {
         Scanner scanner = new Scanner(System.in);
         AircraftConfiguration newAircraftConfiguration = new AircraftConfiguration();
         
-        System.out.println("*** FRSManagement :: Flight Planning :: Create New Aircraft Configuration ***\n");
+        System.out.println("*** FRSManagement :: Flight Planning Module :: Create New Aircraft Configuration ***\n");
         
         System.out.print("Enter Aircraft Configuration Name> ");
         newAircraftConfiguration.setAircraftConfigurationName(scanner.nextLine().trim());
@@ -158,13 +182,72 @@ public class FlightPlanningModule {
     }
     
     private void viewAllAircraftConfigurations() {
-        System.out.println("*** FRSManagement :: Flight Planning :: View All Aircraft Configurations ***\n");
-        for (AircraftConfiguration aircraftConfiguration: aircraftConfigurationSessionBeanRemote.viewAllAircraftConfigurations()){
+        System.out.println("*** FRSManagement :: Flight Planning Module :: View All Aircraft Configurations ***\n");
+        for (AircraftConfiguration aircraftConfiguration: aircraftConfigurationSessionBeanRemote.retrieveAllAircraftConfigurations()){
             System.out.println(aircraftConfiguration);
         }
     }
     
-    private void viewAircraftConfigurationDetails() {
+    private void viewAircraftConfigurationDetails() throws AircraftConfigurationNotFoundException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** FRSManagement :: Flight Planning Module :: View Aircraft Configuration Details ***\n");
+        System.out.print("Enter Aircraft Configuration Name> ");
+        String nameOfAircraftConfiguration = scanner.nextLine().trim();
+        AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanRemote.retrieveAircraftConfigurationByName(nameOfAircraftConfiguration);
+        System.out.println(aircraftConfiguration);
+        for (CabinClassConfiguration cabinClassConfiguration: aircraftConfiguration.getCabinClassConfigurations()){
+            System.out.println(cabinClassConfiguration);
+        }
+    }
+    
+    private void doCreateNewFlightRoute() throws AirportNotFoundException, FlightRouteExistException, GeneralException {
+        Scanner scanner = new Scanner(System.in);
+        FlightRoute newFlightRoute = new FlightRoute();
         
+        System.out.println("*** FRSManagement :: Flight Planning Module :: Create New Flight Route ***\n");
+        
+        System.out.print("Enter Origin Airport IATA code> ");
+        Airport origin = airportSessionBeanRemote.retrieveAirportByIataCode(scanner.nextLine().trim());
+        newFlightRoute.setOrigin(origin);
+        
+        System.out.print("Enter Destination Airport IATA code> ");
+        Airport destination = airportSessionBeanRemote.retrieveAirportByIataCode(scanner.nextLine().trim());
+        newFlightRoute.setDestination(destination);
+        
+        System.out.print("Create complementary flight? (Y/N)> ");
+        if (scanner.nextLine().trim().equals('Y')) {
+            FlightRoute newComplementaryFlightRoute = new FlightRoute();
+            newComplementaryFlightRoute.setOrigin(destination);
+            newComplementaryFlightRoute.setDestination(origin);
+            newComplementaryFlightRoute.setComplementaryReturnRoute(newFlightRoute);
+            newFlightRoute.setComplementaryReturnRoute(newComplementaryFlightRoute);
+            flightRouteSessionBeanRemote.createNewFlightRoute(newComplementaryFlightRoute);
+        }
+        flightRouteSessionBeanRemote.createNewFlightRoute(newFlightRoute);
+    }
+    
+    private void doViewAllFlightRoutes() {
+        System.out.println("*** FRSManagement :: Flight Planning Module :: View All Flight Routes ***\n");
+        for(FlightRoute flightRoute: flightRouteSessionBeanRemote.retrieveAllFlightRoutes()) {
+            System.out.println(flightRoute);
+            if(flightRoute.getComplementaryReturnRoute() != null) {
+                System.out.println("Complementary flight route: " + flightRoute.getComplementaryReturnRoute());
+            }
+        }
+    }
+    
+    private void doDeleteFlightRoute() throws FlightRouteNotFoundException, DeleteFlightRouteException {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("*** FRSManagement :: Flight Planning Module :: Delete Flight Route ***\n");
+        
+        System.out.print("Enter Origin Airport IATA code> ");
+        String originCode = scanner.nextLine().trim();
+        
+        System.out.print("Enter Destination Airport IATA code> ");
+        String destinationCode = scanner.nextLine().trim();
+        
+        FlightRoute flightRoute = flightRouteSessionBeanRemote.retrieveFlightRouteByOdPair(originCode, destinationCode);
+        flightRouteSessionBeanRemote.deleteFlightRoute(flightRoute);
     }
 }

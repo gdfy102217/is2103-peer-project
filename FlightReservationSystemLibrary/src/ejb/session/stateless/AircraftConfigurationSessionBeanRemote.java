@@ -5,7 +5,10 @@
  */
 package ejb.session.stateless;
 
+import entity.AircraftConfiguration;
+import java.util.List;
 import javax.ejb.Remote;
+import util.exception.AircraftConfigurationNotFoundException;
 
 /**
  *
@@ -13,5 +16,9 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface AircraftConfigurationSessionBeanRemote {
+    
+    public List<AircraftConfiguration> retrieveAllAircraftConfigurations();
+    
+    public AircraftConfiguration retrieveAircraftConfigurationByName(String name) throws AircraftConfigurationNotFoundException;
     
 }

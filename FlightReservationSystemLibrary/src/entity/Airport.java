@@ -125,5 +125,21 @@ public class Airport implements Serializable {
     public String toString() {
         return "entity.Airport[ id=" + airportId + " ]";
     }
+
+    public List<FlightRoute> getFlightsFromAirport() {
+        return flightsFromAirport;
+    }
+
+    public void setFlightsFromAirport(List<FlightRoute> flightsFromAirport) {
+        this.flightsFromAirport = flightsFromAirport;
+    }
+
+    public List<FlightRoute> getFlightsToAirport() {
+        return flightsToAirport;
+    }
+
+    public void setFlightsToAirport(List<FlightRoute> flightsToAirport) {
+        this.flightsToAirport = flightsToAirport;
+    }
     
 }

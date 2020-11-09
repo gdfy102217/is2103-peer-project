@@ -5,7 +5,10 @@
  */
 package ejb.session.stateless;
 
+import entity.AircraftConfiguration;
+import java.util.List;
 import javax.ejb.Local;
+import util.exception.AircraftConfigurationNotFoundException;
 
 /**
  *
@@ -13,5 +16,9 @@ import javax.ejb.Local;
  */
 @Local
 public interface AircraftConfigurationSessionBeanLocal {
+
+    public List<AircraftConfiguration> retrieveAllAircraftConfigurations();
+
+    public AircraftConfiguration retrieveAircraftConfigurationByName(String name) throws AircraftConfigurationNotFoundException;
     
 }

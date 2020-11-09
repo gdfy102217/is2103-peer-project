@@ -141,7 +141,10 @@ public class CabinClassConfiguration implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.CabinClassConfiguration[ id=" + cabinClassConfigurationId + " ]";
+        return "Cabin Class Type = " + cabinClassType + ", No. Of Aisles = " + numOfAisles + ", No. Of Rows = " + numOfRows +
+                ", No. Of Seats Abreast = " + numOfSeatsAbreast + ", Seating Configuration Per Column = " + seatingConfigurationPerColumn;
     }
+
+    
     
 }
