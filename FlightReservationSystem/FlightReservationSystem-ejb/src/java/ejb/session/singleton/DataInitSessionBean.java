@@ -68,7 +68,10 @@ public class DataInitSessionBean {
     public void initialiseEmployee()
     {
         try {
-            employeeSessionBeanLocal.createNewEmployee(new Employee("employee", "employeetest", "password", EmployeeType.SALESMANAGER));
+            employeeSessionBeanLocal.createNewEmployee(new Employee("Sales Manager", "sales", "password", EmployeeType.SALESMANAGER));
+            employeeSessionBeanLocal.createNewEmployee(new Employee("Fleet Manager", "fleet", "password", EmployeeType.FLEETMANAGER));
+            employeeSessionBeanLocal.createNewEmployee(new Employee("Route Planner", "route", "password", EmployeeType.ROUTEPLANNER));
+            employeeSessionBeanLocal.createNewEmployee(new Employee("Schedule Manager", "schedule", "password", EmployeeType.SCHEDULEMANAGER));
         } catch (EmployeeExistException | GeneralException ex) {
             
         }
