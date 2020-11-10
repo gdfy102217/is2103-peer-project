@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import util.enumeration.FlightScheduleType;
 
 
@@ -36,6 +38,10 @@ public class FlightSchedulePlan implements Serializable {
     
     @OneToMany(mappedBy = "flightSchedulePlan")
     private List<FlightSchedule> flightSchedules;
+    
+    private Date layoverDuration;
+    @OneToOne(mappedBy = "complementaryReturnSchedulePlan", optional = true)
+    private FlightSchedulePlan complementaryReturnSchedulePlan;
 
     public FlightSchedulePlan() {
         flightSchedules = new ArrayList<>();
@@ -77,6 +83,27 @@ public class FlightSchedulePlan implements Serializable {
 
     public void setFlightSchedules(List<FlightSchedule> flightSchedules) {
         this.flightSchedules = flightSchedules;
+    }
+
+    public Date getLayoverDuration() {
+        return layoverDuration;
+    }
+
+    public void setLayoverDuration(Date layoverDuration) {
+        this.layoverDuration = layoverDuration;
+        this.setComplementaryReturnSchedulePlan(new FlightSchedulePlan(this.flightScheduleType, this.flight.getComplementaryReturnFlight()));
+        for(FlightSchedule flightSchedule: flightSchedules) {
+            //use calendar to calculate the time
+            this.complementaryReturnSchedulePlan.getFlightSchedules().add(new FlightSchedule(layoverDuration, flightSchedule.getFlightDuration()));
+        }
+    }
+
+    public FlightSchedulePlan getComplementaryReturnSchedulePlan() {
+        return complementaryReturnSchedulePlan;
+    }
+
+    public void setComplementaryReturnSchedulePlan(FlightSchedulePlan complementaryReturnSchedulePlan) {
+        this.complementaryReturnSchedulePlan = complementaryReturnSchedulePlan;
     }
     
     

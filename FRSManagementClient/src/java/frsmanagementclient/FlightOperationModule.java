@@ -5,7 +5,6 @@
  */
 package frsmanagementclient;
 
-import com.sun.xml.rpc.processor.modeler.j2ee.xml.string;
 import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
@@ -18,10 +17,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.enumeration.EmployeeType;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
@@ -52,7 +48,7 @@ public class FlightOperationModule {
         
         while(true)
         {
-            System.out.println("*** FRSManagement :: Flight Operation Module ***\n");
+            System.out.println("*** FRS Management :: Flight Operation Module ***\n");
             System.out.println("1: Create Flight ");
             System.out.println("2: View All Flights");
             System.out.println("3: View Flight Details");

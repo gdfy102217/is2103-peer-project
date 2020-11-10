@@ -21,15 +21,7 @@ import javax.persistence.OneToOne;
 @Entity
 
 public class Flight implements Serializable {
-
-    public List<FlightSchedulePlan> getFlightSchedulePlans() {
-        return flightSchedulePlans;
-    }
-
-    public void setFlightSchedulePlans(List<FlightSchedulePlan> flightSchedulePlans) {
-        this.flightSchedulePlans = flightSchedulePlans;
-    }
-
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +29,7 @@ public class Flight implements Serializable {
     @Column(nullable = false, length = 6, unique = true)
     private String flightNumber;
     
-    @OneToOne
+    @OneToOne(optional = true)
     private Flight complementaryReturnFlight;
     
     @ManyToOne(optional = false)
@@ -103,7 +95,13 @@ public class Flight implements Serializable {
         this.aircraftConfiguration = aircraftConfiguration;
     }
     
-    
+    public List<FlightSchedulePlan> getFlightSchedulePlans() {
+        return flightSchedulePlans;
+    }
+
+    public void setFlightSchedulePlans(List<FlightSchedulePlan> flightSchedulePlans) {
+        this.flightSchedulePlans = flightSchedulePlans;
+    }
 
     @Override
     public int hashCode() {

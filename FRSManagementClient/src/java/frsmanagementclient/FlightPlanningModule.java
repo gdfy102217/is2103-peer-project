@@ -44,7 +44,7 @@ public class FlightPlanningModule {
         
         while(true)
         {
-            System.out.println("*** FRSManagement :: Flight Planning Module ***\n");
+            System.out.println("*** FRS Management :: Flight Planning Module ***\n");
             System.out.println("1: Create Aircraft Configuration");
             System.out.println("2: View All Aircraft Configurations");
             System.out.println("3: View Aircraft Configuration Details");
