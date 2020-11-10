@@ -5,30 +5,34 @@
  */
 package frsmanagementclient;
 
-import com.sun.xml.rpc.processor.modeler.j2ee.xml.string;
 import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
+import ejb.session.stateless.FlightSchedulePlanSessionBeanRemote;
+import ejb.session.stateless.FlightScheduleSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
 import entity.AircraftConfiguration;
 import entity.Employee;
 import entity.Flight;
 import entity.FlightRoute;
+import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.enumeration.EmployeeType;
+import util.enumeration.FlightScheduleType;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
 import util.exception.DeleteFlightRouteException;
 import util.exception.FlightExistException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
+import util.exception.FlightScheduleExistException;
+import util.exception.FlightSchedulePlanExistException;
 import util.exception.GeneralException;
 
 /**
@@ -40,6 +44,8 @@ public class FlightOperationModule {
     private FlightSessionBeanRemote flightSessionBeanRemote;
     private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
     private AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
+    private FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote;
+    private FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote;
     
     private Employee employee;
 
@@ -93,11 +99,13 @@ public class FlightOperationModule {
                 }
                 else if(response == 4)
                 {
+                  
                     try {
                         doCreateNewFlightSchedulePlan();
-                    } catch () {
+                    } catch ( FlightNotFoundException | ParseException | FlightScheduleExistException | GeneralException | FlightSchedulePlanExistException ex) {
                         System.out.println(ex);
                     }
+                    
                 }
                 else if(response == 5 && employee.getEmployeeType().equals(EmployeeType.ROUTEPLANNER))
                 {
@@ -199,7 +207,7 @@ public class FlightOperationModule {
         }
     }
     
-    private void doCreateNewFlightSchedulePlan() throws FlightNotFoundException, ParseException {
+    private void doCreateNewFlightSchedulePlan() throws FlightNotFoundException, ParseException, FlightScheduleExistException, GeneralException, FlightSchedulePlanExistException {
         Scanner scanner = new Scanner(System.in);
         FlightSchedulePlan newFlightSchedulePlan = new FlightSchedulePlan();
         System.out.println("*** FRSManagement :: Flight Operation Module :: Create New Flight Schedule Plan ***\n");
@@ -208,13 +216,65 @@ public class FlightOperationModule {
         Flight flight = flightSessionBeanRemote.retrieveFlightByFlightNumber(flightNumber);
         newFlightSchedulePlan.setFlight(flight);
         
+        System.out.println("Select Type of Flight Schedule Plan> ");
+        System.out.println("1: Single");
+        System.out.println("2: Multiple");
+        System.out.println("3: Recurrent schedule every n day");
+        System.out.println("4: Recurrent schedule every week");
+        System.out.print("> ");
+        Integer response = Integer.valueOf(scanner.nextLine().trim());
+        
+        switch(response) {
+            case(1):
+                newFlightSchedulePlan.setFlightScheduleType(FlightScheduleType.SINGLE);
+                break;
+            case(2):
+                newFlightSchedulePlan.setFlightScheduleType(FlightScheduleType.MULTIPLE);
+                break;
+            case(3):
+                newFlightSchedulePlan.setFlightScheduleType(FlightScheduleType.RECURRENTBYDAY);
+                break;
+            case(4):
+                newFlightSchedulePlan.setFlightScheduleType(FlightScheduleType.RECURRENTBYWEEK);
+                break;
+            default:
+        }
+        
+        flightSchedulePlanSessionBeanRemote.createNewFlightSchedulePlan(newFlightSchedulePlan);
+        
+        if (flight.getComplementaryReturnFlight() != null) {
+            System.out.print("Create a complementary return flight schedule plan? (Y/N)> ");
+            if (scanner.nextLine().trim().equals("Y")) {
+                System.out.print("Enter Layover Duration (hr:min)> ");
+                String layoverDurationString = scanner.nextLine().trim();
+                DateFormat durationFormat = new SimpleDateFormat("hr:min");
+                Date layoverDurationTime = durationFormat.parse(layoverDurationString);
+                
+            }
+        }
+        
         while(true) {
             System.out.println("*** Create Flight Schedule ***\n");
-            System.out.print("Enter Departure Date/Time> ");
+            FlightSchedule newFlightSchedule = new FlightSchedule();
+            System.out.print("Enter Departure Date/Time (yyyy-mm-dd hh:mm)> ");
             String departureDateTimeString = scanner.nextLine().trim();
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            DateFormat format = new SimpleDateFormat("year-month-day hr:min");
             Date departureDateTime = format.parse(departureDateTimeString);
+            newFlightSchedule.setDepartureDateTime(departureDateTime);
             
+            System.out.print("Enter Flight Duration (hr:min)> ");
+            String durationString = scanner.nextLine().trim();
+            DateFormat durationFormat = new SimpleDateFormat("hr:min");
+            Date durationTime = durationFormat.parse(durationString);
+            newFlightSchedule.setFlightDuration(durationTime);
+            
+            newFlightSchedule.setFlightSchedulePlan(newFlightSchedulePlan);
+            flightScheduleSessionBeanRemote.createNewFlightSchedule(newFlightSchedule);
+            
+            System.out.print("Continue to create more flight schedule? (Y/N)> ");
+            if (scanner.nextLine().trim().equals("N")) {
+                break;
+            }
         }
     }
 }
