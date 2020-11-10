@@ -20,5 +20,7 @@ public interface AircraftConfigurationSessionBeanLocal {
     public List<AircraftConfiguration> retrieveAllAircraftConfigurations();
 
     public AircraftConfiguration retrieveAircraftConfigurationByName(String name) throws AircraftConfigurationNotFoundException;
+
+    public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration);
     
 }

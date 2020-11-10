@@ -28,7 +28,7 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
     // "Insert Code > Add Business Method")
     
     @Override
-    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration)
+    public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration)
     {
         newAircraftConfiguration.getAircraftType().getConfigurations().add(newAircraftConfiguration);
         for (CabinClassConfiguration cabinClassConfiguration: newAircraftConfiguration.getCabinClassConfigurations()) {
@@ -38,7 +38,7 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
         em.persist(newAircraftConfiguration);
         em.flush();
         
-        return newAircraftConfiguration.getAircraftConfigurationId();
+        return newAircraftConfiguration;
     }
     
     @Override

@@ -94,7 +94,8 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         }
         else
         {
-            // New in v4.1 to prevent deleting staff with existing sale transaction(s)
+            flightRoute.setDisabled(true);
+            System.out.println("Flight route from " + flightRoute.getOrigin() + " to " + flightRoute.getDestination() + " is set disabled!");
             throw new DeleteFlightRouteException("Flight route from " + flightRoute.getOrigin() + " to " + flightRoute.getDestination() +
                     " is in use and cannot be deleted!");
         }

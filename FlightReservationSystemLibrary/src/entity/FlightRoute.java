@@ -40,6 +40,8 @@ public class FlightRoute implements Serializable {
     
     @OneToMany(mappedBy = "flightRoute")
     private List<Flight> flights;
+    
+    private Boolean disabled;
 
     public FlightRoute() {
         flights = new ArrayList<>();
@@ -50,6 +52,7 @@ public class FlightRoute implements Serializable {
         
         this.origin = origin;
         this.destination = destination;
+        this.disabled = false;
     }
     
     
@@ -120,6 +123,14 @@ public class FlightRoute implements Serializable {
     @Override
     public String toString() {
         return "entity.FlightRoute[ id=" + flightRouteId + " ]";
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
     
 }

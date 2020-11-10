@@ -14,9 +14,8 @@ import entity.CabinClassConfiguration;
 import entity.Employee;
 import entity.FlightRoute;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.enumeration.CabinClassType;
+import util.enumeration.EmployeeType;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.AirportNotFoundException;
 import util.exception.DeleteFlightRouteException;
@@ -63,19 +62,20 @@ public class FlightPlanningModule {
 
                 response = scanner.nextInt();
 
-                if(response == 1)
+                if(response == 1 && employee.getEmployeeType().equals(EmployeeType.FLEETMANAGER))
                 {
+                    
                     try {
                         doCreateNewAircraftConfiguration();
                     } catch (ExceedMaximumSeatCapacityException ex) {
                         System.out.println("The New Aircraft Configuration Exceed MaximumSeat Capacity of the aircraft");
                     }
                 }
-                else if(response == 2)
+                else if(response == 2 && employee.getEmployeeType().equals(EmployeeType.FLEETMANAGER))
                 {
                     viewAllAircraftConfigurations();
                 }
-                else if(response == 3)
+                else if(response == 3 && employee.getEmployeeType().equals(EmployeeType.FLEETMANAGER))
                 {
                     try {
                         viewAircraftConfigurationDetails();
@@ -83,7 +83,7 @@ public class FlightPlanningModule {
                         System.out.println(ex);
                     }
                 }
-                else if(response == 4)
+                else if(response == 4 && employee.getEmployeeType().equals(EmployeeType.ROUTEPLANNER))
                 {
                     try {
                         doCreateNewFlightRoute();
@@ -91,11 +91,11 @@ public class FlightPlanningModule {
                         System.out.println(ex);
                     }
                 }
-                else if(response == 5)
+                else if(response == 5 && employee.getEmployeeType().equals(EmployeeType.ROUTEPLANNER))
                 {
                     doViewAllFlightRoutes();
                 }
-                else if(response == 6)
+                else if(response == 6 && employee.getEmployeeType().equals(EmployeeType.ROUTEPLANNER))
                 {
                     try {
                         doDeleteFlightRoute();
@@ -109,7 +109,11 @@ public class FlightPlanningModule {
                 }
                 else
                 {
-                    System.out.println("Invalid option, please try again!\n");                
+                    if (response > 0 || response < 7) {
+                        System.out.println("You do not have permission!\n");
+                    } else {
+                        System.out.println("Invalid option, please try again!\n");   
+                    }
                 }
             }
             

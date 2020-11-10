@@ -22,6 +22,14 @@ import javax.persistence.OneToOne;
 
 public class Flight implements Serializable {
 
+    public List<FlightSchedulePlan> getFlightSchedulePlans() {
+        return flightSchedulePlans;
+    }
+
+    public void setFlightSchedulePlans(List<FlightSchedulePlan> flightSchedulePlans) {
+        this.flightSchedulePlans = flightSchedulePlans;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +49,8 @@ public class Flight implements Serializable {
     
     @OneToOne
     private AircraftConfiguration aircraftConfiguration;
+    
+    private Boolean disabled;
 
     public Flight() {
     }
@@ -49,6 +59,7 @@ public class Flight implements Serializable {
         this.flightNumber = flightNumber;
         this.flightRoute = flightRoute;
         this.aircraftConfiguration = aircraftConfiguration;
+        this.disabled = false;
     }
 
 
@@ -116,7 +127,16 @@ public class Flight implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Flight[ id=" + flightId + " ]";
+        return "Flight Number = " + flightNumber + ", Flight Route = " + flightRoute + ", Aircraft Configuration = " + aircraftConfiguration;
     }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
+
     
 }

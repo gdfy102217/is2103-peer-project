@@ -17,6 +17,8 @@ import util.exception.AircraftConfigurationNotFoundException;
 @Remote
 public interface AircraftConfigurationSessionBeanRemote {
     
+    public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration);
+    
     public List<AircraftConfiguration> retrieveAllAircraftConfigurations();
     
     public AircraftConfiguration retrieveAircraftConfigurationByName(String name) throws AircraftConfigurationNotFoundException;
