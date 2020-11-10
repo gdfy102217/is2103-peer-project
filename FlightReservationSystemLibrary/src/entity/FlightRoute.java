@@ -35,7 +35,7 @@ public class FlightRoute implements Serializable {
     @JoinColumn(nullable = false)
     private Airport destination;
     
-    @OneToOne
+    @OneToOne(optional = true)
     private FlightRoute complementaryReturnRoute;
     
     @OneToMany(mappedBy = "flightRoute")

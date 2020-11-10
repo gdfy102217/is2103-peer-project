@@ -77,7 +77,7 @@ public class MainApp {
         String password;
         Employee employee;
 
-        System.out.println("*** Employee Login :: Login ***\n");
+        System.out.println("*** FRS Management :: Employee Login ***\n");
         System.out.print("Enter username> ");
         username = scanner.nextLine().trim();
         System.out.print("Enter password> ");
