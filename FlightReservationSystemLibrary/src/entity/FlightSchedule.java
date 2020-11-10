@@ -109,6 +109,30 @@ public class FlightSchedule implements Serializable {
         }
         return true;
     }
+    
+        public Date getDepartureDateTime() {
+        return departureDateTime;
+    }
+
+    public void setDepartureDateTime(Date departureDateTime) {
+        this.departureDateTime = departureDateTime;
+    }
+
+    public Date getFlightDuration() {
+        return flightDuration;
+    }
+
+    public void setFlightDuration(Date flightDuration) {
+        this.flightDuration = flightDuration;
+    }
+
+    public FlightSchedulePlan getFlightSchedulePlan() {
+        return flightSchedulePlan;
+    }
+
+    public void setFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) {
+        this.flightSchedulePlan = flightSchedulePlan;
+    }
 
     @Override
     public String toString() {
