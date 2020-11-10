@@ -24,7 +24,7 @@ public class FlightSchedule implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightScheduleId;
     private Date departureDateTime;
-    private Date flightDuration; //not sure whether Date is the correct data type to use
+    private Date flightDuration;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)

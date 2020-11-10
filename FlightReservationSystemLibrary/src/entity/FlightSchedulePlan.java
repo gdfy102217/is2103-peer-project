@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +37,11 @@ public class FlightSchedulePlan implements Serializable {
     
     @OneToMany(mappedBy = "flightSchedulePlan")
     private List<FlightSchedule> flightSchedules;
+    
+    private Date endDate;
+    
+    @OneToMany(mappedBy = "flightSchedulePlan")
+    private List<Fare> fares;
 
     public FlightSchedulePlan() {
         flightSchedules = new ArrayList<>();
@@ -104,6 +110,22 @@ public class FlightSchedulePlan implements Serializable {
     @Override
     public String toString() {
         return "entity.FlightSchedulePlan[ id=" + flightSchedulePlanId + " ]";
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public List<Fare> getFares() {
+        return fares;
+    }
+
+    public void setFares(List<Fare> fares) {
+        this.fares = fares;
     }
     
 }

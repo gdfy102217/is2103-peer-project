@@ -6,10 +6,14 @@
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import util.enumeration.CabinClassType;
 
 /**
  *
@@ -22,6 +26,23 @@ public class Fare implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    @Column(nullable = false, length = 3, unique = true)
+    private String fareBasisCode;
+    
+    @Column(nullable = false)
+    private CabinClassType cabinClassType;
+    
+    @Column(nullable = false)
+    private Double fareAmount;
+    
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
+    private FlightSchedulePlan flightSchedulePlan;
+    
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
+    private CabinClassConfiguration cabinClassConfiguration;
 
     public Long getId() {
         return id;
@@ -54,6 +75,46 @@ public class Fare implements Serializable {
     @Override
     public String toString() {
         return "entity.Fare[ id=" + id + " ]";
+    }
+
+    public String getFareBasisCode() {
+        return fareBasisCode;
+    }
+
+    public void setFareBasisCode(String fareBasisCode) {
+        this.fareBasisCode = fareBasisCode;
+    }
+
+    public CabinClassType getCabinClassType() {
+        return cabinClassType;
+    }
+
+    public void setCabinClassType(CabinClassType cabinClassType) {
+        this.cabinClassType = cabinClassType;
+    }
+
+    public Double getFareAmount() {
+        return fareAmount;
+    }
+
+    public void setFareAmount(Double fareAmount) {
+        this.fareAmount = fareAmount;
+    }
+
+    public FlightSchedulePlan getFlightSchedulePlan() {
+        return flightSchedulePlan;
+    }
+
+    public void setFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) {
+        this.flightSchedulePlan = flightSchedulePlan;
+    }
+
+    public CabinClassConfiguration getCabinClassConfiguration() {
+        return cabinClassConfiguration;
+    }
+
+    public void setCabinClassConfiguration(CabinClassConfiguration cabinClassConfiguration) {
+        this.cabinClassConfiguration = cabinClassConfiguration;
     }
     
 }
