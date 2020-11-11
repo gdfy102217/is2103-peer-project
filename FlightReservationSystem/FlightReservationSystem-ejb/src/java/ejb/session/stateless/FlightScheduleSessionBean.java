@@ -19,6 +19,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.AirportNotFoundException;
 import util.exception.FlightScheduleExistException;
+import util.exception.FlightScheduleNotFountException;
 import util.exception.GeneralException;
 
 /**
@@ -65,22 +66,38 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         }
     }
     
-    public List<FlightSchedule> retrieveFlightScheduleByDepartureAndDestination(Airport departureAirport, Airport destinationAirport) {
-        Query query = em.createQuery("SELECT f FROM FlightSchedule f JOIN f.flightSchedulePlan p JOIN p.flight t JOIN t.flightRoute r WHERE r.origin = : departureAirport AND r.destination =: destinationAirport ");
+    public List<FlightSchedule> retrieveFlightScheduleByDepartureDestinationAndDepartureDate(Airport departureAirport, Airport destinationAirport, Date departureDate) throws FlightScheduleNotFountException {
+        Query query = em.createQuery("SELECT f FROM FlightSchedule f WHERE f.departureDateTime =: departureDate JOIN f.flightSchedulePlan p JOIN p.flight t JOIN t.flightRoute r WHERE r.origin = : departureAirport AND r.destination =: destinationAirport");
+        query.setParameter("departureDate", departureDate);
         query.setParameter("departureAirport", departureAirport);
         query.setParameter("destinationAirport", destinationAirport);
         
+        List<FlightSchedule> flightSchedules = query.getResultList();
         
+        if (flightSchedules.isEmpty()) {
+            throw new FlightScheduleNotFountException("Flight schedule departure from: " + departureAirport.getIataAirportcode() + " to " + departureAirport + " on date: " + departureDate + " does not exist!");
+        } else {
+        return flightSchedules;
+        }
     }
     
-    public List<FlightSchedule> searchFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, Integer numOfPassengers, Integer flightTypePreference, Integer cabinClass) {
+    public List<FlightSchedule> searchFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, Integer numOfPassengers, Integer flightTypePreference, Integer cabinClass) throws AirportNotFoundException, FlightScheduleNotFountException {
         
         Airport departureAirport = airportSessionBeanLocal.retrieveAirportByName(departureAirportName);
         Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByName(destinationAirportName);
+        List<FlightSchedule> flightSchedules;
         
-        if (flightTypePreference == 1) {
+        if (flightTypePreference == 1) { //direct flight
+            flightSchedules = retrieveFlightScheduleByDepartureDestinationAndDepartureDate(departureAirport, destinationAirport, departureDate);
             
+            for (FlightSchedule flightSchedule: flightSchedules) {
+                //load availability for each cabin classes
+            }
+
+        } else if (flightTypePreference == 2) { //connecting flight
         }
+        
+        return flightSchedules;
     } 
             
 }
