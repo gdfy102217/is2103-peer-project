@@ -6,8 +6,12 @@
 package frsreservationclient;
 
 import ejb.session.stateless.CustomerSessionBeanRemote;
+import ejb.session.stateless.FlightScheduleSessionBeanRemote;
 import entity.Customer;
 import entity.FlightReservation;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -22,6 +26,7 @@ public class MainApp {
     
     private Customer customer = null;
     private CustomerSessionBeanRemote customerSessionBeanRemote;
+    private FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote;
 
     public MainApp() {
     }
@@ -68,7 +73,41 @@ public class MainApp {
     }
 
     public void searchFlight(){
-        
+        try {
+            Scanner scanner = new Scanner(System.in);
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            Integer tripType;
+            String departureAirportName = "";
+            String destinationAirportName = "";
+            Date departureDate;
+            Date returnDate;
+            Integer numOfPassengers;
+            Integer flightTypePreference;
+            Integer cabinClass;
+            
+            System.out.println("*** FRS Reservation :: Search Flight ***\n");
+            System.out.print("Enter Trip Type:  1: One-way, 2: Round-trip> ");
+            tripType = scanner.nextInt();
+            scanner.nextLine();
+            System.out.println("Enter Departure Airport Name> ");
+            departureAirportName = scanner.nextLine().trim();
+            System.out.println("Enter Destination Airport Name> ");
+            destinationAirportName = scanner.nextLine().trim();
+            System.out.print("Enter Departure Date (dd/mm/yyyy)> ");
+            departureDate = inputDateFormat.parse(scanner.nextLine().trim());
+            System.out.print("Enter Return Date (dd/mm/yyyy)> ");
+            returnDate = inputDateFormat.parse(scanner.nextLine().trim());
+            System.out.println("Enter Number Of Passengers> ");
+            numOfPassengers = scanner.nextInt();
+            System.out.print("Enter Flight Type Preference:  1: Direct Flight, 2: Connecting Flight> ");
+            flightTypePreference = scanner.nextInt();
+            System.out.print("Enter Cabin Class Preference:  1: First Class, 2: Business Class, 3: Premium Economy Class, 4: Economy Class> ");
+            cabinClass = scanner.nextInt();
+            
+        } catch (ParseException ex) {
+            System.out.println("Invalid date input!\n");
+        }
     }
     
     public void register(){
@@ -225,7 +264,7 @@ public class MainApp {
             for (String[] passenger: currentFlightReservation.getPassengers()) {
                 num++;
                 //duration tbc
-                System.out.printf("%3s%18s%18s%15s%14s%15s%18s%12s\n", num, passenger[0] + " " + passenger[1], passenger[2], currentFlightReservation.getFlightNumber(), currentFlightReservation.getFlightDateTime(),"duration");
+                System.out.printf("%3s%18s%18s%15s%14s%15s%18s%12s\n", num, passenger[0] + " " + passenger[1], passenger[2], currentFlightReservation.getCabinClassType(), passenger[3], currentFlightReservation.getFlightNumber(), currentFlightReservation.getFlightDateTime(),"duration");
             }
             
             if (!currentFlightReservation.getReturnFlightNumber().isEmpty()) {
@@ -235,7 +274,7 @@ public class MainApp {
                 for (String[] passenger: currentFlightReservation.getPassengers()) {
                     num++;
                     //duration tbc
-                    System.out.printf("%3s%18s%18s%15s%14s%15s%18s%12s\n", num, passenger[0] + " " + passenger[1], passenger[2], currentFlightReservation.getReturnFlightNumber(), currentFlightReservation.getReturnFlightDateTime(),"duration");
+                    System.out.printf("%3s%18s%18s%15s%14s%15s%18s%12s\n", num, passenger[0] + " " + passenger[1], passenger[2], currentFlightReservation.getCabinClassType(), passenger[3],currentFlightReservation.getReturnFlightNumber(), currentFlightReservation.getReturnFlightDateTime(),"duration");
                 }
             }
         }

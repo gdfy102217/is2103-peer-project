@@ -66,7 +66,22 @@ public class AirportSessionBean implements AirportSessionBeanRemote, AirportSess
         }
         catch(NoResultException | NonUniqueResultException ex)
         {
-            throw new AirportNotFoundException("Airport with IATA code " + iataCode + " does not exist!");
+            throw new AirportNotFoundException("Airport with IATA code: " + iataCode + " does not exist!");
+        }
+    }
+    
+    @Override
+    public Airport retrieveAirportByName(String airportName) throws AirportNotFoundException {
+        Query query = em.createQuery("SELECT a FROM Airport a WHERE a.airportName = :airportName");
+        query.setParameter("airportName", airportName);
+        
+        try
+        {
+            return (Airport)query.getSingleResult();
+        }
+        catch(NoResultException | NonUniqueResultException ex)
+        {
+            throw new AirportNotFoundException("Airport with Name: " + airportName + " does not exist!");
         }
     }
 }

@@ -31,6 +31,11 @@ public class FlightSchedulePlan implements Serializable {
     private Long flightSchedulePlanId;
     @Column(nullable = false)
     private FlightScheduleType flightScheduleType;
+    private Date endDate;
+    private Date layoverDuration;
+    
+    @OneToOne(optional = true)
+    private FlightSchedulePlan complementaryReturnSchedulePlan;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -38,8 +43,6 @@ public class FlightSchedulePlan implements Serializable {
     
     @OneToMany(mappedBy = "flightSchedulePlan")
     private List<FlightSchedule> flightSchedules;
-    
-    private Date endDate;
     
     @OneToMany(mappedBy = "flightSchedulePlan")
     private List<Fare> fares;

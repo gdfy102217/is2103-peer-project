@@ -35,17 +35,15 @@ public class FlightReservation implements Serializable {
     private Date flightDateTime;
     private String returnFlightNumber = "";
     private Date returnFlightDateTime;
+    private CabinClassType cabinClassType;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private FlightSchedule flightSchedule;
-    private CabinClassType cabinClassType;
-    
+    private FlightSchedule flightSchedule;   
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private FlightSchedule returnFlightSchedule;
-    private CabinClassType returnCabinClassType;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -104,28 +102,12 @@ public class FlightReservation implements Serializable {
         this.flightSchedule = flightSchedule;
     }
 
-    public CabinClassType getCabinClassType() {
-        return cabinClassType;
-    }
-
-    public void setCabinClassType(CabinClassType cabinClassType) {
-        this.cabinClassType = cabinClassType;
-    }
-
     public FlightSchedule getReturnFlightSchedule() {
         return returnFlightSchedule;
     }
 
     public void setReturnFlightSchedule(FlightSchedule returnFlightSchedule) {
         this.returnFlightSchedule = returnFlightSchedule;
-    }
-
-    public CabinClassType getReturnCabinClassType() {
-        return returnCabinClassType;
-    }
-
-    public void setReturnCabinClassType(CabinClassType returnCabinClassType) {
-        this.returnCabinClassType = returnCabinClassType;
     }
 
     public Customer getCustomer() {
@@ -166,6 +148,14 @@ public class FlightReservation implements Serializable {
 
     public void setReturnFlightDateTime(Date returnFlightDateTime) {
         this.returnFlightDateTime = returnFlightDateTime;
+    }
+
+    public CabinClassType getCabinClassType() {
+        return cabinClassType;
+    }
+
+    public void setCabinClassType(CabinClassType cabinClassType) {
+        this.cabinClassType = cabinClassType;
     }
     
     
