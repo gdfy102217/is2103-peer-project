@@ -20,14 +20,14 @@ import ejb.session.stateless.FlightSessionBeanRemote;
  */
 public class Main {
     
-    private EmployeeSessionBeanRemote employeeSessionBeanRemote;
-    private FlightSessionBeanRemote flightSessionBeanRemote;
-    private FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote;
-    private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
-    private AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
-    private FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote;
-    private FareSessionBeanRemote fareSessionBeanRemote;
-    private AirportSessionBeanRemote airportSessionBeanRemote;
+    private static EmployeeSessionBeanRemote employeeSessionBeanRemote;
+    private static FlightSessionBeanRemote flightSessionBeanRemote;
+    private static FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote;
+    private static FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
+    private static AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
+    private static FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote;
+    private static FareSessionBeanRemote fareSessionBeanRemote;
+    private static AirportSessionBeanRemote airportSessionBeanRemote;
     
     /**
      * @param args the command line arguments

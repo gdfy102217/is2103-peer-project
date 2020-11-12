@@ -5,7 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.AircraftConfiguration;
 import entity.Flight;
+import entity.FlightRoute;
 import entity.FlightSchedule;
 import java.util.List;
 import javax.ejb.Remote;
@@ -30,5 +32,11 @@ public interface FlightSessionBeanRemote {
     public void deleteFlight(Flight flight) throws FlightNotFoundException, DeleteFlightException;
     
     public List<FlightSchedule> retrieveFlightSchedulesByFlightNumber(String flightNumber) throws FlightNotFoundException;
+    
+    public void updateComplementaryFlight(Flight flight, Flight newReturnFlight);
+    
+    public void updateFlightRoute(Flight flight, FlightRoute newFlightRoute);
+    
+    public void updateAircraftConfiguration(Flight flight, AircraftConfiguration newAircraftConfiguration);
     
 }

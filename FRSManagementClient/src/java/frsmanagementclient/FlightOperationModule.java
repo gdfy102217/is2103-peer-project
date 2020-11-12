@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.enumeration.FlightScheduleType;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
@@ -57,7 +59,9 @@ public class FlightOperationModule {
     public FlightOperationModule() {
     }
 
-    public FlightOperationModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote, FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote, FareSessionBeanRemote fareSessionBeanRemote, Employee employee) {
+    public FlightOperationModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote,
+            AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote,
+            FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote, FareSessionBeanRemote fareSessionBeanRemote, Employee employee) {
         this.flightSessionBeanRemote = flightSessionBeanRemote;
         this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
         this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
@@ -90,7 +94,6 @@ public class FlightOperationModule {
                 response = scanner.nextInt();
 
                 if (response == 1) {
-
                     try {
                         doCreateNewFlight();
                     } catch (FlightRouteNotFoundException | AircraftConfigurationNotFoundException | FlightExistException | GeneralException ex) {
@@ -101,7 +104,7 @@ public class FlightOperationModule {
                 } else if (response == 3) {
                     try {
                         viewFlightDetails();
-                    } catch (FlightNotFoundException | DeleteFlightException ex) {
+                    } catch (FlightNotFoundException | DeleteFlightException | FlightRouteNotFoundException | FlightSchedulePlanNotFoundException | DeleteFlightSchedulePlanException ex) {
                         System.out.println(ex);
                     }
                 } else if (response == 4) {
@@ -117,7 +120,7 @@ public class FlightOperationModule {
                     try {
                         viewFlightSchedulePlanDetails();
                     } catch (DeleteFlightScheduleException | ParseException | FlightScheduleExistException | GeneralException |
-                            FareExistException | FlightSchedulePlanNotFoundException | DeleteFlightSchedulePlanException ex) {
+                            FareExistException | FlightSchedulePlanNotFoundException | DeleteFlightSchedulePlanException | FlightNotFoundException ex) {
                         System.out.println(ex);
                     }
                 } else if (response == 7) {
@@ -180,7 +183,7 @@ public class FlightOperationModule {
         }
     }
 
-    private void viewFlightDetails() throws FlightNotFoundException, DeleteFlightException {
+    private void viewFlightDetails() throws FlightNotFoundException, DeleteFlightException, FlightRouteNotFoundException, FlightSchedulePlanNotFoundException, DeleteFlightSchedulePlanException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** FRSManagement :: Flight Operation Module :: View Flight Details ***\n");
         System.out.print("Enter Flight Number> ");
@@ -190,8 +193,7 @@ public class FlightOperationModule {
 
         System.out.print("Update details of this flight? (Y/N)> ");
         if (scanner.nextLine().trim().equals("Y")) {
-            System.out.print("Enter field name> ");
-            String fieldName = scanner.nextLine().trim();
+            updateFlight(flight);
         }
 
         System.out.print("Delete this flight? (Y/N)> ");
@@ -199,8 +201,71 @@ public class FlightOperationModule {
             flightSessionBeanRemote.deleteFlight(flight);
         }
     }
+    
+    private void updateFlight(Flight flight) throws FlightNotFoundException, FlightRouteNotFoundException, FlightSchedulePlanNotFoundException, DeleteFlightSchedulePlanException {
+        Scanner scanner = new Scanner(System.in);
 
-    private void doCreateNewFlightSchedulePlan() throws FlightNotFoundException, ParseException, FlightScheduleExistException, GeneralException, FlightSchedulePlanExistException, FareExistException {
+        System.out.println("*** FRSManagement :: Flight Operation Module :: Update Flight ***\n");
+        System.out.println("1: Update Flight Number ");
+        System.out.println("2: Update Complementary Return Flight");
+        System.out.println("3: Update Flight Route");
+        System.out.println("4: Delete Flight Schedule Plan");
+        System.out.println("5: Create New Flight Schedule Plan");
+        System.out.println("6: Update Aircraft Configuration");
+        System.out.print("> ");
+
+        Integer response = scanner.nextInt();
+        scanner.nextLine();
+        
+        if (response == 1) {
+            System.out.print("Enter Flight Number> ");
+            String flightNumber = scanner.nextLine().trim();
+            flight.setFlightNumber(flightNumber);
+        } else if (response == 2) {
+            System.out.print("Enter Flight Number of complementary return flight> ");
+            String flightNumber = scanner.nextLine().trim();
+            Flight returnFlight = flightSessionBeanRemote.retrieveFlightByFlightNumber(flightNumber);
+            flightSessionBeanRemote.updateComplementaryFlight(flight, returnFlight);
+        } else if (response == 3) {
+            System.out.print("Enter Origin Airport IATA code> ");
+            String originCode = scanner.nextLine().trim();
+
+            System.out.print("Enter Destination Airport IATA code> ");
+            String destinationCode = scanner.nextLine().trim();
+
+            FlightRoute newFlightRoute = flightRouteSessionBeanRemote.retrieveFlightRouteByOdPair(originCode, destinationCode);
+            flightSessionBeanRemote.updateFlightRoute(flight, newFlightRoute);
+        } else if (response == 4) {
+            Integer selection = 0;
+            System.out.println("Flight schedule plan: ");
+            for (FlightSchedulePlan flightSchedulePlan : flight.getFlightSchedulePlans()) {
+                System.out.println("No." + selection + ": " + flightSchedulePlan);
+            }
+            System.out.print("> ");
+            selection = Integer.valueOf(scanner.nextLine().trim());
+            FlightSchedulePlan flightSchedulePlanSelected = flight.getFlightSchedulePlans().get(selection);
+            
+            flightSchedulePlanSessionBeanRemote.deleteFlightSchedulePlan(flightSchedulePlanSelected); 
+        } else if (response == 5) {
+            try {
+                doCreateNewFlightSchedulePlan();
+            } catch (FlightNotFoundException | ParseException | FlightScheduleExistException | GeneralException | FlightSchedulePlanExistException | FareExistException ex) {
+                System.out.println(ex);
+            }
+        } else if (response == 6) {
+            System.out.print("Enter Aircraft Configuration Name> ");
+            try {
+                AircraftConfiguration newAircraftConfiguration = aircraftConfigurationSessionBeanRemote.retrieveAircraftConfigurationByName(scanner.nextLine().trim());
+                flightSessionBeanRemote.updateAircraftConfiguration(flight, newAircraftConfiguration);
+            } catch (AircraftConfigurationNotFoundException ex) {
+                System.out.println(ex);
+            }
+        }
+
+    }
+
+    private void doCreateNewFlightSchedulePlan() throws FlightNotFoundException, ParseException, FlightScheduleExistException, 
+            GeneralException, FlightSchedulePlanExistException, FareExistException {
         Scanner scanner = new Scanner(System.in);
         FlightSchedulePlan newFlightSchedulePlan = new FlightSchedulePlan();
         System.out.println("*** FRSManagement :: Flight Operation Module :: Create New Flight Schedule Plan ***\n");
@@ -325,7 +390,8 @@ public class FlightOperationModule {
         }
     }
 
-    private void viewFlightSchedulePlanDetails() throws DeleteFlightScheduleException, ParseException, FlightScheduleExistException, GeneralException, FareExistException, FlightSchedulePlanNotFoundException, DeleteFlightSchedulePlanException {
+    private void viewFlightSchedulePlanDetails() throws DeleteFlightScheduleException, ParseException, FlightScheduleExistException,
+            GeneralException, FareExistException, FlightSchedulePlanNotFoundException, DeleteFlightSchedulePlanException, FlightNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("*** FRSManagement :: Flight Operation Module :: View Flight Schedule Plan Details ***\n");
@@ -362,7 +428,8 @@ public class FlightOperationModule {
         }
     }
 
-    private void updateFlightSchedulePlan(FlightSchedulePlan flightSchedulePlanSelected) throws DeleteFlightScheduleException, ParseException, FlightScheduleExistException, GeneralException, FareExistException {
+    private void updateFlightSchedulePlan(FlightSchedulePlan flightSchedulePlanSelected) throws DeleteFlightScheduleException, ParseException,
+            FlightScheduleExistException, GeneralException, FareExistException, FlightNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("*** FRSManagement :: Flight Operation Module :: Update Flight Schedule Plan ***\n");
