@@ -25,7 +25,9 @@ public interface FlightScheduleSessionBeanRemote {
     
     public FlightSchedule createNewFlightSchedule(FlightSchedule flightSchedule) throws FlightScheduleExistException, GeneralException;
     
-    public List<FlightSchedule> searchFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, Integer numOfPassengers, Integer flightTypePreference, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
+    public List<FlightSchedule> searchDirectFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
+    
+    public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
     
     public void viewSeatsInventory(FlightSchedule flightSchedule);
     
