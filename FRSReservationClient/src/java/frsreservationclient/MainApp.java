@@ -8,7 +8,9 @@ package frsreservationclient;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.FlightReservationSessionBeanRemote;
 import ejb.session.stateless.FlightScheduleSessionBeanRemote;
+import entity.CabinClass;
 import entity.Customer;
+import entity.Fare;
 import entity.FlightReservation;
 import entity.FlightSchedule;
 import java.text.ParseException;
@@ -123,51 +125,50 @@ public class MainApp {
                 cabinClassType = CabinClassType.ECONOMYCLASS;
             }
             
-            List<FlightSchedule> flightSchedulesWithLowestFare;
             System.out.println("\nDeparture Flight Information: \n");
             //on required departure date
             List<FlightSchedule> flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(departureAirportName, destinationAirportName, departureDate, numOfPassengers, flightTypePreference, cabinClassType);
             System.out.println("----- Departure On " + departureDate + "\n");
-            printFlightSchedulesTable(flightSchedules, cabinClass);
+            printFlightSchedulesTable(flightSchedules, cabinClassType);
             
             //3 days before
             for (int i=3; i>0; --i) {
                 Date newDepartureDate = new Date(departureDate.getTime() - i * 24 * 60 * 60 * 1000);
                 flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(departureAirportName, destinationAirportName, newDepartureDate, numOfPassengers, flightTypePreference, cabinClassType);
                 System.out.println("----- Departure On " + departureDate + "\n");
-                printFlightSchedulesTable(flightSchedules, cabinClass);
+                printFlightSchedulesTable(flightSchedules, cabinClassType);
             }
             
             //3 days after
             for (int i=1; i<4; ++i) {
                 Date newDepartureDate = new Date(departureDate.getTime() + i * 24 * 60 * 60 * 1000);
-                flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(departureAirportName, destinationAirportName, departureDate, numOfPassengers, flightTypePreference, cabinClass);
+                flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(departureAirportName, destinationAirportName, departureDate, numOfPassengers, flightTypePreference, cabinClassType);
                 System.out.println("----- Departure On " + departureDate + "\n");
-                printFlightSchedulesTable(flightSchedules, cabinClass);
+                printFlightSchedulesTable(flightSchedules, cabinClassType);
             }
             
             
             if (tripType == 2) {
                 System.out.println("\nReturn Flight Information: \n");
                 //on required departure date
-                flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(destinationAirportName, departureAirportName, returnDate, numOfPassengers, flightTypePreference, cabinClass);
+                flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(destinationAirportName, departureAirportName, returnDate, numOfPassengers, flightTypePreference, cabinClassType);
                 System.out.println("----- Return On " + returnDate + "\n");
-                printFlightSchedulesTable(flightSchedules, cabinClass);
+                printFlightSchedulesTable(flightSchedules, cabinClassType);
 
                 //3 days before
                 for (int i=3; i>0; --i) {
                     Date newReturnDate = new Date(returnDate.getTime() - i * 24 * 60 * 60 * 1000);
-                    flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(destinationAirportName, departureAirportName, newReturnDate, numOfPassengers, flightTypePreference, cabinClass);
+                    flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(destinationAirportName, departureAirportName, newReturnDate, numOfPassengers, flightTypePreference, cabinClassType);
                     System.out.println("----- Return On " + returnDate + "\n");
-                    printFlightSchedulesTable(flightSchedules, cabinClass);
+                    printFlightSchedulesTable(flightSchedules, cabinClassType);
                 }
 
                 //3 days after
                 for (int i=1; i<4; ++i) {
                     Date newReturnDate = new Date(departureDate.getTime() + i * 24 * 60 * 60 * 1000);
-                    flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(destinationAirportName, departureAirportName, newReturnDate, numOfPassengers, flightTypePreference, cabinClass);
+                    flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(destinationAirportName, departureAirportName, newReturnDate, numOfPassengers, flightTypePreference, cabinClassType);
                     System.out.println("----- Return On " + returnDate + "\n");
-                    printFlightSchedulesTable(flightSchedules, cabinClass);
+                    printFlightSchedulesTable(flightSchedules, cabinClassType);
                 }
             }
             
@@ -175,7 +176,7 @@ public class MainApp {
             String reserve = scanner.nextLine().trim();
             
             if (reserve.charAt(0) == 'Y') {
-                reserveFlight(tripType, numOfPassengers, cabinClass);   
+                reserveFlight(tripType, numOfPassengers, cabinClassType);   
             }
             
         } catch (ParseException ex) {
@@ -187,36 +188,39 @@ public class MainApp {
         
     }
     
-    public List<FlightSchedule> findLowestFare(FlightSchedule flightSchedule) {
-        List<FlightSchedule> flightSchedulesWithLowestFare = new ArrayList<>();
+    public void printFlightSchedulesTable(List<FlightSchedule> flightSchedules, CabinClassType cabinClassType) {
         
-        for (FlightSchedule flightSchedule: flightSchedules) {
-            
+        if (cabinClassType.equals(CabinClassType.FIRSTCLASS)) {
+            System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%8s\n", "   ", "Flight Schdule ID","Flight Number","Departure Airport","Departure Time (Local Time)","Flight Duration", "Destination Airport","Arrival Time (Local Time)", "First Class Available Seats", "Price");
+        } else if (cabinClassType.equals(CabinClassType.BUSINESSCLASS)) {
+            System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%8s\n", "   ", "Flight Schdule ID","Flight Number","Departure Airport","Departure Time (Local Time)","Flight Duration", "Destination Airport","Arrival Time (Local Time)", "Business Class Available Seats", "Price");
+        } else if (cabinClassType.equals(CabinClassType.PREMIUMECONOMYCLASS)) {
+            System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%8s\n", "   ", "Flight Schdule ID","Flight Number","Departure Airport","Departure Time (Local Time)","Flight Duration", "Destination Airport","Arrival Time (Local Time)", "Premium Economy Class Available Seats", "Price");
+        } else if (cabinClassType.equals(CabinClassType.ECONOMYCLASS)) {
+            System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%8s\n", "   ", "Flight Schdule ID","Flight Number","Departure Airport","Departure Time (Local Time)","Flight Duration", "Destination Airport","Arrival Time (Local Time)", "Economy Class Available Seats", "Price");
         }
         
-    }
-    
-    public void printFlightSchedulesTable(List<FlightSchedule> flightSchedules, Integer cabinClass) {
-        if (cabinClass == 1) {
-            System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%18s\n", "   ", "Flight Schdule ID","Flight Number","Departure Airport","Departure Time (Local Time)","Flight Duration", "Destination Airport","Arrival Time (Local Time)", "First Class");
-        } else if (cabinClass == 2) {
-            System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%18s\n", "   ", "Flight Schdule ID","Flight Number","Departure Airport","Departure Time (Local Time)","Flight Duration", "Destination Airport","Arrival Time (Local Time)", "Business Class");
-        } else if (cabinClass == 3) {
-            System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%18s\n", "   ", "Flight Schdule ID","Flight Number","Departure Airport","Departure Time (Local Time)","Flight Duration", "Destination Airport","Arrival Time (Local Time)", "Premium Economy Class");
-        } else if (cabinClass == 4) {
-            System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%18s\n", "   ", "Flight Schdule ID","Flight Number","Departure Airport","Departure Time (Local Time)","Flight Duration", "Destination Airport","Arrival Time (Local Time)", "Economy Class");
-        }
-        
+        Integer availableSeats = 0;
+        Double lowestFare = Double.MAX_VALUE;
         Integer num = 0;
         for (FlightSchedule flightSchedule : flightSchedules) {
             num++;
             //cabin class availability not yet finished
-            System.out.printf("%3s%15s%35s%30s%18s%35s%30s%18s\n", num, flightSchedule.getFlightNumber(), flightSchedule.getDepartureAirport().getAirportName(),flightSchedule.getDepartureDateTime(),flightSchedule.getFlightDuration(), 
-                    flightSchedule.getDestinationAirport().getAirportName(),flightSchedule.getArrivalDateTime(), "Economy Class");
+            for (CabinClass cabinClass: flightSchedule.getCabinClasses()) {
+                if (cabinClass.equals(cabinClassType)) {
+                    availableSeats = cabinClass.getNumOfBalanceSeats();
+                    for (Fare fare: cabinClass.getCabinClassConfiguration().getFares()) {
+                        lowestFare = Math.min(lowestFare, fare.getFareAmount());
+                    }
+                    break;
+                }
+            }
+            System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%8s\n", num, flightSchedule.getFlightNumber(), flightSchedule.getDepartureAirport().getAirportName(), flightSchedule.getDepartureDateTime(), flightSchedule.getFlightDuration(),
+                    flightSchedule.getDestinationAirport().getAirportName(), flightSchedule.getArrivalDateTime(), availableSeats,lowestFare);
         }
     }
     
-    public void reserveFlight(Integer tripType, Integer numOfPassengers, Integer cabinClass) {
+    public void reserveFlight(Integer tripType, Integer numOfPassengers, CabinClassType cabinClassType) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** FRS Reservation :: Search Flight :: Reserve Flight***\n");
         System.out.println("Enter Flight Schedule ID to Reserve> ");
@@ -242,17 +246,6 @@ public class MainApp {
             passenger[3] = scanner.nextLine().trim();
             
             passengers.add(passenger);
-        }
-        
-        CabinClassType cabinClassType = CabinClassType.ECONOMYCLASS;
-        if (cabinClass == 1) {
-            cabinClassType = CabinClassType.FIRSTCLASS;
-        } else if (cabinClass == 2) {
-            cabinClassType = CabinClassType.BUSINESSCLASS;
-        } else if (cabinClass == 3) {
-            cabinClassType = CabinClassType.PREMIUMECONOMYCLASS;
-        } else if (cabinClass == 4) {
-            cabinClassType = CabinClassType.ECONOMYCLASS;
         }
         
         String[] creditCard = new String[4];
