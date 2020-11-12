@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -31,6 +32,14 @@ public class FlightSchedule implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date departureDateTime;
     private Date flightDuration;
+    private Date arrivalDateTime = null;
+    private String flightNumber;
+    
+    @OneToOne(optional = false)
+    private Airport departureAirport;
+
+    @OneToOne(optional = false)
+    private Airport destinationAirport;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -43,11 +52,12 @@ public class FlightSchedule implements Serializable {
         flightReservations = new ArrayList<>();
     }
 
-    public FlightSchedule(Date departureDateTime, Date flightDuration) {
+    public FlightSchedule(Date departureDateTime, Date flightDuration, String flightNumber) {
         this();
         
         this.departureDateTime = departureDateTime;
         this.flightDuration = flightDuration;
+        this.flightNumber = flightNumber;
     }
 
     public Long getFlightScheduleId() {
@@ -89,6 +99,48 @@ public class FlightSchedule implements Serializable {
     public void setFlightReservations(List<FlightReservation> flightReservations) {
         this.flightReservations = flightReservations;
     }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public Airport getDepartureAirport() {
+        return departureAirport;
+    }
+
+    public void setDepartureAirport(Airport departureAirport) {
+        this.departureAirport = departureAirport;
+    }
+
+    public Airport getDestinationAirport() {
+        return destinationAirport;
+    }
+
+    public void setDestinationAirport(Airport destinationAirport) {
+        this.destinationAirport = destinationAirport;
+    }
+
+    public Date getArrivalDateTime() {
+        if (this.arrivalDateTime == null) {
+            calculateArrivalTime();
+        }
+        return arrivalDateTime;
+    }
+
+    public void setArrivalDateTime(Date arrivalDateTime) {
+        this.arrivalDateTime = arrivalDateTime;
+    }
+    
+    public void calculateArrivalTime(){
+        //based on time zone of the 2 airports
+        this.arrivalDateTime = new Date(this.departureDateTime.getTime() + this.flightDuration.getTime());
+    }
+    
+    
 
     @Override
     public int hashCode() {

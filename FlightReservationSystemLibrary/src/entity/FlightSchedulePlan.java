@@ -97,8 +97,7 @@ public class FlightSchedulePlan implements Serializable {
         this.layoverDuration = layoverDuration;
         this.setComplementaryReturnSchedulePlan(new FlightSchedulePlan(this.flightScheduleType, this.flight.getComplementaryReturnFlight()));
         for(FlightSchedule flightSchedule: flightSchedules) {
-            //use calendar to calculate the time
-            this.complementaryReturnSchedulePlan.getFlightSchedules().add(new FlightSchedule(layoverDuration, flightSchedule.getFlightDuration()));
+            this.complementaryReturnSchedulePlan.getFlightSchedules().add(new FlightSchedule(new Date(flightSchedule.getArrivalDateTime().getTime() + layoverDuration.getTime()), flightSchedule.getFlightDuration(), flightSchedule.getFlightSchedulePlan().getComplementaryReturnSchedulePlan().getFlight().getFlightNumber()));
         }
     }
 
