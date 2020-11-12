@@ -37,6 +37,10 @@ public class CabinClass implements Serializable {
     @JoinColumn(nullable = false)
     private FlightSchedule flightSchedule;
     
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
+    private AircraftConfiguration aircraftConfiguration;
+    
     @OneToOne()
     private CabinClassConfiguration cabinClassConfiguration;
     
@@ -110,6 +114,19 @@ public class CabinClass implements Serializable {
 
     public void setCabinClassType(CabinClassType cabinClassType) {
         this.cabinClassType = cabinClassType;
+    }
+
+    public AircraftConfiguration getAircraftConfiguration() {
+        return aircraftConfiguration;
+    }
+
+    public void setAircraftConfiguration(AircraftConfiguration aircraftConfiguration) {
+        this.aircraftConfiguration = aircraftConfiguration;
+    }
+
+    @Override
+    public String toString() {
+        return "Cabin Class Type = " + cabinClassType + ", Cabin Class Configuration = [" + cabinClassConfiguration + ']';
     }
     
     
