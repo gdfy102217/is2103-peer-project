@@ -6,8 +6,11 @@
 package ejb.session.stateless;
 
 import entity.FlightSchedulePlan;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.DeleteFlightSchedulePlanException;
+import util.exception.FlightScheduleExistException;
 import util.exception.FlightSchedulePlanExistException;
 import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.GeneralException;
@@ -24,5 +27,9 @@ public interface FlightSchedulePlanSessionBeanLocal {
     public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans();
 
     public List<FlightSchedulePlan> retrieveFlightSchedulePlansByFlightNumber(String flightNumber) throws FlightSchedulePlanNotFoundException;
+
+    public void createReturnFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Date layoverDurationTime) throws FlightSchedulePlanExistException, GeneralException, FlightScheduleExistException;
+
+    public void deleteFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) throws FlightSchedulePlanNotFoundException, DeleteFlightSchedulePlanException;
     
 }

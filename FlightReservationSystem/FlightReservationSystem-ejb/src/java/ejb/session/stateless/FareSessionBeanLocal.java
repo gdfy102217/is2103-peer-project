@@ -18,5 +18,7 @@ import util.exception.GeneralException;
 public interface FareSessionBeanLocal {
 
     public Fare createNewFare(Fare fare) throws FareExistException, GeneralException;
+
+    public void deleteFare(Fare fare);
     
 }

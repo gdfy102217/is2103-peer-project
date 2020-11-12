@@ -31,6 +31,9 @@ public class FlightSchedulePlan implements Serializable {
     private Long flightSchedulePlanId;
     @Column(nullable = false)
     private FlightScheduleType flightScheduleType;
+    //only for n days recurrence
+    private Integer recurrence;
+    
     private Date endDate;
     private Date layoverDuration;
     
@@ -161,6 +164,14 @@ public class FlightSchedulePlan implements Serializable {
 
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
+    }
+    
+    public Integer getRecurrence() {
+        return recurrence;
+    }
+
+    public void setRecurrence(Integer recurrence) {
+        this.recurrence = recurrence;
     }
     
 }

@@ -5,11 +5,16 @@
  */
 package frsmanagementclient;
 
+import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
+import ejb.session.stateless.AirportSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.FareSessionBeanRemote;
+import ejb.session.stateless.FlightRouteSessionBeanRemote;
+import ejb.session.stateless.FlightSchedulePlanSessionBeanRemote;
+import ejb.session.stateless.FlightScheduleSessionBeanRemote;
+import ejb.session.stateless.FlightSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.enumeration.EmployeeType;
 import util.exception.EmployeeNotFoundException;
 import util.exception.InvalidLoginCredentialException;
@@ -21,8 +26,29 @@ import util.exception.InvalidLoginCredentialException;
 public class MainApp {
 
     private EmployeeSessionBeanRemote employeeSessionBeanRemote;
+    private FlightSessionBeanRemote flightSessionBeanRemote;
+    private FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote;
+    private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
+    private AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
+    private FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote;
+    private FareSessionBeanRemote fareSessionBeanRemote;
+    private AirportSessionBeanRemote airportSessionBeanRemote;
 
     public MainApp() {
+    }
+
+    public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, FlightSessionBeanRemote flightSessionBeanRemote,
+            FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote,
+            AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote,
+            FareSessionBeanRemote fareSessionBeanRemote, AirportSessionBeanRemote airportSessionBeanRemote) {
+        this.employeeSessionBeanRemote = employeeSessionBeanRemote;
+        this.flightSessionBeanRemote = flightSessionBeanRemote;
+        this.flightScheduleSessionBeanRemote = flightScheduleSessionBeanRemote;
+        this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
+        this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
+        this.flightSchedulePlanSessionBeanRemote = flightSchedulePlanSessionBeanRemote;
+        this.fareSessionBeanRemote = fareSessionBeanRemote;
+        this.airportSessionBeanRemote = airportSessionBeanRemote;
     }
 
     public void runApp() {
@@ -50,13 +76,20 @@ public class MainApp {
                     System.out.println("Login successful!\n");
 
                     if (employee.getEmployeeType().equals(EmployeeType.FLEETMANAGER)) {
-                        flightPlanningModule();
+                        FlightPlanningModule flightPlanningModule = new FlightPlanningModule (aircraftConfigurationSessionBeanRemote, airportSessionBeanRemote,
+                                flightRouteSessionBeanRemote, employee);
+                        flightPlanningModule.menuFlightPlanning();
                     } else if (employee.getEmployeeType().equals(EmployeeType.ROUTEPLANNER)) {
-                        flightPlanningModule();
+                        FlightPlanningModule flightPlanningModule = new FlightPlanningModule (aircraftConfigurationSessionBeanRemote, airportSessionBeanRemote,
+                                flightRouteSessionBeanRemote, employee);
+                        flightPlanningModule.menuFlightPlanning();
                     } else if (employee.getEmployeeType().equals(EmployeeType.SCHEDULEMANAGER)) {
-                        flightOperationModule();
+                        FlightOperationModule flightOperationModule = new FlightOperationModule(flightSessionBeanRemote, flightRouteSessionBeanRemote,
+                                aircraftConfigurationSessionBeanRemote, flightScheduleSessionBeanRemote, flightSchedulePlanSessionBeanRemote, fareSessionBeanRemote, employee);
+                        flightOperationModule.menuFlightOperation();
                     } else if (employee.getEmployeeType().equals(EmployeeType.SALESMANAGER)) {
-                        salesManagementModule();
+                        SalesManagementModule salesManagementModule = new SalesManagementModule(flightSessionBeanRemote, flightScheduleSessionBeanRemote, employee);
+                        salesManagementModule.menuSalesManagement();
                     } 
                 } else if (response == 2) {
                     break;

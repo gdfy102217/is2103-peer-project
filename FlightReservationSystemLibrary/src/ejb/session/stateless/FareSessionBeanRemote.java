@@ -19,4 +19,6 @@ public interface FareSessionBeanRemote {
     
     public Fare createNewFare(Fare fare) throws FareExistException, GeneralException;
     
+    public void deleteFare(Fare fare);
+    
 }

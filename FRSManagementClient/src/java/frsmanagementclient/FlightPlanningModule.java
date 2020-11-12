@@ -37,6 +37,13 @@ public class FlightPlanningModule {
 
     public FlightPlanningModule() {
     }
+
+    public FlightPlanningModule(AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, AirportSessionBeanRemote airportSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, Employee employee) {
+        this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
+        this.airportSessionBeanRemote = airportSessionBeanRemote;
+        this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
+        this.employee = employee;
+    }
     
     public void menuFlightPlanning() {
         Scanner scanner = new Scanner(System.in);

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.AirportNotFoundException;
+import util.exception.DeleteFlightScheduleException;
 import util.exception.FlightScheduleExistException;
 import util.exception.FlightScheduleNotFountException;
 import util.exception.GeneralException;
@@ -27,5 +28,11 @@ public interface FlightScheduleSessionBeanRemote {
     public List<FlightSchedule> retrieveFlightScheduleByDepartureDestinationAndDepartureDate(Airport departureAirport, Airport destinationAirport, Date departureDate) throws FlightScheduleNotFountException;
     
     public List<FlightSchedule> searchFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, Integer numOfPassengers, Integer flightTypePreference, Integer cabinClass) throws AirportNotFoundException, FlightScheduleNotFountException;
+    
+    public void viewSeatsInventory(FlightSchedule flightSchedule);
+    
+    public void viewFlightReservation(FlightSchedule flightSchedule);
+    
+    public void deleteFlightSchedule(FlightSchedule flightSchedule) throws DeleteFlightScheduleException;
     
 }

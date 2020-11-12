@@ -5,7 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.CabinClassConfiguration;
 import entity.Fare;
+import entity.FlightSchedulePlan;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -51,5 +53,16 @@ public class FareSessionBean implements FareSessionBeanRemote, FareSessionBeanLo
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
         }
+    }
+    
+    @Override
+    public void deleteFare(Fare fare) {
+        fare.getCabinClassConfiguration().getFares().remove(fare);
+        fare.setCabinClassConfiguration(new CabinClassConfiguration());
+        fare.getFlightSchedulePlan().getFares().remove(fare);
+        fare.setFlightSchedulePlan(new FlightSchedulePlan());
+        
+        em.remove(fare);
+        System.out.println("This fare has been successfully deleted!");
     }
 }

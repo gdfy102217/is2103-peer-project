@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
@@ -32,9 +31,6 @@ public class CabinClass {
     @OneToOne()
     private CabinClassConfiguration cabinClassConfiguration;
     
-    @OneToMany(mappedBy = "flightSchedule")
-    private List<FlightReservation> flightReservations;
-
     private Integer numOfSeatsReserved;
     
     public CabinClass() {

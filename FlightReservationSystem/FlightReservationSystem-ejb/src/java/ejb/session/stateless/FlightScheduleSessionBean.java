@@ -6,7 +6,11 @@
 package ejb.session.stateless;
 
 import entity.Airport;
+import entity.CabinClass;
+import entity.FlightReservation;
 import entity.FlightSchedule;
+import entity.FlightSchedulePlan;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -17,7 +21,9 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.enumeration.CabinClassType;
 import util.exception.AirportNotFoundException;
+import util.exception.DeleteFlightScheduleException;
 import util.exception.FlightScheduleExistException;
 import util.exception.FlightScheduleNotFountException;
 import util.exception.GeneralException;
@@ -81,11 +87,12 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         }
     }
     
+    @Override
     public List<FlightSchedule> searchFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, Integer numOfPassengers, Integer flightTypePreference, Integer cabinClass) throws AirportNotFoundException, FlightScheduleNotFountException {
         
         Airport departureAirport = airportSessionBeanLocal.retrieveAirportByName(departureAirportName);
         Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByName(destinationAirportName);
-        List<FlightSchedule> flightSchedules;
+        List<FlightSchedule> flightSchedules = new ArrayList<>();
         
         if (flightTypePreference == 1) { //direct flight
             flightSchedules = retrieveFlightScheduleByDepartureDestinationAndDepartureDate(departureAirport, destinationAirport, departureDate);
@@ -99,23 +106,41 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         
         return flightSchedules;
     } 
-            
-    public List<FlightSchedule> searchFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, Integer numOfPassengers, Integer flightTypePreference, Integer cabinClass) throws AirportNotFoundException, FlightScheduleNotFountException {
-        
-        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByName(departureAirportName);
-        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByName(destinationAirportName);
-        List<FlightSchedule> flightSchedules;
-        
-        if (flightTypePreference == 1) { //direct flight
-            flightSchedules = retrieveFlightScheduleByDepartureDestinationAndDepartureDate(departureAirport, destinationAirport, departureDate);
-            
-            for (FlightSchedule flightSchedule: flightSchedules) {
-                //load availability for each cabin classes
+              
+    @Override
+    public void viewSeatsInventory(FlightSchedule flightSchedule) {
+        for (CabinClass cabinClass: flightSchedule.getCabinClasses()) {
+            System.out.println("Cabin class type: " + cabinClass.getCabinClassConfiguration().getCabinClassType());
+            System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getMaxSeatCapacity());
+            System.out.println("No. of seats reserved: " + cabinClass.getNumOfSeatsReserved());
+            System.out.println("No. of balance seats: " + (cabinClass.getCabinClassConfiguration().getMaxSeatCapacity() - cabinClass.getNumOfSeatsReserved()));
+        }
+    }
+    
+    @Override
+    public void viewFlightReservation(FlightSchedule flightSchedule) {
+        for(CabinClass cabinClass: flightSchedule.getCabinClasses()) {
+            System.out.println(cabinClass.getCabinClassConfiguration().getCabinClassType() + " reservation list:");
+            for(FlightReservation reservation: flightSchedule.getFlightReservations()) {
+                if (reservation.getCabinClassType().equals(cabinClass.getCabinClassConfiguration().getCabinClassType())) {
+                    for(String[] passengerInfo: reservation.getPassengers()) {
+                        System.out.println("firstName " + passengerInfo[0] + ", lastName " + passengerInfo[1] + ", passportNumber " + passengerInfo[2] + ", seatNumber " + passengerInfo[3]);
+                    }
+                }
             }
-
-        } else if (flightTypePreference == 2) { //connecting flight
+        }
+    }
+    
+    @Override
+    public void deleteFlightSchedule(FlightSchedule flightSchedule) throws DeleteFlightScheduleException {
+        if(flightSchedule.getFlightReservations().isEmpty() == false) {
+            
+            throw new DeleteFlightScheduleException("This flight schedule has reservation!");
         }
         
-        return flightSchedules;
-    } 
+        flightSchedule.getFlightSchedulePlan().getFlightSchedules().remove(flightSchedule);
+        flightSchedule.setFlightSchedulePlan(new FlightSchedulePlan());
+        em.remove(flightSchedule);
+        System.out.println("This flight schedule has been successfully deleted!");
+    }
 }

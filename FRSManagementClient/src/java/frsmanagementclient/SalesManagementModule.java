@@ -5,15 +5,12 @@
  */
 package frsmanagementclient;
 
+import ejb.session.stateless.FlightScheduleSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
-import entity.CabinClass;
 import entity.Employee;
-import entity.Flight;
 import entity.FlightSchedule;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.exception.FlightNotFoundException;
 
 /**
@@ -29,7 +26,12 @@ public class SalesManagementModule {
 
     public SalesManagementModule() {
     }
-    
+
+    public SalesManagementModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote, Employee employee) {
+        this.flightSessionBeanRemote = flightSessionBeanRemote;
+        this.flightScheduleSessionBeanRemote = flightScheduleSessionBeanRemote;
+        this.employee = employee;
+    }
     
     public void menuSalesManagement() {
         Scanner scanner = new Scanner(System.in);
@@ -91,12 +93,8 @@ public class SalesManagementModule {
         Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
         FlightSchedule flightScheduleSelected = list.get(userSelection);
         
-        for (CabinClass cabinClass: flightScheduleSelected.getCabinClasses()) {
-            System.out.println("Cabin class type: " + cabinClass.getCabinClassConfiguration().getCabinClassType());
-            System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getMaxSeatCapacity());
-            System.out.println("No. of seats reserved: " + cabinClass.getNumOfSeatsReserved());
-            System.out.println("No. of balance seats: " + (cabinClass.getCabinClassConfiguration().getMaxSeatCapacity() - cabinClass.getNumOfSeatsReserved()));
-        }
+        flightScheduleSessionBeanRemote.viewSeatsInventory(flightScheduleSelected);
+        
     }
     
     private void viewFlightReservation() throws FlightNotFoundException {
@@ -118,6 +116,6 @@ public class SalesManagementModule {
         Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
         FlightSchedule flightScheduleSelected = list.get(userSelection);    
         
-        flightScheduleSessionBeanRemote
+        flightScheduleSessionBeanRemote.viewFlightReservation(flightScheduleSelected);
     }
 }

@@ -35,11 +35,13 @@ public class FlightReservation implements Serializable {
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private CabinClass cabinClass;   
+    private Customer customer;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private Customer customer;
+    private FlightSchedule flightSchedule;
+    @ManyToOne()
+    private FlightSchedule returnFlightSchedule;
 
     public FlightReservation() {
         passengers = new ArrayList<>();
@@ -143,7 +145,9 @@ public class FlightReservation implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.FlightReservation[ id=" + flightReservationId + " ]";
+        return "FlightReservation{" + "numOfPassengers=" + numOfPassengers + ", passengers=" + passengers + ", creditCard=" + creditCard + 
+                ", cabinClassType=" + cabinClassType + ", customer=" + customer + ", flightSchedule=" + flightSchedule + ", returnFlightSchedule=" + returnFlightSchedule + '}';
     }
+
     
 }
