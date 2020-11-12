@@ -31,10 +31,6 @@ public class FlightReservation implements Serializable {
     private List<String[]> passengers;
     //creditCard: cardNumber, nameOnCard, expiryDate, CVV
     private String[] creditCard;
-    private String flightNumber;
-    private Date flightDateTime;
-    private String returnFlightNumber = "";
-    private Date returnFlightDateTime;
     private CabinClassType cabinClassType;
     
     @ManyToOne(optional = false)
@@ -49,13 +45,14 @@ public class FlightReservation implements Serializable {
         passengers = new ArrayList<>();
     }
 
-    public FlightReservation(Integer numOfPassengers, List<String[]> passengers, String flightNumber, Date flightDateTime, String returnFlightNumber, Date returnFlightDateTime) {
+    public FlightReservation(Integer numOfPassengers, List<String[]> passengers, String[] creditCard, CabinClassType cabinClassType, FlightSchedule flightSchedule, FlightSchedule returnFlightSchedule, Customer customer) {
         this.numOfPassengers = numOfPassengers;
         this.passengers = passengers;
-        this.flightNumber = flightNumber;
-        this.flightDateTime = flightDateTime;
-        this.returnFlightNumber = returnFlightNumber;
-        this.returnFlightDateTime = returnFlightDateTime;
+        this.creditCard = creditCard;
+        this.cabinClassType = cabinClassType;
+        this.flightSchedule = flightSchedule;
+        this.returnFlightSchedule = returnFlightSchedule;
+        this.customer = customer;
     }
 
     public Long getFlightReservationId() {
@@ -112,38 +109,6 @@ public class FlightReservation implements Serializable {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-    }
-
-    public String getFlightNumber() {
-        return flightNumber;
-    }
-
-    public void setFlightNumber(String flightNumber) {
-        this.flightNumber = flightNumber;
-    }
-
-    public Date getFlightDateTime() {
-        return flightDateTime;
-    }
-
-    public void setFlightDateTime(Date flightDateTime) {
-        this.flightDateTime = flightDateTime;
-    }
-
-    public String getReturnFlightNumber() {
-        return returnFlightNumber;
-    }
-
-    public void setReturnFlightNumber(String returnFlightNumber) {
-        this.returnFlightNumber = returnFlightNumber;
-    }
-
-    public Date getReturnFlightDateTime() {
-        return returnFlightDateTime;
-    }
-
-    public void setReturnFlightDateTime(Date returnFlightDateTime) {
-        this.returnFlightDateTime = returnFlightDateTime;
     }
 
     public CabinClassType getCabinClassType() {
