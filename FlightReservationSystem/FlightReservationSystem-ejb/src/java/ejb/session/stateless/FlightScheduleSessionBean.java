@@ -82,24 +82,13 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
             if (flightSchedules.isEmpty()) {
                 throw new FlightScheduleNotFountException("Flight schedule departure from: " + departureAirport.getIataAirportcode() + " to " + departureAirport + " on date: " + departureDate + " does not exist!");
             }
-
-            List<FlightSchedule> availableFlightSchedules = new ArrayList<>();
-
-            for (FlightSchedule flightSchedule : flightSchedules) {
-                for (CabinClass c : flightSchedule.getCabinClasses()) {
-                    if (c.getCabinClassType().equals(cabinClassType)) {
-                        if (c.getNumOfBalanceSeats() >= numOfPassengers) {
-                            availableFlightSchedules.add(flightSchedule);
-                            flightSchedule.getDepartureAirport();
-                            flightSchedule.getDestinationAirport();
-                            flightSchedule.getFlightSchedulePlan();
-                        }
-                    }
-                }
-
-            }
-
-            return availableFlightSchedules;
+            
+        for (FlightSchedule flightSchedule: flightSchedules) {
+            flightSchedule.getCabinClasses().size();
+            flightSchedule.getDepartureAirport();
+            flightSchedule.getDestinationAirport();
+        }
+            return flightSchedules;
 
         } else if (flightTypePreference == 2) { //connecting flight
         }

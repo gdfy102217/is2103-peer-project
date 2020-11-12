@@ -37,7 +37,7 @@ public class CabinClass implements Serializable {
     @JoinColumn(nullable = false)
     private FlightSchedule flightSchedule;
     
-    @OneToOne()
+    @OneToOne(optional = false)
     private CabinClassConfiguration cabinClassConfiguration;
     
     private Integer numOfReservedSeats;
