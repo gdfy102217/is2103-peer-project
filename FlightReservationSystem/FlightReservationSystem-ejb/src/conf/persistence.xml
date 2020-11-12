@@ -2,6 +2,20 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="FlightReservationSystem-ejbPU" transaction-type="JTA">
     <jta-data-source>jdbc/flightReservationSystem</jta-data-source>
+    <class>entity.AircraftConfiguration</class>
+    <class>entity.AircraftType</class>
+    <class>entity.Airport</class>
+    <class>entity.CabinClassConfiguration</class>
+    <class>entity.Customer</class>
+    <class>entity.Employee</class>
+    <class>entity.Fare</class>
+    <class>entity.Flight</class>
+    <class>entity.FlightReservation</class>
+    <class>entity.FlightRoute</class>
+    <class>entity.FlightSchedule</class>
+    <class>entity.FlightSchedulePlan</class>
+    <class>entity.Partner</class>
+    <class>entity.CabinClass</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

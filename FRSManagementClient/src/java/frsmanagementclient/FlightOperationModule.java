@@ -85,10 +85,10 @@ public class FlightOperationModule {
             System.out.println("5: View All Flight Schedule Plans");
             System.out.println("6: View Flight Schedule Plan Details");
             System.out.println("-----------------------");
-            System.out.println("6: Back\n");
+            System.out.println("7: Logout\n");
             response = 0;
 
-            while (response < 1 || response > 6) {
+            while (response < 1 || response > 7) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();

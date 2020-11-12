@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,9 +40,12 @@ public class Airport implements Serializable {
     private List<FlightRoute> flightsToAirport;
 
     public Airport() {
+        flightsFromAirport = new ArrayList<>();
+        flightsToAirport = new ArrayList<>();
     }
 
     public Airport(String airportName, String iataAirportcode, String city, String state, String country) {
+        this();
         this.airportName = airportName;
         this.iataAirportcode = iataAirportcode;
         this.city = city;

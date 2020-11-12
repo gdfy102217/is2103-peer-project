@@ -42,7 +42,7 @@ public class SalesManagementModule {
             System.out.println("*** FRS Management :: Sales Management Module ***\n");
             System.out.println("1: View Seats Inventory ");
             System.out.println("2: View Flight Reservation");
-            System.out.println("3: Back\n");
+            System.out.println("3: Logout\n");
             response = 0;
 
             while (response < 1 || response > 3) {

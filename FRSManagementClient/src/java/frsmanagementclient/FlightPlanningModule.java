@@ -6,17 +6,22 @@
 package frsmanagementclient;
 
 import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
+import ejb.session.stateless.AircraftTypeSessionBeanRemote;
 import ejb.session.stateless.AirportSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import entity.AircraftConfiguration;
+import entity.AircraftType;
 import entity.Airport;
 import entity.CabinClassConfiguration;
 import entity.Employee;
 import entity.FlightRoute;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.enumeration.CabinClassType;
 import util.enumeration.EmployeeType;
 import util.exception.AircraftConfigurationNotFoundException;
+import util.exception.AircraftTypeNotFoundException;
 import util.exception.AirportNotFoundException;
 import util.exception.DeleteFlightRouteException;
 import util.exception.ExceedMaximumSeatCapacityException;
@@ -32,16 +37,19 @@ public class FlightPlanningModule {
     private AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
     private AirportSessionBeanRemote airportSessionBeanRemote;
     private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
+    private AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote;
     
     private Employee employee;
 
     public FlightPlanningModule() {
     }
 
-    public FlightPlanningModule(AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, AirportSessionBeanRemote airportSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, Employee employee) {
+    public FlightPlanningModule(AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, AirportSessionBeanRemote airportSessionBeanRemote,
+            FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote, Employee employee) {
         this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
         this.airportSessionBeanRemote = airportSessionBeanRemote;
         this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
+        this.aircraftTypeSessionBeanRemote = aircraftTypeSessionBeanRemote;
         this.employee = employee;
     }
     
@@ -60,7 +68,7 @@ public class FlightPlanningModule {
             System.out.println("5: View All Flight Routes");
             System.out.println("6: Delete Flight Route");
             System.out.println("-----------------------");
-            System.out.println("7: Back\n");
+            System.out.println("7: Logout\n");
             response = 0;
             
             while(response < 1 || response > 7)
@@ -76,6 +84,8 @@ public class FlightPlanningModule {
                         doCreateNewAircraftConfiguration();
                     } catch (ExceedMaximumSeatCapacityException ex) {
                         System.out.println("The New Aircraft Configuration Exceed MaximumSeat Capacity of the aircraft");
+                    } catch (AircraftTypeNotFoundException ex) {
+                        System.out.println(ex);
                     }
                 }
                 else if(response == 2 && employee.getEmployeeType().equals(EmployeeType.FLEETMANAGER))
@@ -131,7 +141,7 @@ public class FlightPlanningModule {
         }
     }
     
-    private void doCreateNewAircraftConfiguration() throws ExceedMaximumSeatCapacityException {
+    private void doCreateNewAircraftConfiguration() throws ExceedMaximumSeatCapacityException, AircraftTypeNotFoundException {
         Scanner scanner = new Scanner(System.in);
         AircraftConfiguration newAircraftConfiguration = new AircraftConfiguration();
         
@@ -139,6 +149,10 @@ public class FlightPlanningModule {
         
         System.out.print("Enter Aircraft Configuration Name> ");
         newAircraftConfiguration.setAircraftConfigurationName(scanner.nextLine().trim());
+        
+        System.out.print("Enter Aircraft Type Name> ");
+        AircraftType aircraftType = aircraftTypeSessionBeanRemote.retrieveAircraftTypeByName(scanner.nextLine().trim());
+        newAircraftConfiguration.setAircraftType(aircraftType);
         
         Integer numOfCabinClasses = 0;
         while (numOfCabinClasses < 1 || numOfCabinClasses > 4) {
