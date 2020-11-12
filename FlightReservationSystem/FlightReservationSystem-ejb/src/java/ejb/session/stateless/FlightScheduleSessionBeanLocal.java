@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.FlightReservation;
 import entity.FlightSchedule;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +34,10 @@ public interface FlightScheduleSessionBeanLocal {
 
     public void viewFlightReservation(FlightSchedule flightSchedule);
 
+    public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule);
+
     public void deleteFlightSchedule(FlightSchedule flightSchedule) throws DeleteFlightScheduleException;
+
+    public Boolean checkOverlapFlightSchedules(FlightSchedule flightSchedule);
     
 }

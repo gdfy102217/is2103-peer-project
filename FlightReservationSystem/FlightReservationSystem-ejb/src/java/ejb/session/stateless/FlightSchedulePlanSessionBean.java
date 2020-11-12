@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.enumeration.FlightScheduleType;
 import util.exception.DeleteFlightSchedulePlanException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightScheduleExistException;
@@ -58,8 +59,8 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
 
     @Override
     public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans() {
-        Query query = em.createQuery("SELECT fsp FROM FlightSchedulePlan fsp ORDER BY fsp.flight.flightNumber ASC");
-
+        Query query = em.createQuery("SELECT fsp FROM FlightSchedulePlan fsp ORDER BY fsp.flight.flightNumber ASC, fsp.firstDepartureTimeLong DESC");
+        
         return query.getResultList();
     }
 
@@ -93,11 +94,21 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
     }
 
     @Override
-    public void createReturnFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Date layoverDurationTime) throws FlightSchedulePlanExistException, GeneralException, FlightScheduleExistException {
+    public void createReturnFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Date layoverDurationTime) throws FlightSchedulePlanExistException,
+            GeneralException, FlightScheduleExistException {
         FlightSchedulePlan returnFlightSchedulePlan = new FlightSchedulePlan();
 
         returnFlightSchedulePlan.setFlight(newFlightSchedulePlan.getFlight());
         returnFlightSchedulePlan.setFlightScheduleType(newFlightSchedulePlan.getFlightScheduleType());
+        if(returnFlightSchedulePlan.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYDAY)) {
+            returnFlightSchedulePlan.setRecurrence(newFlightSchedulePlan.getRecurrence());
+        }
+        if(returnFlightSchedulePlan.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYDAY) ||
+                returnFlightSchedulePlan.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYWEEK)) {
+            returnFlightSchedulePlan.setEndDate(newFlightSchedulePlan.getEndDate());
+        }
+        newFlightSchedulePlan.setComplementaryReturnSchedulePlan(returnFlightSchedulePlan);
+        returnFlightSchedulePlan.setComplementaryReturnSchedulePlan(newFlightSchedulePlan);
         createNewFlightSchedulePlan(returnFlightSchedulePlan);
 
         for (FlightSchedule flightSchedule : newFlightSchedulePlan.getFlightSchedules()) {
@@ -108,6 +119,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
             returnFlightSchedule.setFlightSchedulePlan(returnFlightSchedulePlan);
             flightScheduleSessionBeanLocal.createNewFlightSchedule(returnFlightSchedule);
         }
+        returnFlightSchedulePlan.setFirstDepartureTime(returnFlightSchedulePlan.getFirstDepartureTime());
     }
 
 }

@@ -43,22 +43,22 @@ public class AircraftConfiguration implements Serializable {
     private Flight flight;
     
     @OneToMany(mappedBy = "aircraftConfiguration")
-    private List<CabinClassConfiguration> cabinClassConfigurations;
+    private List<CabinClass> cabinClasses;
 
     public AircraftConfiguration() {
         
-        cabinClassConfigurations = new ArrayList<>();
+        cabinClasses = new ArrayList<>();
         
     }
 
-    public AircraftConfiguration(String aircraftConfigurationName, Integer numOfCabinClasses, AircraftType aircraftType, Flight flight, List<CabinClassConfiguration> cabinClassConfigurations) {
+    public AircraftConfiguration(String aircraftConfigurationName, Integer numOfCabinClasses, AircraftType aircraftType, Flight flight, List<CabinClass> cabinClasses) {
         this();
         
         this.aircraftConfigurationName = aircraftConfigurationName;
         this.numOfCabinClasses = numOfCabinClasses;
         this.aircraftType = aircraftType;
         this.flight = flight;
-        this.cabinClassConfigurations = cabinClassConfigurations;
+        this.cabinClasses = cabinClasses;
     }
 
     public Long getAircraftConfigurationId() {
@@ -85,13 +85,6 @@ public class AircraftConfiguration implements Serializable {
         this.numOfCabinClasses = numOfCabinClasses;
     }
 
-    public List<CabinClassConfiguration> getCabinClassConfigurations() {
-        return cabinClassConfigurations;
-    }
-
-    public void setCabinClassConfigurations(List<CabinClassConfiguration> cabinClassConfigurations) {
-        this.cabinClassConfigurations = cabinClassConfigurations;
-    }
 
     public AircraftType getAircraftType() {
         return aircraftType;
@@ -114,8 +107,8 @@ public class AircraftConfiguration implements Serializable {
     public Integer getMaxSeatCapacity() {
         Integer maximumSeatCapacity = 0;
         
-        for (CabinClassConfiguration cabinClassConfiguration: cabinClassConfigurations) {
-            maximumSeatCapacity += cabinClassConfiguration.getMaxSeatCapacity();
+        for (CabinClass cabinClass: cabinClasses) {
+            maximumSeatCapacity += cabinClass.getCabinClassConfiguration().getMaxSeatCapacity();
         }
         
         return maximumSeatCapacity;
@@ -144,7 +137,15 @@ public class AircraftConfiguration implements Serializable {
     @Override
     public String toString() {
         return "Aircraft Configuration Name = " + aircraftConfigurationName + ", Num Of Cabin Classes = " + numOfCabinClasses 
-                + ", Aircraft Type = " + aircraftType + ", Flight = " + flight;
+                + ", Aircraft Type = " + aircraftType + ", Flight = [" + flight + "]";
+    }
+
+    public List<CabinClass> getCabinClasses() {
+        return cabinClasses;
+    }
+
+    public void setCabinClasses(List<CabinClass> cabinClasses) {
+        this.cabinClasses = cabinClasses;
     }
     
 }

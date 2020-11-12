@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Airport;
 import entity.CabinClass;
+import entity.Flight;
 import entity.FlightReservation;
 import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
@@ -106,6 +107,7 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         if (firstFlightSchedules.isEmpty()) {
             throw new FlightScheduleNotFountException("Connecting Flight schedule departure from: " + departureAirport.getIataAirportcode() + " to " + departureAirport + " on date: " + departureDate + " does not exist!");
         }
+
         
         List<List<FlightSchedule>> flightSchedules = new ArrayList<>();
         for (FlightSchedule firstFlightSchedule: firstFlightSchedules) {
@@ -148,20 +150,28 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
             System.out.println("No. of seats reserved: " + cabinClass.getNumOfReservedSeats());
             System.out.println("No. of balance seats: " + (cabinClass.getCabinClassConfiguration().getMaxSeatCapacity() - cabinClass.getNumOfReservedSeats()));
         }
+
+        return null;
+
     }
     
     @Override
-    public void viewFlightReservation(FlightSchedule flightSchedule) {
-        for(CabinClass cabinClass: flightSchedule.getCabinClasses()) {
-            System.out.println(cabinClass.getCabinClassConfiguration().getCabinClassType() + " reservation list:");
-            for(FlightReservation reservation: flightSchedule.getFlightReservations()) {
-                if (reservation.getCabinClassType().equals(cabinClass.getCabinClassConfiguration().getCabinClassType())) {
-                    for(String[] passengerInfo: reservation.getPassengers()) {
-                        System.out.println("firstName " + passengerInfo[0] + ", lastName " + passengerInfo[1] + ", passportNumber " + passengerInfo[2] + ", seatNumber " + passengerInfo[3]);
-                    }
-                }
-            }
-        }
+    public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule) {
+        Query query = em.createQuery("SELECT fres FROM FlightReservation fres WHERE fres.flightSchedule = :inFlightSchedule ORDER BY fres.cabinClassType");
+        query.setParameter("inFlightSchedule", flightSchedule);
+        
+        return query.getResultList();
+        
+//        for(CabinClass cabinClass: flightSchedule.getCabinClasses()) {
+//            System.out.println(cabinClass.getCabinClassConfiguration().getCabinClassType() + " reservation list:");
+//            for(FlightReservation reservation: flightSchedule.getFlightReservations()) {
+//                if (reservation.getCabinClassType().equals(cabinClass.getCabinClassConfiguration().getCabinClassType())) {
+//                    for(String[] passengerInfo: reservation.getPassengers()) {
+//                        System.out.println("firstName " + passengerInfo[0] + ", lastName " + passengerInfo[1] + ", passportNumber " + passengerInfo[2] + ", seatNumber " + passengerInfo[3]);
+//                    }
+//                }
+//            }
+//        }
     }
     
     @Override
@@ -175,5 +185,19 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         flightSchedule.setFlightSchedulePlan(new FlightSchedulePlan());
         em.remove(flightSchedule);
         System.out.println("This flight schedule has been successfully deleted!");
+    }
+    
+    @Override
+    public Boolean checkOverlapFlightSchedules(FlightSchedule flightSchedule) {
+        Flight flight = flightSchedule.getFlightSchedulePlan().getFlight();
+        for (FlightSchedulePlan plan: flight.getFlightSchedulePlans()) {
+            for (FlightSchedule schedule: plan.getFlightSchedules()) {
+                if (flightSchedule.getArrivalDateTime().getTime() > schedule.getDepartureDateTime().getTime() ||
+                        flightSchedule.getDepartureDateTime().getTime() < schedule.getArrivalDateTime().getTime()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

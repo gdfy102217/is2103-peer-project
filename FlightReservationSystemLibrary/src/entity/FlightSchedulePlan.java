@@ -6,6 +6,8 @@
 package entity;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +51,8 @@ public class FlightSchedulePlan implements Serializable {
     
     @OneToMany(mappedBy = "flightSchedulePlan")
     private List<Fare> fares;
+    
+    private Long firstDepartureTimeLong;
     
     private Boolean disabled;
 
@@ -138,7 +142,13 @@ public class FlightSchedulePlan implements Serializable {
 
     @Override
     public String toString() {
-        return "FlightSchedulePlan{" + "flightScheduleType=" + flightScheduleType + ", endDate=" + endDate + ", layoverDuration=" + layoverDuration + ", flight=" + flight + '}';
+        if (this.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYWEEK)) {
+            return "FlightSchedulePlan{" + "Flight Schedule Type = " + flightScheduleType + ", End Date = " + endDate + ", Layover Duration = " + layoverDuration + ", Flight=" + flight + '}';
+        } else if (this.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYDAY)) {
+            return "FlightSchedulePlan{" + "Flight Schedule Type = " + flightScheduleType + ", Recurrence = " + recurrence + ", End Date = " + endDate + ", Layover Duration = " + layoverDuration + ", Flight=" + flight + '}';
+        } else {
+            return "FlightSchedulePlan{" + "Flight Schedule Type = " + flightScheduleType + ", Layover Duration = " + layoverDuration + ", Flight=" + flight + '}';
+        }
     }
 
 
@@ -172,6 +182,20 @@ public class FlightSchedulePlan implements Serializable {
 
     public void setRecurrence(Integer recurrence) {
         this.recurrence = recurrence;
+    }
+
+    public Long getFirstDepartureTime() {
+        Long firstDepartureTime = Long.MAX_VALUE;
+        for(FlightSchedule flightSchedule: this.flightSchedules) {
+            if (flightSchedule.getDepartureDateTime().getTime() < firstDepartureTime) {
+                firstDepartureTime = flightSchedule.getDepartureDateTime().getTime();
+            }
+        }
+        return firstDepartureTime;
+    }
+
+    public void setFirstDepartureTime(Long firstDepartureTime) {
+        this.firstDepartureTimeLong = firstDepartureTime;
     }
     
 }

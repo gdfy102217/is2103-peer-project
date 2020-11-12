@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.FlightReservation;
 import entity.FlightSchedule;
 import java.util.Date;
 import java.util.List;
@@ -29,10 +30,10 @@ public interface FlightScheduleSessionBeanRemote {
     
     public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
     
-    public void viewSeatsInventory(FlightSchedule flightSchedule);
-    
-    public void viewFlightReservation(FlightSchedule flightSchedule);
+    public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule);
     
     public void deleteFlightSchedule(FlightSchedule flightSchedule) throws DeleteFlightScheduleException;
+    
+    public Boolean checkOverlapFlightSchedules(FlightSchedule flightSchedule);
     
 }

@@ -122,8 +122,10 @@ public class FlightRoute implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.FlightRoute[ id=" + flightRouteId + " ]";
+        return "FlightRoute [" + "Origin = " + origin + ", Destination = " + destination + ']';
     }
+
+    
 
     public Boolean getDisabled() {
         return disabled;
