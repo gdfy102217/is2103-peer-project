@@ -7,8 +7,11 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,7 +37,7 @@ public class FlightSchedule implements Serializable {
     private Date flightDuration;
     private Date arrivalDateTime = null;
     private String flightNumber;
-    
+  
     @OneToOne(optional = false)
     private Airport departureAirport;
 
@@ -140,11 +143,11 @@ public class FlightSchedule implements Serializable {
     }
     
     public void calculateArrivalTime(){
-        //based on time zone of the 2 airports
-        this.arrivalDateTime = new Date(this.departureDateTime.getTime() + this.flightDuration.getTime());
+        Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone(departureAirport.getTimeZoneAbbr()));
+        calendar.setTime(new Date(this.departureDateTime.getTime() + this.flightDuration.getTime()));;
+        calendar.setTimeZone(TimeZone.getTimeZone(destinationAirport.getTimeZoneAbbr()));
+        this.arrivalDateTime = calendar.getTime();
     }
-    
-    
 
     @Override
     public int hashCode() {

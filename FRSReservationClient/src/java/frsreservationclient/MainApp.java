@@ -112,17 +112,28 @@ public class MainApp {
             flightTypePreference = scanner.nextInt();
             System.out.println("Enter Cabin Class Preference:  1: First Class, 2: Business Class, 3: Premium Economy Class, 4: Economy Class> ");
             cabinClass = scanner.nextInt();
+            CabinClassType cabinClassType;
+            if (cabinClass == 1) {
+                cabinClassType = CabinClassType.FIRSTCLASS;
+            } else if (cabinClass == 2) {
+                cabinClassType = CabinClassType.BUSINESSCLASS;
+            } else if (cabinClass == 3) {
+                cabinClassType = CabinClassType.PREMIUMECONOMYCLASS;
+            } else {
+                cabinClassType = CabinClassType.ECONOMYCLASS;
+            }
             
+            List<FlightSchedule> flightSchedulesWithLowestFare;
             System.out.println("\nDeparture Flight Information: \n");
             //on required departure date
-            List<FlightSchedule> flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(departureAirportName, destinationAirportName, departureDate, numOfPassengers, flightTypePreference, cabinClass);
+            List<FlightSchedule> flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(departureAirportName, destinationAirportName, departureDate, numOfPassengers, flightTypePreference, cabinClassType);
             System.out.println("----- Departure On " + departureDate + "\n");
             printFlightSchedulesTable(flightSchedules, cabinClass);
             
             //3 days before
             for (int i=3; i>0; --i) {
                 Date newDepartureDate = new Date(departureDate.getTime() - i * 24 * 60 * 60 * 1000);
-                flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(departureAirportName, destinationAirportName, newDepartureDate, numOfPassengers, flightTypePreference, cabinClass);
+                flightSchedules = flightScheduleSessionBeanRemote.searchFlightScehdules(departureAirportName, destinationAirportName, newDepartureDate, numOfPassengers, flightTypePreference, cabinClassType);
                 System.out.println("----- Departure On " + departureDate + "\n");
                 printFlightSchedulesTable(flightSchedules, cabinClass);
             }
@@ -173,6 +184,15 @@ public class MainApp {
             System.out.println("Error: " + ex.getMessage());
         }
         
+        
+    }
+    
+    public List<FlightSchedule> findLowestFare(FlightSchedule flightSchedule) {
+        List<FlightSchedule> flightSchedulesWithLowestFare = new ArrayList<>();
+        
+        for (FlightSchedule flightSchedule: flightSchedules) {
+            
+        }
         
     }
     

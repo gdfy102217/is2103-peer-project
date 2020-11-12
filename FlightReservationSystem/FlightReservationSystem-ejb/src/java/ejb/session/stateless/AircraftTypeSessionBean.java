@@ -11,8 +11,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.exception.AircraftTypeExistException;
 import util.exception.AircraftTypeNotFoundException;
+import util.exception.GeneralException;
 
 /**
  *
@@ -28,13 +31,22 @@ public class AircraftTypeSessionBean implements AircraftTypeSessionBeanRemote, A
     // "Insert Code > Add Business Method")
     
     @Override
-    public AircraftType createNewAircraftType(AircraftType aircraftType)
-    {
+    public AircraftType createNewAircraftType(AircraftType aircraftType) throws AircraftTypeExistException, GeneralException {
+           
+        try {
             em.persist(aircraftType);
             em.flush();
 
             return aircraftType;
-
+        }catch(PersistenceException ex) {
+            if(ex.getCause() != null && 
+                ex.getCause().getCause() != null &&
+                ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException")) {
+                throw new AircraftTypeExistException("Aircraft Type with Name: " + aircraftType.getAircraftTypeName() + " does not exist!");
+            } else {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        }
     }
     
     @Override

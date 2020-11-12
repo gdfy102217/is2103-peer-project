@@ -28,8 +28,6 @@ public class CabinClassConfiguration implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cabinClassConfigurationId;
-    @Column(nullable = false)
-    private CabinClassType cabinClassType;
     @Min(0)
     @Max(2)
     @Column(nullable = false)
@@ -53,8 +51,7 @@ public class CabinClassConfiguration implements Serializable {
     public CabinClassConfiguration() {
     }
 
-    public CabinClassConfiguration(CabinClassType cabinClassType, Integer numOfAisles, Integer numOfRows, Integer numOfSeatsAbreast, String seatingConfigurationPerColumn, AircraftConfiguration aircraftConfiguration) {
-        this.cabinClassType = cabinClassType;
+    public CabinClassConfiguration(Integer numOfAisles, Integer numOfRows, Integer numOfSeatsAbreast, String seatingConfigurationPerColumn, AircraftConfiguration aircraftConfiguration) {
         this.numOfAisles = numOfAisles;
         this.numOfRows = numOfRows;
         this.numOfSeatsAbreast = numOfSeatsAbreast;
@@ -70,14 +67,6 @@ public class CabinClassConfiguration implements Serializable {
 
     public void setCabinClassConfigurationId(Long cabinClassConfigurationId) {
         this.cabinClassConfigurationId = cabinClassConfigurationId;
-    }
-
-    public CabinClassType getCabinClassType() {
-        return cabinClassType;
-    }
-
-    public void setCabinClassType(CabinClassType cabinClassType) {
-        this.cabinClassType = cabinClassType;
     }
 
     public Integer getNumOfAisles() {
@@ -146,7 +135,7 @@ public class CabinClassConfiguration implements Serializable {
 
     @Override
     public String toString() {
-        return "Cabin Class Type = " + cabinClassType + ", No. Of Aisles = " + numOfAisles + ", No. Of Rows = " + numOfRows +
+        return "No. Of Aisles = " + numOfAisles + ", No. Of Rows = " + numOfRows +
                 ", No. Of Seats Abreast = " + numOfSeatsAbreast + ", Seating Configuration Per Column = " + seatingConfigurationPerColumn;
     }
 

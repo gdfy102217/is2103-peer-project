@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import util.enumeration.CabinClassType;
 
 /**
  *
@@ -28,6 +30,8 @@ public class CabinClass implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cabinClassId;
+    @Column(nullable = false)
+    private CabinClassType cabinClassType;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -36,16 +40,20 @@ public class CabinClass implements Serializable {
     @OneToOne()
     private CabinClassConfiguration cabinClassConfiguration;
     
-    private Integer numOfSeatsReserved;
+    private Integer numOfReservedSeats;
+    private Integer numOfAvailableSeats;
+    private Integer numOfBalanceSeats;
     
     public CabinClass() {
-        this.numOfSeatsReserved = 0;
+        this.numOfReservedSeats = 0;
+        
     }
 
     public CabinClass(FlightSchedule flightSchedule, CabinClassConfiguration cabinClassConfiguration) {
         this();
         this.flightSchedule = flightSchedule;
         this.cabinClassConfiguration = cabinClassConfiguration;
+        this.numOfAvailableSeats = cabinClassConfiguration.getMaxSeatCapacity();
     }
 
     public FlightSchedule getFlightSchedule() {
@@ -64,12 +72,44 @@ public class CabinClass implements Serializable {
         this.cabinClassConfiguration = cabinClassConfiguration;
     }
 
-    public Integer getNumOfSeatsReserved() {
-        return numOfSeatsReserved;
+    public Integer getNumOfReservedSeats() {
+        return numOfReservedSeats;
     }
 
-    public void setNumOfSeatsReserved(Integer numOfSeatsReserved) {
-        this.numOfSeatsReserved = numOfSeatsReserved;
+    public void setNumOfReservedSeats(Integer numOfReservedSeats) {
+        this.numOfReservedSeats = numOfReservedSeats;
+    }
+
+    public Long getCabinClassId() {
+        return cabinClassId;
+    }
+
+    public void setCabinClassId(Long cabinClassId) {
+        this.cabinClassId = cabinClassId;
+    }
+
+    public Integer getNumOfAvailableSeats() {
+        return numOfAvailableSeats;
+    }
+
+    public void setNumOfAvailableSeats(Integer numOfAvailableSeats) {
+        this.numOfAvailableSeats = numOfAvailableSeats;
+    }
+
+    public Integer getNumOfBalanceSeats() {
+        return numOfAvailableSeats - numOfReservedSeats;
+    }
+
+    public void setNumOfBalanceSeats(Integer numOfBalanceSeats) {
+        this.numOfBalanceSeats = numOfBalanceSeats;
+    }
+
+    public CabinClassType getCabinClassType() {
+        return cabinClassType;
+    }
+
+    public void setCabinClassType(CabinClassType cabinClassType) {
+        this.cabinClassType = cabinClassType;
     }
     
     

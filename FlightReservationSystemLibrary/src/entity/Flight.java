@@ -39,7 +39,7 @@ public class Flight implements Serializable {
     @OneToMany(mappedBy = "flight")
     private List<FlightSchedulePlan> flightSchedulePlans;
     
-    @OneToOne
+    @OneToOne(optional = false)
     private AircraftConfiguration aircraftConfiguration;
     
     private Boolean disabled;

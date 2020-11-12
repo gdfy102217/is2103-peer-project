@@ -33,6 +33,8 @@ public class Airport implements Serializable {
     private String stateOrProvince;
     @Column(nullable = false)
     private String country;
+    @Column(nullable = false)
+    private String timeZoneAbbr;
     
     @OneToMany(mappedBy = "origin")
     private List<FlightRoute> flightsFromAirport;
@@ -44,16 +46,15 @@ public class Airport implements Serializable {
         flightsToAirport = new ArrayList<>();
     }
 
-    public Airport(String airportName, String iataAirportcode, String city, String state, String country) {
-        this();
+    public Airport(String airportName, String iataAirportcode, String city, String stateOrProvince, String country, String timeZoneId) {
         this.airportName = airportName;
         this.iataAirportcode = iataAirportcode;
         this.city = city;
-        this.stateOrProvince = state;
+        this.stateOrProvince = stateOrProvince;
         this.country = country;
+        this.timeZoneAbbr = timeZoneId;
     }
-    
-    
+
 
     public Long getAirportId() {
         return airportId;
@@ -101,6 +102,14 @@ public class Airport implements Serializable {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getTimeZoneAbbr() {
+        return timeZoneAbbr;
+    }
+
+    public void setTimeZoneAbbr(String timeZoneAbbr) {
+        this.timeZoneAbbr = timeZoneAbbr;
     }
     
     
