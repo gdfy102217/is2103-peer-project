@@ -35,6 +35,8 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
     {
         try
         {
+            flightRoute.getOrigin().getFlightsFromAirport().add(flightRoute);
+            flightRoute.getDestination().getFlightsToAirport().add(flightRoute);
             em.persist(flightRoute);
             em.flush();
 

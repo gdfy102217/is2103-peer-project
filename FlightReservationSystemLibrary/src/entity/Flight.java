@@ -125,7 +125,7 @@ public class Flight implements Serializable {
 
     @Override
     public String toString() {
-        return "Flight Number = " + flightNumber + ", Flight Route = " + flightRoute + ", Aircraft Configuration = " + aircraftConfiguration;
+        return "Flight Number = " + flightNumber;
     }
 
     public Boolean getDisabled() {

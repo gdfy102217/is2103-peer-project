@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.FlightReservation;
 import entity.FlightSchedule;
 import java.util.Date;
 import java.util.List;
@@ -25,12 +26,13 @@ public interface FlightScheduleSessionBeanLocal {
 
     public FlightSchedule createNewFlightSchedule(FlightSchedule flightSchedule) throws FlightScheduleExistException, GeneralException;
     
-    public List<FlightSchedule> searchFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, Integer numOfPassengers, Integer flightTypePreference, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
+    public List<FlightSchedule> searchFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate,
+            Integer numOfPassengers, Integer flightTypePreference, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
 
-    public void viewSeatsInventory(FlightSchedule flightSchedule);
-
-    public void viewFlightReservation(FlightSchedule flightSchedule);
+    public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule);
 
     public void deleteFlightSchedule(FlightSchedule flightSchedule) throws DeleteFlightScheduleException;
+
+    public Boolean checkOverlapFlightSchedules(FlightSchedule flightSchedule);
     
 }

@@ -7,6 +7,7 @@ package frsmanagementclient;
 
 import ejb.session.stateless.FlightScheduleSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
+import entity.CabinClass;
 import entity.Employee;
 import entity.FlightSchedule;
 import java.util.List;
@@ -93,7 +94,12 @@ public class SalesManagementModule {
         Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
         FlightSchedule flightScheduleSelected = list.get(userSelection);
         
-        flightScheduleSessionBeanRemote.viewSeatsInventory(flightScheduleSelected);
+        for (CabinClass cabinClass: flightScheduleSelected.getCabinClasses()) {
+            System.out.println("Cabin class type: " + cabinClass.getCabinClassType());
+            System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getMaxSeatCapacity());
+            System.out.println("No. of seats reserved: " + cabinClass.getNumOfReservedSeats());
+            System.out.println("No. of balance seats: " + (cabinClass.getCabinClassConfiguration().getMaxSeatCapacity() - cabinClass.getNumOfReservedSeats()));
+        }
         
     }
     
