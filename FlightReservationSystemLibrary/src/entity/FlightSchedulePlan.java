@@ -46,6 +46,8 @@ public class FlightSchedulePlan implements Serializable {
     
     @OneToMany(mappedBy = "flightSchedulePlan")
     private List<Fare> fares;
+    
+    private Boolean disabled;
 
     public FlightSchedulePlan() {
         flightSchedules = new ArrayList<>();
@@ -134,8 +136,9 @@ public class FlightSchedulePlan implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.FlightSchedulePlan[ id=" + flightSchedulePlanId + " ]";
+        return "FlightSchedulePlan{" + "flightScheduleType=" + flightScheduleType + ", endDate=" + endDate + ", layoverDuration=" + layoverDuration + ", flight=" + flight + '}';
     }
+
 
     public Date getEndDate() {
         return endDate;
@@ -151,6 +154,14 @@ public class FlightSchedulePlan implements Serializable {
 
     public void setFares(List<Fare> fares) {
         this.fares = fares;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
     
 }
