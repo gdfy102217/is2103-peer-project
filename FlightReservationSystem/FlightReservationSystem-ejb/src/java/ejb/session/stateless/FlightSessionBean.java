@@ -6,6 +6,9 @@
 package ejb.session.stateless;
 
 import entity.Flight;
+import entity.FlightSchedule;
+import entity.FlightSchedulePlan;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -100,5 +103,19 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
             System.out.println("Flight no. " + flight.getFlightNumber() + " is set disabled!");
             throw new DeleteFlightException("Flight no. " + flight.getFlightNumber() + " is in use and cannot be deleted!");
         }
+    }
+    
+    @Override
+    public List<FlightSchedule> retrieveFlightSchedulesByFlightNumber (String flightNumber) throws FlightNotFoundException {
+        Flight flight = retrieveFlightByFlightNumber(flightNumber);
+        List<FlightSchedule> list = new ArrayList<>();
+        for(FlightSchedulePlan flightSchedulePlan: flight.getFlightSchedulePlans()) {
+            if (flightSchedulePlan.getDisabled() == false) {
+                for (FlightSchedule flightSchedule: flightSchedulePlan.getFlightSchedules()) {
+                    list.add(flightSchedule);
+                }
+            }
+        }
+        return list;
     }
 }

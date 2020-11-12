@@ -100,4 +100,22 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         return flightSchedules;
     } 
             
+    public List<FlightSchedule> searchFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, Integer numOfPassengers, Integer flightTypePreference, Integer cabinClass) throws AirportNotFoundException, FlightScheduleNotFountException {
+        
+        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByName(departureAirportName);
+        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByName(destinationAirportName);
+        List<FlightSchedule> flightSchedules;
+        
+        if (flightTypePreference == 1) { //direct flight
+            flightSchedules = retrieveFlightScheduleByDepartureDestinationAndDepartureDate(departureAirport, destinationAirport, departureDate);
+            
+            for (FlightSchedule flightSchedule: flightSchedules) {
+                //load availability for each cabin classes
+            }
+
+        } else if (flightTypePreference == 2) { //connecting flight
+        }
+        
+        return flightSchedules;
+    } 
 }

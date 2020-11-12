@@ -38,9 +38,13 @@ public class FlightSchedule implements Serializable {
     
     @OneToMany(mappedBy = "flightSchedule")
     private List<FlightReservation> flightReservations;
+    
+    @OneToMany(mappedBy = "flightSchedule")
+    private List<CabinClass> cabinClasses;
 
     public FlightSchedule() {
         flightReservations = new ArrayList<>();
+        cabinClasses = new ArrayList<>();
     }
 
     public FlightSchedule(Date departureDateTime, Date flightDuration) {
@@ -113,6 +117,14 @@ public class FlightSchedule implements Serializable {
     @Override
     public String toString() {
         return "entity.FlightSchedule[ id=" + flightScheduleId + " ]";
+    }
+
+    public List<CabinClass> getCabinClasses() {
+        return cabinClasses;
+    }
+
+    public void setCabinClasses(List<CabinClass> cabinClasses) {
+        this.cabinClasses = cabinClasses;
     }
     
 }

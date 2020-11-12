@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.enumeration.EmployeeType;
 import util.enumeration.FlightScheduleType;
 import util.exception.AircraftConfigurationNotFoundException;
@@ -69,12 +71,11 @@ public class FlightOperationModule {
             System.out.println("-----------------------");
             System.out.println("4: Create Flight Schedule Plan");
             System.out.println("5: View All Flight Routes");
-            System.out.println("6: Delete Flight Route");
             System.out.println("-----------------------");
-            System.out.println("7: Back\n");
+            System.out.println("6: Back\n");
             response = 0;
 
-            while (response < 1 || response > 7) {
+            while (response < 1 || response > 6) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -98,26 +99,15 @@ public class FlightOperationModule {
 
                     try {
                         doCreateNewFlightSchedulePlan();
-                    } catch (FlightNotFoundException | ParseException | FlightScheduleExistException | GeneralException | FlightSchedulePlanExistException ex) {
+                    } catch (FlightNotFoundException | ParseException | FlightScheduleExistException | GeneralException | FlightSchedulePlanExistException | FareExistException ex) {
                         System.out.println(ex);
                     }
-
-                } else if (response == 5 && employee.getEmployeeType().equals(EmployeeType.ROUTEPLANNER)) {
-                    doViewAllFlightRoutes();
-                } else if (response == 6 && employee.getEmployeeType().equals(EmployeeType.ROUTEPLANNER)) {
-                    try {
-                        doDeleteFlightRoute();
-                    } catch (FlightRouteNotFoundException | DeleteFlightRouteException ex) {
-                        System.out.println(ex);
-                    }
-                } else if (response == 7) {
+                } else if (response == 5) {
+                    doViewAllFlightSchedulePlans();
+                } else if (response == 6) {
                     break;
                 } else {
-                    if (response > 0 || response < 7) {
-                        System.out.println("You do not have permission!\n");
-                    } else {
-                        System.out.println("Invalid option, please try again!\n");
-                    }
+                    System.out.println("Invalid option, please try again!\n");
                 }
             }
 
@@ -316,6 +306,56 @@ public class FlightOperationModule {
                     break;
                 }
             }
+        }
+    }
+    
+    private void doViewAllFlightSchedulePlans() {
+        System.out.println("*** FRSManagement :: Flight Operation Module :: View All Flight Schedule Plans ***\n");
+        
+        for (FlightSchedulePlan flightSchedulePlan: flightSchedulePlanSessionBeanRemote.retrieveAllFlightSchedulePlans()) {
+            System.out.println(flightSchedulePlan);
+            if (flightSchedulePlan.getComplementaryReturnSchedulePlan() != null) {
+                System.out.println("Complementary return schedule plan: " + flightSchedulePlan.getComplementaryReturnSchedulePlan());
+            }
+        }
+    }
+    
+    private void viewFlightSchedulePlanDetails() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("*** FRSManagement :: Flight Operation Module :: View Flight Schedule Plan Details ***\n");
+        System.out.print("Enter Flight Number of the Flight Schedule Plan> ");
+        String flightNumber = scanner.nextLine().trim();
+        List<FlightSchedulePlan> list = flightSchedulePlanSessionBeanRemote.retrieveFlightSchedulePlansByFlightNumber(flightNumber);
+        Integer selection = 0;
+        for (FlightSchedulePlan flightSchedulePlan: list) {
+            System.out.println("No." + selection + " " + flightSchedulePlan);
+            selection++;
+        }
+        System.out.print("Enter no. to view details> ");
+        Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
+        FlightSchedulePlan flightSchedulePlanSelected = list.get(userSelection);
+        
+        System.out.println("Flight O-D pair=[" + flightSchedulePlanSelected.getFlight() +"]");
+        System.out.println("Flight schedule: ");
+        for (FlightSchedule flightSchedule: flightSchedulePlanSelected.getFlightSchedules()) {
+            System.out.println(flightSchedule);
+        }
+        System.out.println("Fare: ");
+        for (Fare fare: flightSchedulePlanSelected.getFares()) {
+            System.out.println(fare);
+        }
+        
+
+        System.out.print("Update details of this flight schedule plan? (Y/N)> ");
+        if (scanner.nextLine().trim().equals("Y")) {
+            System.out.print("Enter field name> ");
+            String fieldName = scanner.nextLine().trim();
+        }
+
+        System.out.print("Delete this flight schedule plan? (Y/N)> ");
+        if (scanner.nextLine().trim().equals("Y")) {
+            flightSchedulePlanSessionBeanRemote.deleteFlightSchedulePlan(flightSchedulePlanSelected);
         }
     }
 }

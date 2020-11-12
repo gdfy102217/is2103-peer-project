@@ -6,11 +6,15 @@
 package ejb.session.stateless;
 
 import entity.FlightSchedulePlan;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import util.exception.FlightNotFoundException;
 import util.exception.FlightSchedulePlanExistException;
+import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.GeneralException;
 
 /**
@@ -49,6 +53,53 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
             {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        }
+    }
+    
+    @Override
+    public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans()
+    {
+        Query query = em.createQuery("SELECT fsp FROM FlightSchedulePlan fsp ORDER BY fsp.flight.flightNumber ASC");
+        
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<FlightSchedulePlan> retrieveFlightSchedulePlansByFlightNumber(String flightNumber) throws FlightSchedulePlanNotFoundException
+    {
+        Query query = em.createQuery("SELECT fsp FROM FlightSchedulePlan fsp WHERE fsp.flight.flightNumber = :inFlightNumber");
+        query.setParameter("inFlightNumber", flightNumber);
+        
+        
+        if (!query.getResultList().isEmpty()) {
+            return query.getResultList();
+        } else {
+            throw new FlightSchedulePlanNotFoundException("Flight schedule plan with flight number " + flightNumber + " is not found!");
+        }
+    }
+    
+    public void deleteFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) throws FlightSchedulePlanNotFoundException, DeleteFlightSchedulePlanException {
+        if(flightSchedulePlan.getFlightSchedulePlans().isEmpty())
+        {
+            flightSchedulePlan.getFlight().getFlightSchedulePlans().remove(flightSchedulePlan);
+            flightSchedulePlan.setFlight(new Flight());
+            for (FlightSchedule flightSchedule: flightSchedulePlan.getFlightSchedules()) {
+                flightSchedule.
+            }
+            for (Fare fare: flightSchedulePlan.getFares()) {
+                
+            }
+            flight.getAircraftConfiguration().setFlight(null);
+            flight.setAircraftConfiguration(null);
+            flight.getComplementaryReturnFlight().setComplementaryReturnFlight(null);
+            flight.setComplementaryReturnFlight(null);
+            em.remove(flight);
+        }
+        else
+        {
+            flightSchedulePlan.setDisabled(true);
+            System.out.println("Flight no. " + flight.getFlightNumber() + " is set disabled!");
+            throw new DeleteFlightSchedulePlanException("Flight no. " + flight.getFlightNumber() + " is in use and cannot be deleted!");
         }
     }
 }

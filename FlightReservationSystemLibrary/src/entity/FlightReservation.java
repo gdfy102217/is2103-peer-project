@@ -39,11 +39,7 @@ public class FlightReservation implements Serializable {
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private FlightSchedule flightSchedule;   
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
-    private FlightSchedule returnFlightSchedule;
+    private CabinClass cabinClass;   
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
