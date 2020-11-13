@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Airport;
 import entity.FlightRoute;
 import java.util.List;
 import javax.ejb.Local;
@@ -27,5 +28,7 @@ public interface FlightRouteSessionBeanLocal {
     public FlightRoute retrieveFlightRouteByOdPair(String originCode, String destinationCode) throws FlightRouteNotFoundException;
 
     public void deleteFlightRoute(FlightRoute flightRoute) throws FlightRouteNotFoundException, DeleteFlightRouteException;
+
+    public FlightRoute createNewFlightRoute(FlightRoute flightRoute, Airport origin, Airport destination) throws FlightRouteExistException, GeneralException;
     
 }

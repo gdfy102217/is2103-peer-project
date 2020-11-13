@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.AircraftType;
+import java.util.ArrayList;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -35,6 +36,7 @@ public class AircraftTypeSessionBean implements AircraftTypeSessionBeanRemote, A
            
         try {
             em.persist(aircraftType);
+            aircraftType.setConfigurations(new ArrayList<>());
             em.flush();
 
             return aircraftType;

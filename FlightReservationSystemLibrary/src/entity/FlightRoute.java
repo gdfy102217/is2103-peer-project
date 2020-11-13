@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,18 +28,18 @@ public class FlightRoute implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightRouteId;
     
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Airport origin;
     
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Airport destination;
     
     @OneToOne(optional = true)
     private FlightRoute complementaryReturnRoute;
     
-    @OneToMany(mappedBy = "flightRoute")
+    @OneToMany(mappedBy = "flightRoute", fetch = FetchType.LAZY)
     private List<Flight> flights;
     
     private Boolean disabled;

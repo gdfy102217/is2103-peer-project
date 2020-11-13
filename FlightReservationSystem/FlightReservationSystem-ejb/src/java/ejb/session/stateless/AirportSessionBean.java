@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Airport;
+import java.util.ArrayList;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -36,8 +37,10 @@ public class AirportSessionBean implements AirportSessionBeanRemote, AirportSess
         try
         {
             em.persist(airport);
+            airport.setFlightsFromAirport(new ArrayList<>());
+            airport.setFlightsToAirport(new ArrayList<>());
             em.flush();
-
+ 
             return airport;
         }
         catch(PersistenceException ex)
