@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.xml.bind.annotation.XmlTransient;
 import util.enumeration.CabinClassType;
 
 /**
@@ -61,6 +62,7 @@ public class CabinClass implements Serializable {
         this.numOfAvailableSeats = cabinClassConfiguration.getMaxSeatCapacity();
     }
 
+    @XmlTransient
     public FlightSchedule getFlightSchedule() {
         return flightSchedule;
     }
