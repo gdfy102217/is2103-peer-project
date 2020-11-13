@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.AircraftConfiguration;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,14 +31,13 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
     @Override
     public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration)
     {
-        newAircraftConfiguration.getCabinClasses();
-        newAircraftConfiguration.getAircraftType();
-        newAircraftConfiguration.getFlight();
         em.persist(newAircraftConfiguration);
-        em.flush();
+        
+        newAircraftConfiguration.setCabinClasses(new ArrayList<>());
         newAircraftConfiguration.getAircraftType().getConfigurations().add(newAircraftConfiguration);
         
-        
+        em.flush();
+           
         return newAircraftConfiguration;
     }
     

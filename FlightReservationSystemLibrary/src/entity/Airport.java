@@ -37,9 +37,9 @@ public class Airport implements Serializable {
     @Column(nullable = false)
     private String timeZoneAbbr;
     
-    @OneToMany(mappedBy = "origin", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "origin", fetch = FetchType.EAGER)
     private List<FlightRoute> flightsFromAirport = new ArrayList<FlightRoute>();
-    @OneToMany(mappedBy = "destination", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "destination", fetch = FetchType.EAGER)
     private List<FlightRoute> flightsToAirport = new ArrayList<FlightRoute>();
 
     public Airport() {
