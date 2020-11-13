@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.enumeration.CabinClassType;
 import util.exception.AirportNotFoundException;
 import util.exception.CustomerExistException;
@@ -193,7 +191,7 @@ public class MainApp {
                 }
             }
         } catch (AirportNotFoundException | FlightScheduleNotFountException ex) {
-            System.out.println("Error: " + ex.getMessage());;
+            System.out.println("Error: " + ex.getMessage());
         }
     }
     
@@ -246,7 +244,7 @@ public class MainApp {
                 }
             }
         } catch (AirportNotFoundException | FlightScheduleNotFountException ex) {
-            System.out.println("Error: " + ex.getMessage());;
+            System.out.println("Error: " + ex.getMessage());
         }
     }
     
@@ -267,14 +265,14 @@ public class MainApp {
         Integer num = 1;
         for (FlightSchedule flightSchedule : flightSchedules) {
             for (CabinClass cabinClass: flightSchedule.getCabinClasses()) {
-                if (cabinClass.equals(cabinClassType)) {
+                if (cabinClass.getCabinClassType().equals(cabinClassType)) {
                     availableSeats = cabinClass.getNumOfBalanceSeats();
                     if (availableSeats >= numOfPassengers){
                         for (Fare fare: cabinClass.getCabinClassConfiguration().getFares()) {
                             lowestFare = Math.min(lowestFare, fare.getFareAmount());
                         }
                         
-                        System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%8s\n", num, flightSchedule.getFlightNumber(), flightSchedule.getDepartureAirport().getAirportName(), flightSchedule.getDepartureDateTime(), flightSchedule.getFlightDuration(),
+                        System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%8s\n", num, flightSchedule.getFlightScheduleId(), flightSchedule.getFlightNumber(), flightSchedule.getDepartureAirport().getAirportName(), flightSchedule.getDepartureDateTime(), flightSchedule.getFlightDuration(),
                     flightSchedule.getDestinationAirport().getAirportName(), flightSchedule.getArrivalDateTime(), availableSeats,lowestFare);
                         
                         num++;
@@ -305,7 +303,7 @@ public class MainApp {
         for (List<FlightSchedule> firstFlightSchedules : flightSchedules) {
             FlightSchedule firstFlightSchedule = firstFlightSchedules.remove(0);
             for (CabinClass cabinClass1: firstFlightSchedule.getCabinClasses()) {
-                if (cabinClass1.equals(cabinClassType)) {
+                if (cabinClass1.getCabinClassType().equals(cabinClassType)) {
                     availableSeats = cabinClass1.getNumOfBalanceSeats();
                     if (availableSeats >= numOfPassengers) {
                         for (Fare fare: cabinClass1.getCabinClassConfiguration().getFares()) {
@@ -314,18 +312,18 @@ public class MainApp {
                         
                         for (FlightSchedule secondFlightSchedule: firstFlightSchedules) {
                             for (CabinClass cabinClass2: secondFlightSchedule.getCabinClasses()) {
-                                if (cabinClass2.equals(cabinClassType)) {
+                                if (cabinClass2.getCabinClassType().equals(cabinClassType)) {
                                     availableSeats = cabinClass2.getNumOfBalanceSeats();
                                     if (availableSeats >= numOfPassengers) {
                                         for (Fare fare: cabinClass2.getCabinClassConfiguration().getFares()) {
                                             lowestFare2 = Math.min(lowestFare2, fare.getFareAmount());
                                         }
                                         
-                                        System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%13s\n", num, firstFlightSchedule.getFlightNumber(), firstFlightSchedule.getDepartureAirport().getAirportName(), firstFlightSchedule.getDepartureDateTime(), firstFlightSchedule.getFlightDuration(),
+                                        System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%13s\n", num, firstFlightSchedule.getFlightScheduleId(), firstFlightSchedule.getFlightNumber(), firstFlightSchedule.getDepartureAirport().getAirportName(), firstFlightSchedule.getDepartureDateTime(), firstFlightSchedule.getFlightDuration(),
                     firstFlightSchedule.getDestinationAirport().getAirportName(), firstFlightSchedule.getArrivalDateTime(), availableSeats," ");
                                         
-                                        System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%13s\n", " ", secondFlightSchedule.getFlightNumber(), secondFlightSchedule.getDepartureAirport().getAirportName(), secondFlightSchedule.getDepartureDateTime(), secondFlightSchedule.getFlightDuration(),
-                    secondFlightSchedule.getDestinationAirport().getAirportName(), secondFlightSchedule.getArrivalDateTime(), availableSeats,lowestFare1 + lowestFare2);;
+                                        System.out.printf("%3s%15s%15s%35s%30s%18s%35s%30s%37s%13s\n", " ", secondFlightSchedule.getFlightScheduleId(), secondFlightSchedule.getFlightNumber(), secondFlightSchedule.getDepartureAirport().getAirportName(), secondFlightSchedule.getDepartureDateTime(), secondFlightSchedule.getFlightDuration(),
+                    secondFlightSchedule.getDestinationAirport().getAirportName(), secondFlightSchedule.getArrivalDateTime(), availableSeats,lowestFare1 + lowestFare2);
                     
                                         num++;
                                     } else {
@@ -345,15 +343,39 @@ public class MainApp {
     public void reserveFlight(Integer tripType, Integer numOfPassengers, CabinClassType cabinClassType) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** FRS Reservation :: Search Flight :: Reserve Flight***\n");
-        System.out.println("Enter Flight Schedule ID to Reserve> ");
-        Long flightScheduleId = scanner.nextLong();
         
-        Long returnFlightScheduleId = Long.MIN_VALUE; 
-        if (tripType == 2) {
-            System.out.println("Enter Return Flight Schedule ID to Reserve> ");
-            returnFlightScheduleId = scanner.nextLong();
+        List<Long> flightScheduleIds = new ArrayList<>();
+        List<Long> returnFlightScheduleIds = new ArrayList<>();
+        
+        boolean next = true;
+        while (next) {
+            System.out.println("Enter Flight Schedule ID to Reserve> ");
+            flightScheduleIds.add(scanner.nextLong());
+
+            System.out.println("More Flights to Reserve? Y/N> ");
+            String option = scanner.nextLine().trim();
+            
+            if(option.charAt(0) == 'N') {
+                next = false;
+            }
+            
         }
         
+        next = true;
+        if (tripType == 2) {
+            while(next){
+                System.out.println("Enter Return Flight Schedule ID to Reserve> ");
+                returnFlightScheduleIds.add(scanner.nextLong());
+                
+                System.out.println("More Flights to Reserve? Y/N> ");
+                String option = scanner.nextLine().trim();
+            
+                if(option.charAt(0) == 'N') {
+                    next = false;
+                }
+            } 
+        }
+
         List<String[]> passengers = new ArrayList<>();
         for (int i=1; i<= numOfPassengers; ++i) {
             String[] passenger = new String[4];
@@ -380,7 +402,7 @@ public class MainApp {
         System.out.println("Enter CVV Number> ");
         creditCard[3] = scanner.nextLine().trim();
         
-        Long newFlightReservationId = flightReservationSessionBeanRemote.reserveFlight(numOfPassengers, passengers, creditCard, cabinClassType, flightScheduleId, returnFlightScheduleId, customer);
+        Long newFlightReservationId = flightReservationSessionBeanRemote.reserveFlight(numOfPassengers, passengers, creditCard, cabinClassType, flightScheduleIds, returnFlightScheduleIds, customer);
         System.out.println("Reserved Successfully! Flight Reservation ID: " + newFlightReservationId + "\n");
     }
     
@@ -525,29 +547,35 @@ public class MainApp {
         
         try {
             currentFlightReservation = flightReservationSessionBeanRemote.retrieveFlightReservationByID(reservationId);
-            FlightSchedule flightSchedule = currentFlightReservation.getFlightSchedule();
-            FlightSchedule returnFlightSchedule = currentFlightReservation.getReturnFlightSchedule();
+            List<FlightSchedule> flightSchedules = currentFlightReservation.getFlightSchedules();
+            List<FlightSchedule> returnFlightSchedules = currentFlightReservation.getReturnFlightSchedules();
             
-            System.out.printf("%3s%18s%18s%15s%14s%15s%18s%12s%18s\n", "   ", "Passenger Name", "Passport Number","Cabin Class", "Seat Number", "Flight Number", "Departure Time", "Duration", "ArrivalTime");
+            System.out.printf("%3s%18s%18s%15s%14s%15s%18s%20s%12s%18s%20s\n", "   ", "Passenger Name", "Passport Number","Cabin Class", "Seat Number", "Flight Number", "Departure Time", "Departure Airport", "Duration", "ArrivalTime", "Destination Airport");
             System.out.println("Departure Flights:");
             Integer num = 0;
             
-            for (String[] passenger: currentFlightReservation.getPassengers()) {
-                num++;
-                //duration tbc
-                System.out.printf("%3s%18s%18s%15s%14s%15s%18s%12s%18s\n", num, passenger[0] + " " + passenger[1], passenger[2], currentFlightReservation.getCabinClassType(), passenger[3], 
-                        flightSchedule.getFlightNumber(), flightSchedule.getDepartureDateTime(),flightSchedule.getFlightDuration(), flightSchedule.getArrivalDateTime());
-            }
-            
-            if (returnFlightSchedule != null) {
-                System.out.println("--------------------");
-                System.out.println("Return Flights:");
-                
+            for (FlightSchedule flightSchedule: flightSchedules) {
                 for (String[] passenger: currentFlightReservation.getPassengers()) {
                     num++;
                     //duration tbc
-                    System.out.printf("%3s%18s%18s%15s%14s%15s%18s%12s\n", num, passenger[0] + " " + passenger[1], passenger[2], currentFlightReservation.getCabinClassType(), passenger[3],
-                            returnFlightSchedule.getFlightNumber(), returnFlightSchedule.getDepartureDateTime(),returnFlightSchedule.getFlightDuration(), returnFlightSchedule.getArrivalDateTime());
+                    System.out.printf("%3s%18s%18s%15s%14s%15s%18s%20s%12s%18s%20s\n", num, passenger[0] + " " + passenger[1], passenger[2], currentFlightReservation.getCabinClassType(), passenger[3], 
+                            flightSchedule.getFlightNumber(), flightSchedule.getDepartureDateTime(),flightSchedule.getDepartureAirport().getAirportName(),flightSchedule.getFlightDuration(), 
+                            flightSchedule.getArrivalDateTime(), flightSchedule.getDestinationAirport().getAirportName());
+                }
+            }
+            
+            if (!returnFlightSchedules.isEmpty()) {
+                System.out.println("--------------------");
+                System.out.println("Return Flights:");
+                
+                for (FlightSchedule returnFlightSchedule: returnFlightSchedules) {
+                    for (String[] passenger: currentFlightReservation.getPassengers()) {
+                        num++;
+                        //duration tbc
+                        System.out.printf("%3s%18s%18s%15s%14s%15s%18s%20s%12s%18s%20s\n", num, passenger[0] + " " + passenger[1], passenger[2], currentFlightReservation.getCabinClassType(), passenger[3],
+                                returnFlightSchedule.getFlightNumber(), returnFlightSchedule.getDepartureDateTime(),returnFlightSchedule.getDepartureAirport().getAirportName(), 
+                                returnFlightSchedule.getFlightDuration(), returnFlightSchedule.getArrivalDateTime(), returnFlightSchedule.getDestinationAirport().getAirportName());
+                    }
                 }
             }
         

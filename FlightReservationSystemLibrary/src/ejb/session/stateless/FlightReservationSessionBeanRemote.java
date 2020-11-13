@@ -19,7 +19,7 @@ import util.exception.FlightReservationNotFoundException;
 @Remote
 public interface FlightReservationSessionBeanRemote {
     
-    public Long reserveFlight(Integer numOfPassengers, List<String[]> passengers, String[] creditCard, CabinClassType cabinClassType, Long flightScheduleId, Long returnFlightScheduleId, Customer customer);
+    public Long reserveFlight(Integer numOfPassengers, List<String[]> passengers, String[] creditCard, CabinClassType cabinClassType, List<Long> flightScheduleIds, List<Long> returnFlightScheduleIds, Customer customer);
     
     public FlightReservation retrieveFlightReservationByID(Long flightReservationId) throws FlightReservationNotFoundException;
     

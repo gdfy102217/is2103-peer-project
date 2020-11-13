@@ -12,16 +12,19 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 @Entity
@@ -34,8 +37,11 @@ public class FlightSchedule implements Serializable {
     private Long flightScheduleId;
     @Temporal(TemporalType.TIMESTAMP)
     private Date departureDateTime;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date flightDuration;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date arrivalDateTime = null;
+    @Column(nullable = false, length = 6, unique = true)
     private String flightNumber;
   
     @OneToOne(optional = false)
@@ -49,6 +55,7 @@ public class FlightSchedule implements Serializable {
     private FlightSchedulePlan flightSchedulePlan;
     
     @OneToMany(mappedBy = "flightSchedule")
+    @ManyToMany(mappedBy = "flightSchedules")
     private List<FlightReservation> flightReservations;
     
     @OneToMany(mappedBy = "flightSchedule")
@@ -102,7 +109,8 @@ public class FlightSchedule implements Serializable {
     public List<FlightReservation> getFlightReservations() {
         return flightReservations;
     }
-
+    
+    @XmlTransient
     public void setFlightReservations(List<FlightReservation> flightReservations) {
         this.flightReservations = flightReservations;
     }

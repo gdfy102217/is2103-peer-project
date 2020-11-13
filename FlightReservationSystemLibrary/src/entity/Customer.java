@@ -13,26 +13,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
 
 @Entity
-
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Customer implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
+    protected Long customerId;
     @Column(nullable = false, length = 16)
     private String firstName;
     @Column(nullable = false, length = 16)
     private String lastName;
-    @Column(nullable = false, length = 64, unique = true)
+    @Column(length = 64, unique = true)
     private String email;
-    @Column(nullable = false, length = 8)
+    @Column(length = 8)
     private String phoneNumber;
-    @Column(nullable = false)
     private String address;
     @Column(nullable = false, length = 16, unique = true)
     private String username;

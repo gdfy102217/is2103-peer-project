@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,57 +16,22 @@ import javax.persistence.Id;
 
 @Entity
 
-public class Partner implements Serializable {
+public class Partner extends Customer implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long partnerId;
-    @Column(nullable = false, length = 18, unique = true)
-    private String username;
-    @Column(nullable = false, length = 18)
-    private String password;
-
+    
     public Partner() {
+        super();
     }
 
-    public Partner(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-    
-    
-
-    public Long getPartnerId() {
-        return partnerId;
-    }
-
-    public void setPartnerId(Long partnerId) {
-        this.partnerId = partnerId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public Partner(String firstName, String lastName, String username, String password) {
+        super(firstName, lastName, null, null, null, username, password);
     }
     
-    
-
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (partnerId != null ? partnerId.hashCode() : 0);
+        hash += (customerId != null ? customerId.hashCode() : 0);
         return hash;
     }
 
@@ -76,7 +42,7 @@ public class Partner implements Serializable {
             return false;
         }
         Partner other = (Partner) object;
-        if ((this.partnerId == null && other.partnerId != null) || (this.partnerId != null && !this.partnerId.equals(other.partnerId))) {
+        if ((this.customerId == null && other.customerId != null) || (this.customerId != null && !this.customerId.equals(other.customerId))) {
             return false;
         }
         return true;
@@ -84,7 +50,7 @@ public class Partner implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Partner[ id=" + partnerId + " ]";
+        return "entity.Partner[ id=" + customerId + " ]";
     }
     
 }

@@ -7,14 +7,15 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlTransient;
 import util.enumeration.CabinClassType;
 
 
@@ -37,23 +38,23 @@ public class FlightReservation implements Serializable {
     @JoinColumn(nullable = false)
     private Customer customer;
     
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
-    private FlightSchedule flightSchedule;
-    @ManyToOne()
-    private FlightSchedule returnFlightSchedule;
+    @ManyToMany
+    private List<FlightSchedule> flightSchedules;
+    
+    @ManyToMany
+    private List<FlightSchedule> returnFlightSchedules;
 
     public FlightReservation() {
         passengers = new ArrayList<>();
+        flightSchedules = new ArrayList<>();
+        returnFlightSchedules = new ArrayList<>();
     }
 
-    public FlightReservation(Integer numOfPassengers, List<String[]> passengers, String[] creditCard, CabinClassType cabinClassType, FlightSchedule flightSchedule, FlightSchedule returnFlightSchedule, Customer customer) {
+    public FlightReservation(Integer numOfPassengers, List<String[]> passengers, String[] creditCard, CabinClassType cabinClassType, Customer customer) {
         this.numOfPassengers = numOfPassengers;
         this.passengers = passengers;
         this.creditCard = creditCard;
         this.cabinClassType = cabinClassType;
-        this.flightSchedule = flightSchedule;
-        this.returnFlightSchedule = returnFlightSchedule;
         this.customer = customer;
     }
 
@@ -89,22 +90,23 @@ public class FlightReservation implements Serializable {
         this.creditCard = creditCard;
     }
 
-    public FlightSchedule getFlightSchedule() {
-        return flightSchedule;
+    public List<FlightSchedule> getFlightSchedules() {
+        return flightSchedules;
     }
 
-    public void setFlightSchedule(FlightSchedule flightSchedule) {
-        this.flightSchedule = flightSchedule;
+    public void setFlightSchedules(List<FlightSchedule> flightSchedules) {
+        this.flightSchedules = flightSchedules;
     }
 
-    public FlightSchedule getReturnFlightSchedule() {
-        return returnFlightSchedule;
+    public List<FlightSchedule> getReturnFlightSchedules() {
+        return returnFlightSchedules;
     }
 
-    public void setReturnFlightSchedule(FlightSchedule returnFlightSchedule) {
-        this.returnFlightSchedule = returnFlightSchedule;
+    public void setReturnFlightSchedules(List<FlightSchedule> returnFlightSchedules) {
+        this.returnFlightSchedules = returnFlightSchedules;
     }
-
+    
+    @XmlTransient
     public Customer getCustomer() {
         return customer;
     }
@@ -146,7 +148,7 @@ public class FlightReservation implements Serializable {
     @Override
     public String toString() {
         return "FlightReservation{" + "numOfPassengers=" + numOfPassengers + ", passengers=" + passengers + ", creditCard=" + creditCard + 
-                ", cabinClassType=" + cabinClassType + ", customer=" + customer + ", flightSchedule=" + flightSchedule + ", returnFlightSchedule=" + returnFlightSchedule + '}';
+                ", cabinClassType=" + cabinClassType + ", customer=" + customer;
     }
 
     

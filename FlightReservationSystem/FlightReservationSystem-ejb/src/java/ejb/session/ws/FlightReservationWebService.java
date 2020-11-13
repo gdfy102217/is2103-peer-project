@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ejb.session.stateless;
+package ejb.session.ws;
 
 import entity.Customer;
 import entity.FlightReservation;
 import entity.FlightSchedule;
 import java.util.List;
+import javax.jws.WebService;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,19 +22,20 @@ import util.exception.FlightReservationNotFoundException;
  *
  * @author xuyis
  */
-@Stateless
-public class FlightReservationSessionBean implements FlightReservationSessionBeanRemote, FlightReservationSessionBeanLocal {
+@WebService(serviceName = "FlightReservationWebService")
+@Stateless()
+public class FlightReservationWebService {
 
     @PersistenceContext(unitName = "FlightReservationSystem-ejbPU")
     private EntityManager em;
 
     
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
-    public FlightReservationSessionBean() {
-    }
-    
-    public FlightReservation retrieveFlightReservationByID(Long flightReservationId) throws FlightReservationNotFoundException {
+    /**
+     * This is a sample web service operation
+     */
+    @WebMethod(operationName = "retrieveFlightReservationByID")
+    public FlightReservation retrieveFlightReservationByID(@WebParam(name = "flightReservationId") Long flightReservationId) throws FlightReservationNotFoundException {
+        
         FlightReservation flightReservation = em.find(FlightReservation.class, flightReservationId);
         
         if (flightReservation == null) {
@@ -51,9 +55,12 @@ public class FlightReservationSessionBean implements FlightReservationSessionBea
         return flightReservation;
     }
     
-    @Override
-    public Long reserveFlight(Integer numOfPassengers, List<String[]> passengers, String[] creditCard, CabinClassType cabinClassType, List<Long> flightScheduleIds, List<Long> returnFlightScheduleIds, Customer customer) {
-        
+    @WebMethod(operationName = "reserveFlight")
+    public Long reserveFlight(@WebParam(name = "numOfPassengers") Integer numOfPassengers, @WebParam(name = "passengers") List<String[]> passengers, 
+            @WebParam(name = "creditCard") String[] creditCard, @WebParam(name = "cabinClassType") CabinClassType cabinClassType, 
+            @WebParam(name = "flightScheduleIds") List<Long> flightScheduleIds, @WebParam(name = "returnFlightScheduleIds") List<Long> returnFlightScheduleIds, 
+            @WebParam(name = "customer") Customer customer) {
+       
         FlightReservation flightReservation = new FlightReservation(numOfPassengers, passengers, creditCard, cabinClassType, customer);
         em.persist(flightReservation);
         
