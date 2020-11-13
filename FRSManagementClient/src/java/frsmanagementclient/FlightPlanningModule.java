@@ -240,7 +240,7 @@ public class FlightPlanningModule {
 
         System.out.print("Create complementary flight? (Y/N)> ");
         String response = scanner.nextLine().trim();
-        if (response == "Y") {
+        if ("Y".equals(response)) {
             FlightRoute newComplementaryFlightRoute = new FlightRoute();
             newComplementaryFlightRoute.setOrigin(destination);
             newComplementaryFlightRoute.setDestination(origin);

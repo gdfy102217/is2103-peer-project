@@ -34,10 +34,10 @@ public class AircraftTypeSessionBean implements AircraftTypeSessionBeanRemote, A
     @Override
     public AircraftType createNewAircraftType(AircraftType aircraftType) throws AircraftTypeExistException, GeneralException {
            
-        try {
+        try {         
             em.persist(aircraftType);
             aircraftType.setConfigurations(new ArrayList<>());
-            em.flush();
+            em.flush();               
 
             return aircraftType;
         }catch(PersistenceException ex) {

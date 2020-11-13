@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.CabinClass;
 import entity.CabinClassConfiguration;
+import java.util.ArrayList;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,11 +28,12 @@ public class CabinClassSessionBean implements CabinClassSessionBeanRemote, Cabin
     @Override
     public CabinClass createNewCabinClass(CabinClass newCabinClass, CabinClassConfiguration newCabinClassConfiguration) {
         
-        
+        em.persist(newCabinClass);
         em.persist(newCabinClassConfiguration);
+        
+        newCabinClassConfiguration.setFares(new ArrayList<>());
         newCabinClass.getAircraftConfiguration().getCabinClasses().add(newCabinClass);
         
-        em.persist(newCabinClass);
         em.flush();
         
         return newCabinClass;

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jax-ws xmlns="http://www.netbeans.org/ns/jax-ws/1">
   <services>
-    <service name="PartnerEntityWebService">
-      <implementation-class>ejb.session.ws.PartnerEntityWebService</implementation-class>
-    </service>
     <service name="FlightReservationWebService">
       <implementation-class>ejb.session.ws.FlightReservationWebService</implementation-class>
+    </service>
+    <service name="PartnerEntityWebService">
+      <implementation-class>ejb.session.ws.PartnerEntityWebService</implementation-class>
     </service>
     <service name="FlightScheduleWebService">
       <implementation-class>ejb.session.ws.FlightScheduleWebService</implementation-class>
