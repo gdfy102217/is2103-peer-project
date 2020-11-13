@@ -6,13 +6,10 @@
 package ejb.session.stateless;
 
 import entity.AircraftConfiguration;
-import entity.CabinClass;
-import entity.CabinClassConfiguration;
-import entity.Flight;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AircraftConfigurationNotFoundException;
@@ -33,9 +30,13 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
     @Override
     public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration)
     {
+        newAircraftConfiguration.getCabinClasses();
+        newAircraftConfiguration.getAircraftType();
+        newAircraftConfiguration.getFlight();
         em.persist(newAircraftConfiguration);
-        newAircraftConfiguration.getAircraftType().getConfigurations().add(newAircraftConfiguration);
         em.flush();
+        newAircraftConfiguration.getAircraftType().getConfigurations().add(newAircraftConfiguration);
+        
         
         return newAircraftConfiguration;
     }
@@ -51,15 +52,15 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
     public AircraftConfiguration retrieveAircraftConfigurationByName(String name) throws AircraftConfigurationNotFoundException
     {
         Query query = em.createQuery("SELECT ac FROM AircraftConfiguration ac WHERE ac.aircraftConfigurationName = :name");
-        query.setParameter(":name", name);
+        query.setParameter("name", name);
         
-        if(query.getSingleResult() != null)
+        try
         {
             return (AircraftConfiguration) query.getSingleResult();
         }
-        else
+        catch(NoResultException ex)
         {
-            throw new AircraftConfigurationNotFoundException("Aircraft configuration " + name + " does not exist!");
+            throw new AircraftConfigurationNotFoundException("Aircraft configuration " + name + " does not exist!\n");
         }                
     }
 }

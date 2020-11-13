@@ -239,15 +239,18 @@ public class FlightPlanningModule {
         newFlightRoute.setDestination(destination);
 
         System.out.print("Create complementary flight? (Y/N)> ");
-        if (scanner.nextLine().trim().equals('Y')) {
+        String response = scanner.nextLine().trim();
+        if (response == "Y") {
             FlightRoute newComplementaryFlightRoute = new FlightRoute();
             newComplementaryFlightRoute.setOrigin(destination);
             newComplementaryFlightRoute.setDestination(origin);
             newComplementaryFlightRoute.setComplementaryReturnRoute(newFlightRoute);
             newFlightRoute.setComplementaryReturnRoute(newComplementaryFlightRoute);
-            flightRouteSessionBeanRemote.createNewFlightRoute(newComplementaryFlightRoute);
+            flightRouteSessionBeanRemote.createNewFlightRoute(newComplementaryFlightRoute, destination, origin);
+            System.out.println("Complementary flight route is created!");
         }
-        flightRouteSessionBeanRemote.createNewFlightRoute(newFlightRoute);
+        flightRouteSessionBeanRemote.createNewFlightRoute(newFlightRoute, origin, destination);
+        System.out.println("Flight route is created!");
     }
 
     private void doViewAllFlightRoutes() {

@@ -5,7 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.Airport;
 import entity.FlightRoute;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -35,11 +37,43 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
     {
         try
         {
+            em.persist(flightRoute);
+            
             flightRoute.getOrigin().getFlightsFromAirport().add(flightRoute);
             flightRoute.getDestination().getFlightsToAirport().add(flightRoute);
-            em.persist(flightRoute);
+            
             em.flush();
-
+            return flightRoute;
+        }
+        catch(PersistenceException ex)
+        {
+            if(ex.getCause() != null && 
+                    ex.getCause().getCause() != null &&
+                    ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException"))
+            {
+                throw new FlightRouteExistException("This flight route already exists!");
+            }
+            else
+            {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        }
+    }
+    
+    @Override
+    public FlightRoute createNewFlightRoute(FlightRoute flightRoute, Airport origin, Airport destination) throws FlightRouteExistException, GeneralException
+    {
+        try
+        {
+            em.persist(flightRoute);
+            
+            flightRoute.setOrigin(origin);
+            flightRoute.setDestination(destination);
+            
+            origin.getFlightsFromAirport().add(flightRoute);
+            destination.getFlightsToAirport().add(flightRoute);
+            
+            em.flush();
             return flightRoute;
         }
         catch(PersistenceException ex)
