@@ -59,10 +59,10 @@ public class DataInitSessionBean {
         {
             initialiseEmployee();
         }
-        if(em.find(Partner.class, 1l) == null)
-        {
-            initialisePartner();
-        }
+//        if(em.find(Partner.class, 1l) == null)
+//        {
+////            initialisePartner();
+//        }
         if(em.find(Airport.class, 1l) == null)
         {
             initialiseAirport();
