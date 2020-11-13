@@ -44,11 +44,11 @@ public class FlightScheduleWebService {
      * This is a sample web service operation
      */
     @WebMethod(operationName = "searchDirectFlightScehdules")
-    public List<FlightSchedule> searchDirectFlightScehdules(@WebParam(name = "departureAirportName") String departureAirportName, @WebParam(name = "destinationAirportName") String destinationAirportName, 
+    public List<FlightSchedule> searchDirectFlightScehdules(@WebParam(name = "departureAirportiATACode") String departureAirportiATACode, @WebParam(name = "destinationAirportiATACode") String destinationAirportiATACode, 
             @WebParam(name = "departureDate") Date departureDate, @WebParam(name = "cabinClassType") CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
         
-        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByName(departureAirportName);
-        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByName(destinationAirportName);
+        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByIataCode(departureAirportiATACode);
+        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByIataCode(destinationAirportiATACode);
 
         Query query = em.createQuery("SELECT f FROM FlightSchedule f WHERE f.departureDateTime = :departureDate AND f.departureAirport = :departureAirport AND f.destinationAirport = :destinationAirport");
         query.setParameter("departureDate", departureDate);
@@ -70,11 +70,11 @@ public class FlightScheduleWebService {
     }
 
     @WebMethod(operationName = "searchConnectingFlightScehdules")
-    public List<List<FlightSchedule>> searchConnectingFlightScehdules(@WebParam(name = "departureAirportName") String departureAirportName, @WebParam(name = "destinationAirportName") String destinationAirportName, 
+    public List<List<FlightSchedule>> searchConnectingFlightScehdules(@WebParam(name = "departureAirportiATACode") String departureAirportiATACode, @WebParam(name = "destinationAirportiATACode") String destinationAirportiATACode, 
             @WebParam(name = "departureDate") Date departureDate, @WebParam(name = "cabinClassType") CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
         
-        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByName(departureAirportName);
-        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByName(destinationAirportName);
+        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByIataCode(departureAirportiATACode);
+        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByIataCode(destinationAirportiATACode);
         
         Query query = em.createQuery("SELECT f FROM FlightSchedule f WHERE f.departureDateTime = :departureDate AND f.departureAirport= :departureAirport");
         query.setParameter("departureDate", departureDate);

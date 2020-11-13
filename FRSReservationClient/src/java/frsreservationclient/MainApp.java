@@ -87,8 +87,8 @@ public class MainApp {
             SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
             SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
             Integer tripType;
-            String departureAirportName = "";
-            String destinationAirportName = "";
+            String departureAirportiATACode = "";
+            String destinationAirportiATACode = "";
             Date departureDate;
             Date returnDate;
             Integer numOfPassengers;
@@ -100,16 +100,16 @@ public class MainApp {
             tripType = scanner.nextInt();
             scanner.nextLine();
             System.out.println("Enter Departure Airport Name> ");
-            departureAirportName = scanner.nextLine().trim();
+            departureAirportiATACode = scanner.nextLine().trim();
             System.out.println("Enter Destination Airport Name> ");
-            destinationAirportName = scanner.nextLine().trim();
+            destinationAirportiATACode = scanner.nextLine().trim();
             System.out.println("Enter Departure Date (dd/mm/yyyy)> ");
             departureDate = inputDateFormat.parse(scanner.nextLine().trim());
             System.out.println("Enter Return Date (dd/mm/yyyy)> ");
             returnDate = inputDateFormat.parse(scanner.nextLine().trim());
             System.out.println("Enter Number Of Passengers> ");
             numOfPassengers = scanner.nextInt();
-            System.out.println("Enter Flight Type Preference:  1: Direct Flight, 2: Connecting Flight> ");
+            System.out.println("Enter Flight Type Preference:  1: Direct Flight, 2: Connecting Flight, 3: No Preference> ");
             flightTypePreference = scanner.nextInt();
             System.out.println("Enter Cabin Class Preference:  1: First Class, 2: Business Class, 3: Premium Economy Class, 4: Economy Class> ");
             cabinClass = scanner.nextInt();
@@ -125,8 +125,8 @@ public class MainApp {
                 cabinClassType = CabinClassType.ECONOMYCLASS;
             }
             
-            searchDirectFlight(departureAirportName, destinationAirportName, departureDate, returnDate, numOfPassengers, tripType, cabinClassType);
-            searchConnectingFlights(departureAirportName, destinationAirportName, departureDate, returnDate, numOfPassengers, tripType, cabinClassType);
+            searchDirectFlight(departureAirportiATACode, destinationAirportiATACode, departureDate, returnDate, numOfPassengers, tripType, cabinClassType);
+            searchConnectingFlights(departureAirportiATACode, destinationAirportiATACode, departureDate, returnDate, numOfPassengers, tripType, cabinClassType);
             
             System.out.println("Do you wish to reserve a flight? Y/N> ");
             String reserve = scanner.nextLine().trim();
@@ -142,18 +142,18 @@ public class MainApp {
             
     }
     
-    public void searchDirectFlight(String departureAirportName, String destinationAirportName, Date departureDate, Date returnDate, Integer numOfPassengers, Integer tripType, CabinClassType cabinClassType) {
+    public void searchDirectFlight(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, Date returnDate, Integer numOfPassengers, Integer tripType, CabinClassType cabinClassType) {
         try {
             System.out.println("Departure Flight Information :: Direct Flight\n");
             //on required departure date
-            List<FlightSchedule> flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(departureAirportName, destinationAirportName, departureDate, cabinClassType);
+            List<FlightSchedule> flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(departureAirportiATACode, destinationAirportiATACode, departureDate, cabinClassType);
             System.out.println("----- Departure On " + departureDate + "\n");
             printDirectFlightSchedulesTable(flightSchedules, cabinClassType, numOfPassengers);
             
             //3 days before
             for (int i=3; i>0; --i) {
                 Date newDepartureDate = new Date(departureDate.getTime() - i * 24 * 60 * 60 * 1000);
-                flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(departureAirportName, destinationAirportName, newDepartureDate, cabinClassType);
+                flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(departureAirportiATACode, destinationAirportiATACode, newDepartureDate, cabinClassType);
                 System.out.println("----- Departure On " + departureDate + "\n");
                 printDirectFlightSchedulesTable(flightSchedules, cabinClassType, numOfPassengers);
             }
@@ -161,7 +161,7 @@ public class MainApp {
             //3 days after
             for (int i=1; i<4; ++i) {
                 Date newDepartureDate = new Date(departureDate.getTime() + i * 24 * 60 * 60 * 1000);
-                flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(departureAirportName, destinationAirportName, departureDate, cabinClassType);
+                flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(departureAirportiATACode, destinationAirportiATACode, departureDate, cabinClassType);
                 System.out.println("----- Departure On " + departureDate + "\n");
                 printDirectFlightSchedulesTable(flightSchedules, cabinClassType, numOfPassengers);
             }
@@ -170,14 +170,14 @@ public class MainApp {
             if (tripType == 2) {
                 System.out.println("\nReturn Flight Information :: Direct Flight\n");
                 //on required departure date
-                flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(destinationAirportName, departureAirportName, returnDate, cabinClassType);
+                flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(destinationAirportiATACode, departureAirportiATACode, returnDate, cabinClassType);
                 System.out.println("----- Return On " + returnDate + "\n");
                 printDirectFlightSchedulesTable(flightSchedules, cabinClassType, numOfPassengers);
 
                 //3 days before
                 for (int i=3; i>0; --i) {
                     Date newReturnDate = new Date(returnDate.getTime() - i * 24 * 60 * 60 * 1000);
-                    flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(destinationAirportName, departureAirportName, newReturnDate, cabinClassType);
+                    flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(destinationAirportiATACode, departureAirportiATACode, newReturnDate, cabinClassType);
                     System.out.println("----- Return On " + returnDate + "\n");
                     printDirectFlightSchedulesTable(flightSchedules, cabinClassType, numOfPassengers);
                 }
@@ -185,7 +185,7 @@ public class MainApp {
                 //3 days after
                 for (int i=1; i<4; ++i) {
                     Date newReturnDate = new Date(departureDate.getTime() + i * 24 * 60 * 60 * 1000);
-                    flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(destinationAirportName, departureAirportName, newReturnDate, cabinClassType);
+                    flightSchedules = flightScheduleSessionBeanRemote.searchDirectFlightScehdules(destinationAirportiATACode, departureAirportiATACode, newReturnDate, cabinClassType);
                     System.out.println("----- Return On " + returnDate + "\n");
                     printDirectFlightSchedulesTable(flightSchedules, cabinClassType, numOfPassengers);
                 }

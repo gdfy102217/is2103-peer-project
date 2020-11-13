@@ -64,10 +64,10 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
     }
 
     @Override
-    public List<FlightSchedule> searchDirectFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
+    public List<FlightSchedule> searchDirectFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
 
-        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByName(departureAirportName);
-        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByName(destinationAirportName);
+        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByIataCode(departureAirportiATACode);
+        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByIataCode(destinationAirportiATACode);
 
         Query query = em.createQuery("SELECT f FROM FlightSchedule f WHERE f.departureDateTime = :departureDate AND f.departureAirport = :departureAirport AND f.destinationAirport = :destinationAirport");
         query.setParameter("departureDate", departureDate);
@@ -88,11 +88,11 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         return flightSchedules;
     }
     
-    public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
+    public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
         
-        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByName(departureAirportName);
-        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByName(destinationAirportName);
-        
+        Airport departureAirport = airportSessionBeanLocal.retrieveAirportByIataCode(departureAirportiATACode);
+        Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByIataCode(destinationAirportiATACode);
+
         Query query = em.createQuery("SELECT f FROM FlightSchedule f WHERE f.departureDateTime = :departureDate AND f.departureAirport= :departureAirport");
         query.setParameter("departureDate", departureDate);
         query.setParameter("departureAirport", departureAirport);

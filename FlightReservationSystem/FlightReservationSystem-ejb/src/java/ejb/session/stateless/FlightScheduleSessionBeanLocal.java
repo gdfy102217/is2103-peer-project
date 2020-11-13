@@ -26,9 +26,9 @@ public interface FlightScheduleSessionBeanLocal {
 
     public FlightSchedule createNewFlightSchedule(FlightSchedule flightSchedule) throws FlightScheduleExistException, GeneralException;
     
-    public List<FlightSchedule> searchDirectFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
+    public List<FlightSchedule> searchDirectFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
 
-    public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportName, String destinationAirportName, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
+    public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
 
     public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule);
 
