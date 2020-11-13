@@ -12,6 +12,8 @@ import entity.AircraftType;
 import entity.Airport;
 import entity.Employee;
 import entity.Partner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -36,7 +38,9 @@ public class DataInitSessionBean {
 
     @EJB(name = "EmployeeSessionBeanLocal")
     private EmployeeSessionBeanLocal employeeSessionBeanLocal;
+    @EJB(name = "AirportSessionBeanLocal")
     private AirportSessionBeanLocal airportSessionBeanLocal;
+    @EJB(name = "AircraftTypeSessionBeanLocal")
     private AircraftTypeSessionBeanLocal aircraftTypeSessionBeanLocal;
 
     @PersistenceContext(unitName = "FlightReservationSystem-ejbPU")
@@ -69,7 +73,7 @@ public class DataInitSessionBean {
         }
     }
     
-    public void initialiseEmployee()
+    private void initialiseEmployee()
     {
         try {
             employeeSessionBeanLocal.createNewEmployee(new Employee("Sales Manager", "sales", "password", EmployeeType.SALESMANAGER));
@@ -77,17 +81,17 @@ public class DataInitSessionBean {
             employeeSessionBeanLocal.createNewEmployee(new Employee("Route Planner", "route", "password", EmployeeType.ROUTEPLANNER));
             employeeSessionBeanLocal.createNewEmployee(new Employee("Schedule Manager", "schedule", "password", EmployeeType.SCHEDULEMANAGER));
         } catch (EmployeeExistException | GeneralException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            System.out.println(ex);
         }
 
     }
     
-    public void initialisePartner()
+    private void initialisePartner()
     {
         
     }
     
-    public void initialiseAirport()
+    private void initialiseAirport()
     {
 
         try {
@@ -95,8 +99,12 @@ public class DataInitSessionBean {
             airportSessionBeanLocal.createNewAirport(new Airport("HongKong International Airport", "HKG", "HongKong", "HongKongS.A.R.", "China", "HKT"));
             airportSessionBeanLocal.createNewAirport(new Airport("Taoyuan International Airport", "TPE", "Taipei", "Taiwan Province", "China", "CST"));
             airportSessionBeanLocal.createNewAirport(new Airport("Narita International Airport", "NRT", "Tokyo", "Tokyo-to", "Japan", "JST"));
+            airportSessionBeanLocal.createNewAirport(new Airport("Beijing Capital International Airport", "PEK", "Beijing", "Beijing", "China", "CST"));
+            airportSessionBeanLocal.createNewAirport(new Airport("Incheon International Airport", "ICN", "Incheon", "Incheon", "South Korea", "KST"));
+            airportSessionBeanLocal.createNewAirport(new Airport("Los Angeles International Airport", "LAX", "Los Angeles", "California", "United States", "PST"));
+            airportSessionBeanLocal.createNewAirport(new Airport("Heathrow International Airport", "LHR", "London", "London", "United Kingdom", "GMT"));
         } catch (AirportExistException | GeneralException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            System.out.println(ex);
         }
 
     }
@@ -108,6 +116,10 @@ public class DataInitSessionBean {
             aircraftTypeSessionBeanLocal.createNewAircraftType(new AircraftType("A350", 440));
             aircraftTypeSessionBeanLocal.createNewAircraftType(new AircraftType("A380", 853));
             aircraftTypeSessionBeanLocal.createNewAircraftType(new AircraftType("A330", 440));
+            aircraftTypeSessionBeanLocal.createNewAircraftType(new AircraftType("B737", 180));
+            aircraftTypeSessionBeanLocal.createNewAircraftType(new AircraftType("B787", 390));
+            aircraftTypeSessionBeanLocal.createNewAircraftType(new AircraftType("B777", 450));
+            aircraftTypeSessionBeanLocal.createNewAircraftType(new AircraftType("B747", 580));
         } catch (AircraftTypeExistException | GeneralException ex) {
             System.out.println("Error: " + ex.getMessage());
         }

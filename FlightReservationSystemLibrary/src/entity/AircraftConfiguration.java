@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,10 +40,10 @@ public class AircraftConfiguration implements Serializable {
     @JoinColumn(nullable = false)
     private AircraftType aircraftType;
     
-    @OneToOne(mappedBy = "aircraftConfiguration")
+    @OneToOne(mappedBy = "aircraftConfiguration", fetch = FetchType.LAZY)
     private Flight flight;
     
-    @OneToMany(mappedBy = "aircraftConfiguration")
+    @OneToMany(mappedBy = "aircraftConfiguration", fetch = FetchType.LAZY)
     private List<CabinClass> cabinClasses;
 
     public AircraftConfiguration() {

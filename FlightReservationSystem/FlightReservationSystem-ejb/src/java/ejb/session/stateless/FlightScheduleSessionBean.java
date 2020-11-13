@@ -141,19 +141,6 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         return flightSchedules;
         
     }
-              
-    @Override
-    public void viewSeatsInventory(FlightSchedule flightSchedule) {
-        for (CabinClass cabinClass: flightSchedule.getCabinClasses()) {
-            System.out.println("Cabin class type: " + cabinClass.getCabinClassConfiguration().getCabinClassType());
-            System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getMaxSeatCapacity());
-            System.out.println("No. of seats reserved: " + cabinClass.getNumOfReservedSeats());
-            System.out.println("No. of balance seats: " + (cabinClass.getCabinClassConfiguration().getMaxSeatCapacity() - cabinClass.getNumOfReservedSeats()));
-        }
-
-        return null;
-
-    }
     
     @Override
     public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule) {

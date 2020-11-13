@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,22 +42,18 @@ public class CabinClassConfiguration implements Serializable {
     @Column(nullable = false)
     private String seatingConfigurationPerColumn;
     
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
-    private AircraftConfiguration aircraftConfiguration;
     
-    @OneToMany(mappedBy = "cabinClassConfiguration")
+    @OneToMany(mappedBy = "cabinClassConfiguration", fetch = FetchType.LAZY)
     private List<Fare> fares;
 
     public CabinClassConfiguration() {
     }
 
-    public CabinClassConfiguration(Integer numOfAisles, Integer numOfRows, Integer numOfSeatsAbreast, String seatingConfigurationPerColumn, AircraftConfiguration aircraftConfiguration) {
+    public CabinClassConfiguration(Integer numOfAisles, Integer numOfRows, Integer numOfSeatsAbreast, String seatingConfigurationPerColumn) {
         this.numOfAisles = numOfAisles;
         this.numOfRows = numOfRows;
         this.numOfSeatsAbreast = numOfSeatsAbreast;
         this.seatingConfigurationPerColumn = seatingConfigurationPerColumn;
-        this.aircraftConfiguration = aircraftConfiguration;
     }
     
     
@@ -101,14 +98,6 @@ public class CabinClassConfiguration implements Serializable {
         this.seatingConfigurationPerColumn = seatingConfigurationPerColumn;
     }
 
-    public AircraftConfiguration getAircraftConfiguration() {
-        return aircraftConfiguration;
-    }
-
-    public void setAircraftConfiguration(AircraftConfiguration aircraftConfiguration) {
-        this.aircraftConfiguration = aircraftConfiguration;
-    }
-    
     public Integer getMaxSeatCapacity() {
         return this.numOfRows * this.numOfSeatsAbreast;
     }

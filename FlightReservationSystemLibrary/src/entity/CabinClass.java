@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,15 +34,15 @@ public class CabinClass implements Serializable {
     @Column(nullable = false)
     private CabinClassType cabinClassType;
     
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn()
     private FlightSchedule flightSchedule;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private AircraftConfiguration aircraftConfiguration;
     
-    @OneToOne()
+    @OneToOne(optional = false)
     private CabinClassConfiguration cabinClassConfiguration;
     
     private Integer numOfReservedSeats;

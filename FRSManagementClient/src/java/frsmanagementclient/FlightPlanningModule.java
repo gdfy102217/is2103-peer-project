@@ -8,6 +8,7 @@ package frsmanagementclient;
 import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
 import ejb.session.stateless.AircraftTypeSessionBeanRemote;
 import ejb.session.stateless.AirportSessionBeanRemote;
+import ejb.session.stateless.CabinClassSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import entity.AircraftConfiguration;
 import entity.AircraftType;
@@ -40,6 +41,7 @@ public class FlightPlanningModule {
     private AirportSessionBeanRemote airportSessionBeanRemote;
     private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
     private AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote;
+    private CabinClassSessionBeanRemote cabinClassSessionBeanRemote;
 
     private Employee employee;
 
@@ -47,11 +49,13 @@ public class FlightPlanningModule {
     }
 
     public FlightPlanningModule(AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, AirportSessionBeanRemote airportSessionBeanRemote,
-            FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote, Employee employee) {
+            FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote, 
+            CabinClassSessionBeanRemote cabinClassSessionBeanRemote, Employee employee) {
         this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
         this.airportSessionBeanRemote = airportSessionBeanRemote;
         this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
         this.aircraftTypeSessionBeanRemote = aircraftTypeSessionBeanRemote;
+        this.cabinClassSessionBeanRemote = cabinClassSessionBeanRemote;
         this.employee = employee;
     }
 
@@ -142,7 +146,10 @@ public class FlightPlanningModule {
         while (numOfCabinClasses < 1 || numOfCabinClasses > 4) {
             System.out.print("Enter Number of Cabin Classes (1 to 4)> ");
             numOfCabinClasses = Integer.valueOf(scanner.nextLine().trim());
+            newAircraftConfiguration.setNumOfCabinClasses(numOfCabinClasses);
         }
+        
+        aircraftConfigurationSessionBeanRemote.createNewAircraftConfiguration(newAircraftConfiguration);
 
         //to create each cabin class configuration
         Integer totalMaximumSeatCapacity = 0;
@@ -187,13 +194,14 @@ public class FlightPlanningModule {
 
             System.out.println("The maximum seat capacity for this cabin class is " + newCabinClassConfiguration.getMaxSeatCapacity());
             totalMaximumSeatCapacity += newCabinClassConfiguration.getMaxSeatCapacity();
-            System.out.println("The maximum seat capacity for this cabin class configuration is " + totalMaximumSeatCapacity);
+            System.out.println("The current maximum seat capacity for this aircraft configuration is " + totalMaximumSeatCapacity);
             if (totalMaximumSeatCapacity > newAircraftConfiguration.getAircraftType().getMaxPassengerSeatCapacity()) {
                 throw new ExceedMaximumSeatCapacityException();
             }
-            newAircraftConfiguration.getCabinClasses().add(newCabinClass);
-            aircraftConfigurationSessionBeanRemote.createNewAircraftConfiguration(newAircraftConfiguration);
+            newCabinClass.setAircraftConfiguration(newAircraftConfiguration);
+            cabinClassSessionBeanRemote.createNewCabinClass(newCabinClass, newCabinClassConfiguration);
         }
+        
     }
 
     private void viewAllAircraftConfigurations() {

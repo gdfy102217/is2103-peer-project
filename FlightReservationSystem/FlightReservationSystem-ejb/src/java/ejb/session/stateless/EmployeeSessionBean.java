@@ -37,12 +37,17 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
             em.flush();
 
             return employee;
-        } catch (PersistenceException ex) {
-            if (ex.getCause() != null
-                    && ex.getCause().getCause() != null
-                    && ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException")) {
-                throw new EmployeeExistException("Customer with same identification number already exist");
-            } else {
+            }
+        catch(PersistenceException ex)
+        {
+            if(ex.getCause() != null && 
+                    ex.getCause().getCause() != null &&
+                    ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException"))
+            {
+                throw new EmployeeExistException("This airport already exist");
+            }
+            else
+            {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
         }

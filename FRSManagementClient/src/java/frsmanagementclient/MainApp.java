@@ -8,6 +8,7 @@ package frsmanagementclient;
 import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
 import ejb.session.stateless.AircraftTypeSessionBeanRemote;
 import ejb.session.stateless.AirportSessionBeanRemote;
+import ejb.session.stateless.CabinClassSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.FareSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
@@ -35,6 +36,7 @@ public class MainApp {
     private FareSessionBeanRemote fareSessionBeanRemote;
     private AirportSessionBeanRemote airportSessionBeanRemote;
     private AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote;
+    private CabinClassSessionBeanRemote cabinClassSessionBeanRemote;
 
     public MainApp() {
     }
@@ -42,7 +44,8 @@ public class MainApp {
     public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, FlightSessionBeanRemote flightSessionBeanRemote,
             FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote,
             AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote,
-            FareSessionBeanRemote fareSessionBeanRemote, AirportSessionBeanRemote airportSessionBeanRemote, AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote) {
+            FareSessionBeanRemote fareSessionBeanRemote, AirportSessionBeanRemote airportSessionBeanRemote, AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote,
+            CabinClassSessionBeanRemote cabinClassSessionBeanRemote) {
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.flightSessionBeanRemote = flightSessionBeanRemote;
         this.flightScheduleSessionBeanRemote = flightScheduleSessionBeanRemote;
@@ -52,6 +55,7 @@ public class MainApp {
         this.fareSessionBeanRemote = fareSessionBeanRemote;
         this.airportSessionBeanRemote = airportSessionBeanRemote;
         this.aircraftTypeSessionBeanRemote = aircraftTypeSessionBeanRemote;
+        this.cabinClassSessionBeanRemote = cabinClassSessionBeanRemote;
     }
 
     public void runApp() {
@@ -72,19 +76,20 @@ public class MainApp {
                 if (response == 1) {
                     Employee employee = new Employee();
                     try {
-                        employee = doLogin(); // Reserved for future use
+                        employee = doLogin();
                     } catch (EmployeeNotFoundException | InvalidLoginCredentialException ex) {
                         System.out.println(ex.getMessage() + "\n");
+                        break;
                     }
                     System.out.println("Login successful!\n");
 
                     if (employee.getEmployeeType().equals(EmployeeType.FLEETMANAGER)) {
                         FlightPlanningModule flightPlanningModule = new FlightPlanningModule (aircraftConfigurationSessionBeanRemote, airportSessionBeanRemote,
-                                flightRouteSessionBeanRemote, aircraftTypeSessionBeanRemote, employee);
+                                flightRouteSessionBeanRemote, aircraftTypeSessionBeanRemote, cabinClassSessionBeanRemote, employee);
                         flightPlanningModule.menuFlightPlanning();
                     } else if (employee.getEmployeeType().equals(EmployeeType.ROUTEPLANNER)) {
                         FlightPlanningModule flightPlanningModule = new FlightPlanningModule (aircraftConfigurationSessionBeanRemote, airportSessionBeanRemote,
-                                flightRouteSessionBeanRemote, aircraftTypeSessionBeanRemote, employee);
+                                flightRouteSessionBeanRemote, aircraftTypeSessionBeanRemote, cabinClassSessionBeanRemote, employee);
                         flightPlanningModule.menuFlightPlanning();
                     } else if (employee.getEmployeeType().equals(EmployeeType.SCHEDULEMANAGER)) {
                         FlightOperationModule flightOperationModule = new FlightOperationModule(flightSessionBeanRemote, flightRouteSessionBeanRemote,
