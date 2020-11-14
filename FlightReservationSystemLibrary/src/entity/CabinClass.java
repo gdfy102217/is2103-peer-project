@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +35,7 @@ public class CabinClass implements Serializable {
     @Column(nullable = false)
     private CabinClassType cabinClassType;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn()
     private FlightSchedule flightSchedule;
     
@@ -42,7 +43,7 @@ public class CabinClass implements Serializable {
     @JoinColumn(nullable = false)
     private AircraftConfiguration aircraftConfiguration;
     
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.EAGER)
     private CabinClassConfiguration cabinClassConfiguration;
     
     private Integer numOfReservedSeats;
@@ -51,7 +52,6 @@ public class CabinClass implements Serializable {
     
     public CabinClass() {
         this.numOfReservedSeats = 0;
-        
     }
 
     public CabinClass(FlightSchedule flightSchedule, CabinClassConfiguration cabinClassConfiguration) {
