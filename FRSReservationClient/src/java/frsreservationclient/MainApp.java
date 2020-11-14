@@ -41,6 +41,12 @@ public class MainApp {
 
     public MainApp() {
     }
+
+    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote, FlightReservationSessionBeanRemote flightReservationSessionBeanRemote) {
+        this.customerSessionBeanRemote = customerSessionBeanRemote;
+        this.flightScheduleSessionBeanRemote = flightScheduleSessionBeanRemote;
+        this.flightReservationSessionBeanRemote = flightReservationSessionBeanRemote;
+    }
     
     
     
