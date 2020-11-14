@@ -134,7 +134,7 @@ public class AircraftConfiguration implements Serializable {
     @Override
     public String toString() {
         return "Aircraft Configuration Name = " + aircraftConfigurationName + ", Num Of Cabin Classes = " + numOfCabinClasses 
-                + ", Aircraft Type = " + aircraftType + ", Flight = [" + flight + "]";
+                + ", Aircraft Type = " + aircraftType.getAircraftTypeName() + ", Flight = [" + flight + "]";
     }
 
     public List<CabinClass> getCabinClasses() {
