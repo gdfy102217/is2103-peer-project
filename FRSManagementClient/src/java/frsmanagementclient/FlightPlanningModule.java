@@ -12,7 +12,6 @@ import ejb.session.stateless.CabinClassSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import entity.AircraftConfiguration;
 import entity.AircraftType;
-import entity.Airport;
 import entity.CabinClass;
 import entity.CabinClassConfiguration;
 import entity.Employee;
@@ -20,8 +19,6 @@ import entity.FlightRoute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.enumeration.CabinClassType;
 import util.enumeration.EmployeeType;
 import util.exception.AircraftConfigurationExistExcetpion;
@@ -157,13 +154,12 @@ public class FlightPlanningModule {
             }
         
             AircraftConfiguration newAircraftConfiguration = new AircraftConfiguration(aircraftConfigurationName, numOfCabinClasses);
-            newAircraftConfiguration.setAircraftType(aircraftType);
 
         //to create each cabin class configuration
         List<CabinClass> cabinClasses = new ArrayList<>();
         for (int i = 0; i < numOfCabinClasses; i++) {
             
-            System.out.println("Select Cabin Class Code to be created> ");
+            System.out.print("Select Cabin Class Code to be created> ");
             String cabinClassCode = scanner.nextLine().trim();
             System.out.print("Enter Number of Aisles> ");
             Integer numOfAisles = Integer.valueOf(scanner.nextLine().trim());
@@ -191,10 +187,8 @@ public class FlightPlanningModule {
             
             Long aircraftConfigurationId;
             try {
-                
-                aircraftConfigurationId = aircraftConfigurationSessionBeanRemote.createNewAircraftConfiguration(newAircraftConfiguration, cabinClasses);
-                
-                System.out.println("Aircraft Confirguration With ID: " + aircraftConfigurationId + "is created successfully!");
+                aircraftConfigurationId = aircraftConfigurationSessionBeanRemote.createNewAircraftConfiguration(newAircraftConfiguration, aircraftType, cabinClasses);
+                System.out.println("\nAircraft Confirguration With ID: " + aircraftConfigurationId + "is created successfully!\n");
             } catch (AircraftConfigurationExistExcetpion | GeneralException ex) {
                 System.out.println("Error: " + ex.getMessage());
             } 
@@ -205,10 +199,10 @@ public class FlightPlanningModule {
         System.out.println("*** FRSManagement :: Flight Planning Module :: View All Aircraft Configurations ***\n");
         List<AircraftConfiguration> aircraftConfigurations = aircraftConfigurationSessionBeanRemote.retrieveAllAircraftConfigurations();
         if (aircraftConfigurations.isEmpty()) {
-            System.out.println("No Available Aircraft Configurations!");
+            System.out.println("No Available Aircraft Configurations!\n");
         } else {
             for (AircraftConfiguration aircraftConfiguration : aircraftConfigurations) {
-                System.out.println(aircraftConfiguration);
+                System.out.println(aircraftConfiguration + "\n");
             }
         }
     }
@@ -219,13 +213,12 @@ public class FlightPlanningModule {
         System.out.print("Enter Aircraft Configuration Name> ");
         String nameOfAircraftConfiguration = scanner.nextLine().trim();
         AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanRemote.retrieveAircraftConfigurationByName(nameOfAircraftConfiguration);
-        System.out.println(aircraftConfiguration);
-        List<CabinClass> cabinClasses = aircraftConfiguration.getCabinClasses();
-        if (cabinClasses != null) {
-            for (CabinClass cabinClass: cabinClasses) {
-                System.out.println(cabinClass);
-            }
+        System.out.println();
+        System.out.println(aircraftConfiguration + "\n");
+        for (CabinClass cabinClass: aircraftConfiguration.getCabinClasses()) {
+            System.out.println("\t" + cabinClass);
         }
+        System.out.println();
     }
 
     private void doCreateNewFlightRoute() throws AirportNotFoundException, FlightRouteExistException, GeneralException {
@@ -248,9 +241,9 @@ public class FlightPlanningModule {
             FlightRoute newComplementaryFlightRoute = new FlightRoute();
             Long newComplementaryFlightRouteId = flightRouteSessionBeanRemote.createNewFlightRoute(newComplementaryFlightRoute, destinationIataCode, originIataCode);
             flightRouteSessionBeanRemote.associateComplementaryFlightRoute(newFlightRouteId, newComplementaryFlightRouteId);
-            System.out.println("Complementary flight route with ID " + newComplementaryFlightRoute.getFlightRouteId() + " is created!");
+            System.out.println("Complementary flight route is created!");
         }       
-        System.out.println("New flight route with ID " + newFlightRoute.getFlightRouteId() + " is created!");
+        System.out.println("Flight route is created!");
     }
 
     private void doViewAllFlightRoutes() {

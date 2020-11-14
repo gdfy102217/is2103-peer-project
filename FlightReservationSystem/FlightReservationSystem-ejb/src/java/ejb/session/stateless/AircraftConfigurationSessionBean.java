@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.AircraftConfiguration;
+import entity.AircraftType;
 import entity.CabinClass;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -32,7 +33,7 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
     // "Insert Code > Add Business Method")
     
     @Override
-    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException
+    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, AircraftType aircraftType, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException
     {
         try {
         em.persist(newAircraftConfiguration);
@@ -43,13 +44,17 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
         }
-
+        
+        em.merge(aircraftType);
+        
         for (CabinClass cabinClass : cabinClasses) {
             em.persist(cabinClass);
             cabinClass.setAircraftConfiguration(newAircraftConfiguration);
         }
         
         newAircraftConfiguration.setCabinClasses(cabinClasses);
+        newAircraftConfiguration.setAircraftType(aircraftType);
+        aircraftType.getConfigurations().add(newAircraftConfiguration);
 
         em.flush();
            
@@ -72,7 +77,6 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
         try
         {
             AircraftConfiguration aircraftConfiguration = (AircraftConfiguration) query.getSingleResult();
-            aircraftConfiguration.getFlights().size();
             aircraftConfiguration.getCabinClasses().size();
             
             return aircraftConfiguration;
@@ -81,23 +85,5 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
         {
             throw new AircraftConfigurationNotFoundException("Aircraft configuration " + name + " does not exist!\n");
         }                
-    }
-    
-    @Override
-    public AircraftConfiguration retrieveAircraftConfigurationById(Long aircraftConfigurationId) throws AircraftConfigurationNotFoundException
-    {
-        AircraftConfiguration aircraftConfiguration = em.find(AircraftConfiguration.class, aircraftConfigurationId);
-        
-        if(aircraftConfiguration != null)
-        {
-            aircraftConfiguration.getFlights().size();
-            aircraftConfiguration.getCabinClasses().size();
-            
-            return aircraftConfiguration;
-        }
-        else
-        {
-            throw new AircraftConfigurationNotFoundException("Aircraft Configuration with ID " + aircraftConfigurationId + " does not exist");
-        }
     }
 }

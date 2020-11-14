@@ -52,6 +52,8 @@ public class CabinClassConfiguration implements Serializable {
     }
 
     public CabinClassConfiguration(Integer numOfAisles, Integer numOfRows, Integer numOfSeatsAbreast, String seatingConfigurationPerColumn, Integer cabinClassCapacity) {
+        this();
+        
         this.numOfAisles = numOfAisles;
         this.numOfRows = numOfRows;
         this.numOfSeatsAbreast = numOfSeatsAbreast;

@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.AircraftConfiguration;
+import entity.AircraftType;
 import entity.CabinClass;
 import java.util.List;
 import javax.ejb.Local;
@@ -24,7 +25,5 @@ public interface AircraftConfigurationSessionBeanLocal {
 
     public AircraftConfiguration retrieveAircraftConfigurationByName(String name) throws AircraftConfigurationNotFoundException;
 
-    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException;
-
-    public AircraftConfiguration retrieveAircraftConfigurationById(Long aircraftConfigurationId) throws AircraftConfigurationNotFoundException;
+    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, AircraftType aircraftType, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException;
 }
