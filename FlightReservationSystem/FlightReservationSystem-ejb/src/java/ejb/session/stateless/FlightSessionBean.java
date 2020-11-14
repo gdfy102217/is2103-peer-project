@@ -12,14 +12,19 @@ import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
 import util.exception.FlightExistException;
 import util.exception.FlightNotFoundException;
+import util.exception.FlightRouteNotFoundException;
 import util.exception.GeneralException;
 
 /**
@@ -29,18 +34,31 @@ import util.exception.GeneralException;
 @Stateless
 public class FlightSessionBean implements FlightSessionBeanRemote, FlightSessionBeanLocal {
 
+    @EJB(name = "AircraftConfigurationSessionBeanLocal")
+    private AircraftConfigurationSessionBeanLocal aircraftConfigurationSessionBeanLocal;
+
+    @EJB(name = "FlightRouteSessionBeanLocal")
+    private FlightRouteSessionBeanLocal flightRouteSessionBeanLocal;
+
     @PersistenceContext(unitName = "FlightReservationSystem-ejbPU")
     private EntityManager em;
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Flight createNewFlight(Flight flight) throws FlightExistException, GeneralException {
+    public Flight createNewFlight(Flight flight, String aircraftConfigurationName, Long flightRouteId) 
+            throws FlightExistException, GeneralException, FlightRouteNotFoundException, AircraftConfigurationNotFoundException {
         try {
-            flight.getAircraftConfiguration().setFlight(flight);
-            flight.getFlightRoute().getFlights().add(flight);
-            flight.getComplementaryReturnFlight().setComplementaryReturnFlight(flight);
             em.persist(flight);
+            
+            AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName(aircraftConfigurationName);
+            aircraftConfiguration.getFlights().add(flight);
+
+            FlightRoute flightRoute = flightRouteSessionBeanLocal.retrieveFlightRouteById(flightRouteId);
+            flightRoute.getFlights().add(flight);
+            
+//            flight.getComplementaryReturnFlight().setComplementaryReturnFlight(flight);
+            
             em.flush();
 
             return flight;
@@ -54,12 +72,34 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
             }
         }
     }
+    
+    @Override
+    public void associateComplementaryFlight(Flight flight, Flight complementaryFlight) {
+        flight.setComplementaryReturnFlight(complementaryFlight);
+        complementaryFlight.setComplementaryReturnFlight(flight);
+    }
 
     @Override
     public List<Flight> retrieveAllFlights() {
         Query query = em.createQuery("SELECT f FROM Flight f ORDER BY f.flightNumber ASC");
 
         return query.getResultList();
+    }
+    
+    @Override
+    public Flight retrieveFlightById(Long flightId) throws FlightNotFoundException
+    {
+        Flight flight = em.find(Flight.class, flightId);
+        
+        if(flight != null)
+        {
+            flight.getFlightSchedulePlans().size();
+            return flight;
+        }
+        else
+        {
+            throw new FlightNotFoundException("Flight ID " + flightId + " does not exist");
+        }
     }
 
     @Override
@@ -80,7 +120,7 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
         if (flight.getFlightSchedulePlans().isEmpty()) {
             flight.getFlightRoute().getFlights().remove(flight);
             flight.setFlightRoute(null);
-            flight.getAircraftConfiguration().setFlight(null);
+            flight.getAircraftConfiguration().getFlights().remove(flight);
             flight.setAircraftConfiguration(null);
             flight.getComplementaryReturnFlight().setComplementaryReturnFlight(null);
             flight.setComplementaryReturnFlight(null);
@@ -125,8 +165,8 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
     
     @Override
     public void updateAircraftConfiguration(Flight flight, AircraftConfiguration newAircraftConfiguration) {
-        flight.getAircraftConfiguration().setFlight(new Flight());
-        newAircraftConfiguration.setFlight(flight);
+        flight.getAircraftConfiguration().getFlights().remove(flight);
+        newAircraftConfiguration.getFlights().add(flight);
         flight.setAircraftConfiguration(newAircraftConfiguration);
         System.out.println("The aircraft configuration is updated successfully!");
     }

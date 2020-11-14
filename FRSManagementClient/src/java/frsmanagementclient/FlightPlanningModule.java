@@ -157,6 +157,7 @@ public class FlightPlanningModule {
             }
         
             AircraftConfiguration newAircraftConfiguration = new AircraftConfiguration(aircraftConfigurationName, numOfCabinClasses);
+            newAircraftConfiguration.setAircraftType(aircraftType);
 
         //to create each cabin class configuration
         List<CabinClass> cabinClasses = new ArrayList<>();
@@ -190,7 +191,9 @@ public class FlightPlanningModule {
             
             Long aircraftConfigurationId;
             try {
+                
                 aircraftConfigurationId = aircraftConfigurationSessionBeanRemote.createNewAircraftConfiguration(newAircraftConfiguration, cabinClasses);
+                
                 System.out.println("Aircraft Confirguration With ID: " + aircraftConfigurationId + "is created successfully!");
             } catch (AircraftConfigurationExistExcetpion | GeneralException ex) {
                 System.out.println("Error: " + ex.getMessage());
@@ -217,8 +220,11 @@ public class FlightPlanningModule {
         String nameOfAircraftConfiguration = scanner.nextLine().trim();
         AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanRemote.retrieveAircraftConfigurationByName(nameOfAircraftConfiguration);
         System.out.println(aircraftConfiguration);
-        for (CabinClass cabinClass: aircraftConfiguration.getCabinClasses()) {
-            System.out.println(cabinClass);
+        List<CabinClass> cabinClasses = aircraftConfiguration.getCabinClasses();
+        if (cabinClasses != null) {
+            for (CabinClass cabinClass: cabinClasses) {
+                System.out.println(cabinClass);
+            }
         }
     }
 
@@ -242,9 +248,9 @@ public class FlightPlanningModule {
             FlightRoute newComplementaryFlightRoute = new FlightRoute();
             Long newComplementaryFlightRouteId = flightRouteSessionBeanRemote.createNewFlightRoute(newComplementaryFlightRoute, destinationIataCode, originIataCode);
             flightRouteSessionBeanRemote.associateComplementaryFlightRoute(newFlightRouteId, newComplementaryFlightRouteId);
-            System.out.println("Complementary flight route is created!");
+            System.out.println("Complementary flight route with ID " + newComplementaryFlightRoute.getFlightRouteId() + " is created!");
         }       
-        System.out.println("Flight route is created!");
+        System.out.println("New flight route with ID " + newFlightRoute.getFlightRouteId() + " is created!");
     }
 
     private void doViewAllFlightRoutes() {

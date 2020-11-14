@@ -40,8 +40,8 @@ public class AircraftConfiguration implements Serializable {
     @JoinColumn(nullable = false)
     private AircraftType aircraftType;
     
-    @OneToOne(mappedBy = "aircraftConfiguration")
-    private Flight flight;
+    @OneToMany(mappedBy = "aircraftConfiguration")
+    private List<Flight> flights;
     
     @OneToMany(mappedBy = "aircraftConfiguration", cascade = CascadeType.PERSIST)
     private List<CabinClass> cabinClasses;
@@ -49,7 +49,7 @@ public class AircraftConfiguration implements Serializable {
     public AircraftConfiguration() {
         
         cabinClasses = new ArrayList<>();
-        
+        flights = new ArrayList<>();
     }
 
     public AircraftConfiguration(String aircraftConfigurationName, Integer numOfCabinClasses) {
@@ -90,16 +90,6 @@ public class AircraftConfiguration implements Serializable {
     public void setAircraftType(AircraftType aircraftType) {
         this.aircraftType = aircraftType;
     }
-
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-    
-    
     
     public Integer getMaxSeatCapacity() {
         Integer maximumSeatCapacity = 0;
@@ -134,7 +124,7 @@ public class AircraftConfiguration implements Serializable {
     @Override
     public String toString() {
         return "Aircraft Configuration Name = " + aircraftConfigurationName + ", Num Of Cabin Classes = " + numOfCabinClasses 
-                + ", Aircraft Type = " + aircraftType + ", Flight = [" + flight + "]";
+                + ", Aircraft Type = " + aircraftType ;
     }
 
     public List<CabinClass> getCabinClasses() {
@@ -143,6 +133,14 @@ public class AircraftConfiguration implements Serializable {
 
     public void setCabinClasses(List<CabinClass> cabinClasses) {
         this.cabinClasses = cabinClasses;
+    }
+
+    public List<Flight> getFlights() {
+        return flights;
+    }
+
+    public void setFlights(List<Flight> flights) {
+        this.flights = flights;
     }
     
 }

@@ -11,9 +11,11 @@ import entity.FlightRoute;
 import entity.FlightSchedule;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
 import util.exception.FlightExistException;
 import util.exception.FlightNotFoundException;
+import util.exception.FlightRouteNotFoundException;
 import util.exception.GeneralException;
 
 /**
@@ -23,7 +25,7 @@ import util.exception.GeneralException;
 @Local
 public interface FlightSessionBeanLocal {
 
-    public Flight createNewFlight(Flight flight) throws FlightExistException, GeneralException;
+    public Flight createNewFlight(Flight flight, String aircraftConfigurationName, Long flightRouteId) throws FlightExistException, GeneralException, FlightRouteNotFoundException, AircraftConfigurationNotFoundException;
 
     public List<Flight> retrieveAllFlights();
 
@@ -38,5 +40,9 @@ public interface FlightSessionBeanLocal {
     public void updateFlightRoute(Flight flight, FlightRoute newFlightRoute);
 
     public void updateAircraftConfiguration(Flight flight, AircraftConfiguration newAircraftConfiguration);
+
+    public Flight retrieveFlightById(Long flightId) throws FlightNotFoundException;
+
+    public void associateComplementaryFlight(Flight flight, Flight complementaryFlight);
     
 }

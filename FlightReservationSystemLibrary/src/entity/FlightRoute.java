@@ -47,13 +47,13 @@ public class FlightRoute implements Serializable {
 
     public FlightRoute() {
         this.flights = new ArrayList<>();
+        this.disabled = false;
     }
 
     public FlightRoute(Airport origin, Airport destination) {
         this();
         this.origin = origin;
         this.destination = destination;
-        this.disabled = false;
     }
     
     

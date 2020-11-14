@@ -41,21 +41,20 @@ public class Flight implements Serializable {
     @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
     private List<FlightSchedulePlan> flightSchedulePlans;
     
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private AircraftConfiguration aircraftConfiguration;
     
     private Boolean disabled;
 
     public Flight() {
         flightSchedulePlans = new ArrayList<>();
+        this.disabled = false;
     }
 
-    public Flight(String flightNumber, FlightRoute flightRoute, AircraftConfiguration aircraftConfiguration) {
+    public Flight(String flightNumber) {
         this();
         this.flightNumber = flightNumber;
-        this.flightRoute = flightRoute;
-        this.aircraftConfiguration = aircraftConfiguration;
-        this.disabled = false;
     }
 
 

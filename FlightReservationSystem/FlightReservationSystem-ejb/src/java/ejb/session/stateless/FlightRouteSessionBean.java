@@ -122,6 +122,7 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         
         if(flightRoute != null)
         {
+            flightRoute.getFlights().size();
             return flightRoute;
         }
         else

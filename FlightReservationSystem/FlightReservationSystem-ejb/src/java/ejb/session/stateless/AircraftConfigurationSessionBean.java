@@ -71,11 +71,33 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
         
         try
         {
-            return (AircraftConfiguration) query.getSingleResult();
+            AircraftConfiguration aircraftConfiguration = (AircraftConfiguration) query.getSingleResult();
+            aircraftConfiguration.getFlights().size();
+            aircraftConfiguration.getCabinClasses().size();
+            
+            return aircraftConfiguration;
         }
         catch(NoResultException ex)
         {
             throw new AircraftConfigurationNotFoundException("Aircraft configuration " + name + " does not exist!\n");
         }                
+    }
+    
+    @Override
+    public AircraftConfiguration retrieveAircraftConfigurationById(Long aircraftConfigurationId) throws AircraftConfigurationNotFoundException
+    {
+        AircraftConfiguration aircraftConfiguration = em.find(AircraftConfiguration.class, aircraftConfigurationId);
+        
+        if(aircraftConfiguration != null)
+        {
+            aircraftConfiguration.getFlights().size();
+            aircraftConfiguration.getCabinClasses().size();
+            
+            return aircraftConfiguration;
+        }
+        else
+        {
+            throw new AircraftConfigurationNotFoundException("Aircraft Configuration with ID " + aircraftConfigurationId + " does not exist");
+        }
     }
 }

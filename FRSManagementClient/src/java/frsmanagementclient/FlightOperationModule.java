@@ -142,12 +142,13 @@ public class FlightOperationModule {
 
     private void doCreateNewFlight() throws FlightRouteNotFoundException, AircraftConfigurationNotFoundException, FlightExistException, GeneralException, FlightRouteDisabledException {
         Scanner scanner = new Scanner(System.in);
-        Flight newFlight = new Flight();
+        
 
         System.out.println("*** FRSManagement :: Flight Operation Module :: Create New Flight ***\n");
 
-        System.out.print("Enter Flight Number> ");
-        newFlight.setFlightNumber(scanner.nextLine().trim());
+        System.out.print("Enter Flight Number> "); 
+        String flightNumber = scanner.nextLine().trim();
+        Flight newFlight = new Flight(flightNumber);
 
         System.out.print("Enter Origin Airport IATA code> ");
         String originCode = scanner.nextLine().trim();
@@ -162,23 +163,33 @@ public class FlightOperationModule {
         }
 
         System.out.print("Enter Aircraft Configuration Name> ");
-        AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanRemote.retrieveAircraftConfigurationByName(scanner.nextLine().trim());
-        newFlight.setAircraftConfiguration(aircraftConfiguration);
+        String aircraftConfigurationName = scanner.nextLine().trim();
 
+        String createOption;
         if (newFlight.getFlightRoute().getComplementaryReturnRoute() != null) {
             System.out.print("Create a complementary return flight? (Y/N)> ");
-            if (scanner.nextLine().trim().equals("Y")) {
-                Flight newComplementaryFlight = new Flight();
+            createOption = scanner.nextLine().trim();
+            if (createOption.equals("Y")) {
+                
                 System.out.print("Enter Complementary Flight Number> ");
-                newFlight.setFlightNumber(scanner.nextLine().trim());
-                newComplementaryFlight.setFlightRoute(flightRoute.getComplementaryReturnRoute());
-                newComplementaryFlight.setAircraftConfiguration(aircraftConfiguration);
-                newComplementaryFlight.setComplementaryReturnFlight(newFlight);
-                newFlight.setComplementaryReturnFlight(newComplementaryFlight);
-                flightSessionBeanRemote.createNewFlight(newComplementaryFlight);
+                String complementaryFlightNumber = scanner.nextLine().trim();
+                Flight newComplementaryFlight = new Flight(complementaryFlightNumber);
+                FlightRoute complementaryFlightRoute = flightRoute.getComplementaryReturnRoute();
+                
+                flightSessionBeanRemote.createNewFlight(newFlight, aircraftConfigurationName, flightRoute.getFlightRouteId());
+                System.out.println("Flight " + newFlight.getFlightRoute() + " is created!");
+                flightSessionBeanRemote.createNewFlight(newComplementaryFlight, aircraftConfigurationName, complementaryFlightRoute.getFlightRouteId());
+                System.out.println("Complementary Flight " + newComplementaryFlight.getFlightRoute() + " is created!");
+                flightSessionBeanRemote.associateComplementaryFlight(newFlight, newComplementaryFlight);
+            } else {
+                flightSessionBeanRemote.createNewFlight(newFlight, aircraftConfigurationName, flightRoute.getFlightRouteId());
+                System.out.println("Flight " + newFlight.getFlightRoute() + " is created!");
             }
+        } else {
+            flightSessionBeanRemote.createNewFlight(newFlight, aircraftConfigurationName, flightRoute.getFlightRouteId());
+            System.out.println("Flight " + newFlight.getFlightRoute() + " is created!");
         }
-        flightSessionBeanRemote.createNewFlight(newFlight);
+
     }
 
     private void viewAllFlights() {
