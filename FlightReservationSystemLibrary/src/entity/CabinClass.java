@@ -37,7 +37,7 @@ public class CabinClass implements Serializable {
     @Column(nullable = false)
     private CabinClassType cabinClassType;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn()
     private FlightSchedule flightSchedule;
     
@@ -45,7 +45,7 @@ public class CabinClass implements Serializable {
     @JoinColumn(nullable = false)
     private AircraftConfiguration aircraftConfiguration;
     
-    @OneToOne(optional = false, fetch = FetchType.EAGER)
+    @OneToOne(optional = false)
     private CabinClassConfiguration cabinClassConfiguration;
     
     @Min(0)
