@@ -9,11 +9,16 @@ import entity.Airport;
 import entity.FlightRoute;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.exception.AirportNotFoundException;
 import util.exception.DeleteFlightRouteException;
 import util.exception.FlightRouteExistException;
 import util.exception.FlightRouteNotFoundException;
@@ -25,6 +30,9 @@ import util.exception.GeneralException;
  */
 @Stateless
 public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, FlightRouteSessionBeanLocal {
+
+    @EJB(name = "AirportSessionBeanLocal")
+    private AirportSessionBeanLocal airportSessionBeanLocal;
 
     @PersistenceContext(unitName = "FlightReservationSystem-ejbPU")
     private EntityManager em;
@@ -61,26 +69,24 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
     }
     
     @Override
-    public FlightRoute createNewFlightRoute(FlightRoute flightRoute, Airport origin, Airport destination) throws FlightRouteExistException, GeneralException
+    public Long createNewFlightRoute(FlightRoute flightRoute, String originIataCode, String destinationIataCode) throws FlightRouteExistException,
+            GeneralException, AirportNotFoundException
     {
         try
         {
-            em.persist(flightRoute);
-            
+            Airport origin = airportSessionBeanLocal.retrieveAirportByIataCode(originIataCode);
+            Airport destination = airportSessionBeanLocal.retrieveAirportByIataCode(destinationIataCode);
             flightRoute.setOrigin(origin);
             flightRoute.setDestination(destination);
-            origin.getFlightsFromAirport();
-            destination.getFlightsToAirport();
             origin.getFlightsFromAirport().add(flightRoute);
             destination.getFlightsToAirport().add(flightRoute);
-                    
+            
+            em.persist(flightRoute);     
             em.flush();
-            
-            flightRoute.getOrigin();
-            flightRoute.getDestination();
-            
+                     
             System.out.println(flightRoute + " is created!");
-            return flightRoute;
+            
+            return flightRoute.getFlightRouteId();
         }
         catch(PersistenceException ex)
         {
@@ -94,6 +100,33 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
             {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        }
+    }
+    
+    @Override 
+    public void associateComplementaryFlightRoute(Long newFlightRouteId, Long newComplementaryFlightRouteId) {
+        try {
+            FlightRoute newFlightRoute = retrieveFlightRouteById(newFlightRouteId);
+            FlightRoute newComplementaryFlightRoute = retrieveFlightRouteById(newComplementaryFlightRouteId);
+            newFlightRoute.setComplementaryReturnRoute(newComplementaryFlightRoute);
+            newComplementaryFlightRoute.setComplementaryReturnRoute(newFlightRoute);
+        } catch (FlightRouteNotFoundException ex) {
+            Logger.getLogger(FlightRouteSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    @Override
+    public FlightRoute retrieveFlightRouteById(Long flightRouteId) throws FlightRouteNotFoundException
+    {
+        FlightRoute flightRoute = em.find(FlightRoute.class, flightRouteId);
+        
+        if(flightRoute != null)
+        {
+            return flightRoute;
+        }
+        else
+        {
+            throw new FlightRouteNotFoundException("Flight Route ID " + flightRouteId + " does not exist");
         }
     }
     
@@ -113,9 +146,9 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         query.setParameter("inDestination", destinationCode);
         
         
-        if ((FlightRoute) query.getSingleResult() != null) {
+        try {
             return (FlightRoute) query.getSingleResult();
-        } else {
+        } catch (NoResultException ex) {
             throw new FlightRouteNotFoundException("Flight route with origin " + originCode + " and destination " + destinationCode + " is not found!");
         }
     }
@@ -123,7 +156,7 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
     @Override
     public void deleteFlightRoute(FlightRoute flightRoute) throws FlightRouteNotFoundException, DeleteFlightRouteException
     {
-        
+        flightRoute.getFlights();
         if(flightRoute.getFlights().isEmpty())
         {
             flightRoute.getOrigin().getFlightsFromAirport().remove(flightRoute);
@@ -139,7 +172,7 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         else
         {
             flightRoute.setDisabled(true);
-            System.out.println("Flight route from " + flightRoute.getOrigin() + " to " + flightRoute.getDestination() + " is set disabled!");
+            
             throw new DeleteFlightRouteException("Flight route from " + flightRoute.getOrigin() + " to " + flightRoute.getDestination() +
                     " is in use and cannot be deleted!");
         }

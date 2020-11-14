@@ -7,14 +7,16 @@ package ejb.session.stateless;
 
 import entity.AircraftConfiguration;
 import entity.CabinClass;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.exception.AircraftConfigurationExistExcetpion;
 import util.exception.AircraftConfigurationNotFoundException;
+import util.exception.GeneralException;
 
 /**
  *
@@ -30,33 +32,28 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
     // "Insert Code > Add Business Method")
     
     @Override
-    public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration)
+    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException
     {
+        try {
         em.persist(newAircraftConfiguration);
-
-        newAircraftConfiguration.getAircraftType().getConfigurations().add(newAircraftConfiguration);
-        
-        em.flush();
-        
-        newAircraftConfiguration.getCabinClasses();
-           
-        return newAircraftConfiguration;
-    }
-    
-    @Override
-    public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, List<CabinClass> cabinClasses)
-    {
-        em.persist(newAircraftConfiguration);
-
-        for (int i = 0; i < cabinClasses.size(); i++) {
-            CabinClass cabinClass = cabinClasses.get(i);
-            newAircraftConfiguration.getCabinClasses().add(cabinClass);
+        } catch(PersistenceException ex) {
+            if(ex.getCause() != null && ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException")) {
+                throw new AircraftConfigurationExistExcetpion("Aircraft Configuration with the name: " + newAircraftConfiguration.getAircraftConfigurationName() + " already exists!"); 
+            } else {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
         }
-        newAircraftConfiguration.getAircraftType().getConfigurations().add(newAircraftConfiguration);
+
+        for (CabinClass cabinClass : cabinClasses) {
+            em.persist(cabinClass);
+            cabinClass.setAircraftConfiguration(newAircraftConfiguration);
+        }
         
+        newAircraftConfiguration.setCabinClasses(cabinClasses);
+
         em.flush();
            
-        return newAircraftConfiguration;
+        return newAircraftConfiguration.getAircraftConfigurationId();
     }
     
     @Override

@@ -9,6 +9,7 @@ import entity.Airport;
 import entity.FlightRoute;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.AirportNotFoundException;
 import util.exception.DeleteFlightRouteException;
 import util.exception.FlightRouteExistException;
 import util.exception.FlightRouteNotFoundException;
@@ -25,9 +26,14 @@ public interface FlightRouteSessionBeanRemote {
     
     public List<FlightRoute> retrieveAllFlightRoutes();
     
+    public FlightRoute retrieveFlightRouteById(Long flightRouteId) throws FlightRouteNotFoundException;
+    
     public FlightRoute retrieveFlightRouteByOdPair(String originCode, String destinationCode) throws FlightRouteNotFoundException;
 
     public void deleteFlightRoute(FlightRoute flightRoute) throws FlightRouteNotFoundException, DeleteFlightRouteException;
     
-    public FlightRoute createNewFlightRoute(FlightRoute flightRoute, Airport origin, Airport destination) throws FlightRouteExistException, GeneralException;
+    public Long createNewFlightRoute(FlightRoute flightRoute, String originIataCode, String destinationIataCode) throws FlightRouteExistException, GeneralException, AirportNotFoundException;
+
+    public void associateComplementaryFlightRoute(Long newFlightRouteId, Long newComplementaryFlightRouteId);
 }
+

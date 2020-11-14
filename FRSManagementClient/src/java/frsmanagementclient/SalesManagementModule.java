@@ -96,9 +96,9 @@ public class SalesManagementModule {
         
         for (CabinClass cabinClass: flightScheduleSelected.getCabinClasses()) {
             System.out.println("Cabin class type: " + cabinClass.getCabinClassType());
-            System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getMaxSeatCapacity());
+            System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getCabinClassCapacity());
             System.out.println("No. of seats reserved: " + cabinClass.getNumOfReservedSeats());
-            System.out.println("No. of balance seats: " + (cabinClass.getCabinClassConfiguration().getMaxSeatCapacity() - cabinClass.getNumOfReservedSeats()));
+            System.out.println("No. of balance seats: " + (cabinClass.getCabinClassConfiguration().getCabinClassCapacity() - cabinClass.getNumOfReservedSeats()));
         }
         
     }

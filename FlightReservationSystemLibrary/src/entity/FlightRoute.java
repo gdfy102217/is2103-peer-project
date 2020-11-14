@@ -29,24 +29,24 @@ public class FlightRoute implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightRouteId;
     
-    @ManyToOne(optional = false,  fetch = FetchType.EAGER)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Airport origin;
     
-    @ManyToOne(optional = false,  fetch = FetchType.EAGER)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Airport destination;
     
     @OneToOne()
     private FlightRoute complementaryReturnRoute;
     
-    @OneToMany(mappedBy = "flightRoute", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "flightRoute")
     private List<Flight> flights;
     
     private Boolean disabled;
 
     public FlightRoute() {
-        flights = new ArrayList<>();
+        this.flights = new ArrayList<>();
     }
 
     public FlightRoute(Airport origin, Airport destination) {

@@ -9,7 +9,9 @@ import entity.AircraftConfiguration;
 import entity.CabinClass;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.AircraftConfigurationExistExcetpion;
 import util.exception.AircraftConfigurationNotFoundException;
+import util.exception.GeneralException;
 
 /**
  *
@@ -22,8 +24,5 @@ public interface AircraftConfigurationSessionBeanLocal {
 
     public AircraftConfiguration retrieveAircraftConfigurationByName(String name) throws AircraftConfigurationNotFoundException;
 
-    public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration);
-
-    public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, List<CabinClass> cabinClasses);
-    
+    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException;
 }

@@ -9,7 +9,9 @@ import entity.AircraftConfiguration;
 import entity.CabinClass;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.AircraftConfigurationExistExcetpion;
 import util.exception.AircraftConfigurationNotFoundException;
+import util.exception.GeneralException;
 
 /**
  *
@@ -18,12 +20,10 @@ import util.exception.AircraftConfigurationNotFoundException;
 @Remote
 public interface AircraftConfigurationSessionBeanRemote {
     
-    public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration);
+    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException;
     
     public List<AircraftConfiguration> retrieveAllAircraftConfigurations();
     
     public AircraftConfiguration retrieveAircraftConfigurationByName(String name) throws AircraftConfigurationNotFoundException;
-    
-    public AircraftConfiguration createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, List<CabinClass> cabinClasses);
     
 }
