@@ -7,7 +7,9 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,11 +30,15 @@ public class FlightReservation implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightReservationId;
     private Integer numOfPassengers;
-    //passenger: firstName, lastName, passportNumber, seatNumber
+    //passenger: firstName, lastName, passportNumber, cabinClass, seatNumber
     private List<String[]> passengers;
     //creditCard: cardNumber, nameOnCard, expiryDate, CVV
     private String[] creditCard;
-    private CabinClassType cabinClassType;
+    private String departureAirport;
+    private String destinationAirport;
+    private Date departureDate;
+    @Column(nullable = true)
+    private Date returnDate;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -50,14 +56,18 @@ public class FlightReservation implements Serializable {
         returnFlightSchedules = new ArrayList<>();
     }
 
-    public FlightReservation(Integer numOfPassengers, List<String[]> passengers, String[] creditCard, CabinClassType cabinClassType, Customer customer) {
+    public FlightReservation(Integer numOfPassengers, List<String[]> passengers, String[] creditCard, String departureAirport, String destinationAirport, Date departureDate, Date returnDate, Customer customer) {
         this.numOfPassengers = numOfPassengers;
         this.passengers = passengers;
         this.creditCard = creditCard;
-        this.cabinClassType = cabinClassType;
+        this.departureAirport = departureAirport;
+        this.destinationAirport = destinationAirport;
+        this.departureDate = departureDate;
+        this.returnDate = returnDate;
         this.customer = customer;
     }
 
+    
     public Long getFlightReservationId() {
         return flightReservationId;
     }
@@ -115,12 +125,36 @@ public class FlightReservation implements Serializable {
         this.customer = customer;
     }
 
-    public CabinClassType getCabinClassType() {
-        return cabinClassType;
+    public String getDepartureAirport() {
+        return departureAirport;
     }
 
-    public void setCabinClassType(CabinClassType cabinClassType) {
-        this.cabinClassType = cabinClassType;
+    public void setDepartureAirport(String departureAirport) {
+        this.departureAirport = departureAirport;
+    }
+
+    public String getDestinationAirport() {
+        return destinationAirport;
+    }
+
+    public void setDestinationAirport(String destinationAirport) {
+        this.destinationAirport = destinationAirport;
+    }
+
+    public Date getDepartureDate() {
+        return departureDate;
+    }
+
+    public void setDepartureDate(Date departureDate) {
+        this.departureDate = departureDate;
+    }
+
+    public Date getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(Date returnDate) {
+        this.returnDate = returnDate;
     }
     
     
@@ -148,7 +182,7 @@ public class FlightReservation implements Serializable {
     @Override
     public String toString() {
         return "FlightReservation{" + "numOfPassengers=" + numOfPassengers + ", passengers=" + passengers + ", creditCard=" + creditCard + 
-                ", cabinClassType=" + cabinClassType + ", customer=" + customer;
+                 ", customer=" + customer;
     }
 
     
