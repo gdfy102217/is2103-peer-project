@@ -128,6 +128,7 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         
         try {
             FlightRoute flightRoute = (FlightRoute) query.getSingleResult();
+            flightRoute.getFlights().size();
             return flightRoute;
             
         } catch (NoResultException ex) {

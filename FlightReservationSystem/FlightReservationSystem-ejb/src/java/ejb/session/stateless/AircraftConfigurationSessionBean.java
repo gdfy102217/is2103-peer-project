@@ -78,6 +78,7 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
         {
             AircraftConfiguration aircraftConfiguration = (AircraftConfiguration) query.getSingleResult();
             aircraftConfiguration.getCabinClasses().size();
+            aircraftConfiguration.getFlights().size();
             
             return aircraftConfiguration;
         }
