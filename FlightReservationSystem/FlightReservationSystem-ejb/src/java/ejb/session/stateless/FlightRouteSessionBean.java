@@ -40,51 +40,24 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
+  
     @Override
-    public FlightRoute createNewFlightRoute(FlightRoute flightRoute) throws FlightRouteExistException, GeneralException
-    {
-        try
-        {
-            em.persist(flightRoute);
-            
-            flightRoute.getOrigin().getFlightsFromAirport().add(flightRoute);
-            flightRoute.getDestination().getFlightsToAirport().add(flightRoute);
-            
-            em.flush();
-            return flightRoute;
-        }
-        catch(PersistenceException ex)
-        {
-            if(ex.getCause() != null && 
-                    ex.getCause().getCause() != null &&
-                    ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException"))
-            {
-                throw new FlightRouteExistException("This flight route already exists!");
-            }
-            else
-            {
-                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
-            }
-        }
-    }
-    
-    @Override
-    public Long createNewFlightRoute(FlightRoute flightRoute, String originIataCode, String destinationIataCode) throws FlightRouteExistException,
+    public Long createNewFlightRoute(String originIataCode, String destinationIataCode) throws FlightRouteExistException,
             GeneralException, AirportNotFoundException
     {
         try
         {
             Airport origin = airportSessionBeanLocal.retrieveAirportByIataCode(originIataCode);
             Airport destination = airportSessionBeanLocal.retrieveAirportByIataCode(destinationIataCode);
-            flightRoute.setOrigin(origin);
-            flightRoute.setDestination(destination);
+            
+            FlightRoute flightRoute = new FlightRoute(origin, destination);
+            em.persist(flightRoute);    
+            
             origin.getFlightsFromAirport().add(flightRoute);
             destination.getFlightsToAirport().add(flightRoute);
             
-            em.persist(flightRoute);     
+             
             em.flush();
-                     
-            System.out.println(flightRoute + " is created!");
             
             return flightRoute.getFlightRouteId();
         }
@@ -148,30 +121,38 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         
         
         try {
-            return (FlightRoute) query.getSingleResult();
+            FlightRoute flightRoute = (FlightRoute) query.getSingleResult();
+            return flightRoute;
+            
         } catch (NoResultException ex) {
             throw new FlightRouteNotFoundException("Flight route with origin " + originCode + " and destination " + destinationCode + " is not found!");
         }
     }
 
     @Override
-    public void deleteFlightRoute(FlightRoute flightRoute) throws FlightRouteNotFoundException, DeleteFlightRouteException
+    public Long deleteFlightRoute(String originCode, String destinationCode) throws FlightRouteNotFoundException, DeleteFlightRouteException
     {
+        
+        FlightRoute flightRoute = retrieveFlightRouteByOdPair(originCode, destinationCode);
+        Long flightRouteId = flightRoute.getFlightRouteId();
+        
         flightRoute.getFlights();
         if(flightRoute.getFlights().isEmpty())
         {
             flightRoute.getOrigin().getFlightsFromAirport().remove(flightRoute);
             flightRoute.getOrigin().getFlightsToAirport().remove(flightRoute);
-            flightRoute.setOrigin(null);
-            flightRoute.setDestination(null);
+            
             if (flightRoute.getComplementaryReturnRoute() != null) {
                 flightRoute.getComplementaryReturnRoute().setComplementaryReturnRoute(null);
             }
+            
             flightRoute.setComplementaryReturnRoute(null);
             em.remove(flightRoute);
-        }
-        else
-        {
+            
+            return flightRouteId;
+            
+        } else {
+            
             flightRoute.setDisabled(true);
             
             throw new DeleteFlightRouteException("Flight route from " + flightRoute.getOrigin() + " to " + flightRoute.getDestination() +

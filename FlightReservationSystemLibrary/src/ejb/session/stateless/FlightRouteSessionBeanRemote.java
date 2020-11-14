@@ -22,18 +22,17 @@ import util.exception.GeneralException;
 @Remote
 public interface FlightRouteSessionBeanRemote {
     
-    public FlightRoute createNewFlightRoute(FlightRoute flightRoute) throws FlightRouteExistException, GeneralException;
+    public Long createNewFlightRoute(String originIataCode, String destinationIataCode) throws FlightRouteExistException,
+            GeneralException, AirportNotFoundException;
     
     public List<FlightRoute> retrieveAllFlightRoutes();
     
     public FlightRoute retrieveFlightRouteById(Long flightRouteId) throws FlightRouteNotFoundException;
     
     public FlightRoute retrieveFlightRouteByOdPair(String originCode, String destinationCode) throws FlightRouteNotFoundException;
-
-    public void deleteFlightRoute(FlightRoute flightRoute) throws FlightRouteNotFoundException, DeleteFlightRouteException;
     
-    public Long createNewFlightRoute(FlightRoute flightRoute, String originIataCode, String destinationIataCode) throws FlightRouteExistException, GeneralException, AirportNotFoundException;
-
+    public Long deleteFlightRoute(String originCode, String destinationCode) throws FlightRouteNotFoundException, DeleteFlightRouteException;
+    
     public void associateComplementaryFlightRoute(Long newFlightRouteId, Long newComplementaryFlightRouteId);
 }
 
