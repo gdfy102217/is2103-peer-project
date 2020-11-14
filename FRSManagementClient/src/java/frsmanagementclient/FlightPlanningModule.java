@@ -182,7 +182,7 @@ public class FlightPlanningModule {
             Long aircraftConfigurationId;
             try {
                 aircraftConfigurationId = aircraftConfigurationSessionBeanRemote.createNewAircraftConfiguration(newAircraftConfiguration, aircraftType, cabinClasses);
-                System.out.println("\nAircraft Confirguration With ID: " + aircraftConfigurationId + "is created successfully!\n");
+                System.out.println("\nAircraft Confirguration With ID: " + aircraftConfigurationId + " is created successfully!\n");
             } catch (AircraftConfigurationExistExcetpion | GeneralException ex) {
                 System.out.println("Error: " + ex.getMessage());
             } 
@@ -232,10 +232,9 @@ public class FlightPlanningModule {
             System.out.print("Create complementary flight? (Y/N)> ");
             String response = scanner.nextLine().trim();
             if ("Y".equals(response)) {
-                FlightRoute newComplementaryFlightRoute = new FlightRoute();
                 Long newComplementaryFlightRouteId = flightRouteSessionBeanRemote.createNewFlightRoute(destinationIataCode, originIataCode);
                 flightRouteSessionBeanRemote.associateComplementaryFlightRoute(newFlightRouteId, newComplementaryFlightRouteId);
-                System.out.println("Complementary flight route " + newFlightRouteId + " is created!\n");       
+                System.out.println("Complementary flight route " + newComplementaryFlightRouteId + " is created!\n");       
             }
         } catch (FlightRouteExistException | GeneralException | AirportNotFoundException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -259,7 +258,7 @@ public class FlightPlanningModule {
                 }
                 
                 if (flightRoute.getComplementaryReturnRoute() != null) {
-                    System.out.println("Complementary " + flightRoute.getComplementaryReturnRoute()+ "]");
+                    System.out.println("[Complementary " + flightRoute.getComplementaryReturnRoute()+ "]");
                 }
             }
         }
