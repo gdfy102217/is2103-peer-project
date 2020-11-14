@@ -69,11 +69,15 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
             
             flightRoute.setOrigin(origin);
             flightRoute.setDestination(destination);
-            flightRoute.setFlights(new ArrayList<>());
+            origin.getFlightsFromAirport();
+            destination.getFlightsToAirport();
             origin.getFlightsFromAirport().add(flightRoute);
             destination.getFlightsToAirport().add(flightRoute);
-            
+                    
             em.flush();
+            
+            flightRoute.getOrigin();
+            flightRoute.getDestination();
             
             System.out.println(flightRoute + " is created!");
             return flightRoute;
@@ -126,7 +130,9 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
             flightRoute.getOrigin().getFlightsToAirport().remove(flightRoute);
             flightRoute.setOrigin(null);
             flightRoute.setDestination(null);
-            flightRoute.getComplementaryReturnRoute().setComplementaryReturnRoute(null);
+            if (flightRoute.getComplementaryReturnRoute() != null) {
+                flightRoute.getComplementaryReturnRoute().setComplementaryReturnRoute(null);
+            }
             flightRoute.setComplementaryReturnRoute(null);
             em.remove(flightRoute);
         }

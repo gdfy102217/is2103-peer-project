@@ -6,10 +6,12 @@
 package ejb.session.stateless;
 
 import entity.Customer;
+import entity.Partner;
 import javax.ejb.Remote;
 import util.exception.CustomerExistException;
 import util.exception.CustomerNotFoundException;
 import util.exception.GeneralException;
+import util.exception.PartnerExistException;
 
 
 @Remote
@@ -17,6 +19,9 @@ import util.exception.GeneralException;
 public interface CustomerSessionBeanRemote {
     
     public Long createNewCustomer(Customer customer) throws CustomerExistException, GeneralException;
+    
     public Customer retrieveCustomerByUsername(String username) throws CustomerNotFoundException;
+    
+    public Long createNewPartner(Partner partner) throws PartnerExistException, GeneralException;
     
 }

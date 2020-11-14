@@ -17,6 +17,8 @@ import entity.CabinClass;
 import entity.CabinClassConfiguration;
 import entity.Employee;
 import entity.FlightRoute;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -150,9 +152,10 @@ public class FlightPlanningModule {
         }
         
         aircraftConfigurationSessionBeanRemote.createNewAircraftConfiguration(newAircraftConfiguration);
-
+        
         //to create each cabin class configuration
         Integer totalMaximumSeatCapacity = 0;
+        List<CabinClass> cabinClasses = new ArrayList<>();
         for (int i = 0; i < numOfCabinClasses; i++) {
             CabinClass newCabinClass = new CabinClass();
             Integer cabinClassTypeSelection = 0;
@@ -200,7 +203,10 @@ public class FlightPlanningModule {
             }
             newCabinClass.setAircraftConfiguration(newAircraftConfiguration);
             cabinClassSessionBeanRemote.createNewCabinClass(newCabinClass, newCabinClassConfiguration);
+            cabinClasses.add(newCabinClass);
         }
+        
+        
         
     }
 
@@ -237,6 +243,8 @@ public class FlightPlanningModule {
         System.out.print("Enter Destination Airport IATA code> ");
         Airport destination = airportSessionBeanRemote.retrieveAirportByIataCode(scanner.nextLine().trim());
         newFlightRoute.setDestination(destination);
+        
+        flightRouteSessionBeanRemote.createNewFlightRoute(newFlightRoute, origin, destination);
 
         System.out.print("Create complementary flight? (Y/N)> ");
         String response = scanner.nextLine().trim();
@@ -248,8 +256,7 @@ public class FlightPlanningModule {
             newFlightRoute.setComplementaryReturnRoute(newComplementaryFlightRoute);
             flightRouteSessionBeanRemote.createNewFlightRoute(newComplementaryFlightRoute, destination, origin);
             System.out.println("Complementary flight route is created!");
-        }
-        flightRouteSessionBeanRemote.createNewFlightRoute(newFlightRoute, origin, destination);
+        }       
         System.out.println("Flight route is created!");
     }
 
@@ -275,6 +282,7 @@ public class FlightPlanningModule {
         String destinationCode = scanner.nextLine().trim();
 
         FlightRoute flightRoute = flightRouteSessionBeanRemote.retrieveFlightRouteByOdPair(originCode, destinationCode);
+        System.out.println("The flight route deleted is " + flightRoute);
         flightRouteSessionBeanRemote.deleteFlightRoute(flightRoute);
     }
 }

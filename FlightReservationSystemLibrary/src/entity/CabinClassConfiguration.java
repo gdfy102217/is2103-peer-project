@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,13 +41,15 @@ public class CabinClassConfiguration implements Serializable {
     private String seatingConfigurationPerColumn;
     
     
-    @OneToMany(mappedBy = "cabinClassConfiguration", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cabinClassConfiguration", fetch = FetchType.EAGER)
     private List<Fare> fares;
 
     public CabinClassConfiguration() {
+        this.fares = new ArrayList<>();
     }
 
     public CabinClassConfiguration(Integer numOfAisles, Integer numOfRows, Integer numOfSeatsAbreast, String seatingConfigurationPerColumn) {
+        this();
         this.numOfAisles = numOfAisles;
         this.numOfRows = numOfRows;
         this.numOfSeatsAbreast = numOfSeatsAbreast;

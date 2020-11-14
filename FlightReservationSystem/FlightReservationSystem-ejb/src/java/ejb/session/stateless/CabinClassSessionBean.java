@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.AircraftConfiguration;
 import entity.CabinClass;
 import entity.CabinClassConfiguration;
 import java.util.ArrayList;
@@ -26,13 +27,12 @@ public class CabinClassSessionBean implements CabinClassSessionBeanRemote, Cabin
     // "Insert Code > Add Business Method")
     
     @Override
-    public CabinClass createNewCabinClass(CabinClass newCabinClass, CabinClassConfiguration newCabinClassConfiguration) {
+    public CabinClass createNewCabinClass (CabinClass newCabinClass, CabinClassConfiguration newCabinClassConfiguration) {
         
         em.persist(newCabinClass);
         em.persist(newCabinClassConfiguration);
-        
-        newCabinClassConfiguration.setFares(new ArrayList<>());
-        newCabinClass.getAircraftConfiguration().getCabinClasses().add(newCabinClass);
+
+        newCabinClass.setCabinClassConfiguration(newCabinClassConfiguration);
         
         em.flush();
         

@@ -7,6 +7,7 @@ package ejb.session.singleton;
 
 import ejb.session.stateless.AircraftTypeSessionBeanLocal;
 import ejb.session.stateless.AirportSessionBeanLocal;
+import ejb.session.stateless.CustomerSessionBeanLocal;
 import ejb.session.stateless.EmployeeSessionBeanLocal;
 import entity.AircraftType;
 import entity.Airport;
@@ -26,6 +27,7 @@ import util.exception.AircraftTypeExistException;
 import util.exception.AirportExistException;
 import util.exception.EmployeeExistException;
 import util.exception.GeneralException;
+import util.exception.PartnerExistException;
 
 /**
  *
@@ -36,8 +38,12 @@ import util.exception.GeneralException;
 @Startup
 public class DataInitSessionBean {
 
+    @EJB(name = "CustomerSessionBeanLocal")
+    private CustomerSessionBeanLocal customerSessionBeanLocal;
+
     @EJB(name = "EmployeeSessionBeanLocal")
     private EmployeeSessionBeanLocal employeeSessionBeanLocal;
+    
     @EJB(name = "AirportSessionBeanLocal")
     private AirportSessionBeanLocal airportSessionBeanLocal;
     @EJB(name = "AircraftTypeSessionBeanLocal")
@@ -59,10 +65,10 @@ public class DataInitSessionBean {
         {
             initialiseEmployee();
         }
-//        if(em.find(Partner.class, 1l) == null)
-//        {
-////            initialisePartner();
-//        }
+        if(em.find(Partner.class, 1l) == null)
+        {
+            initialisePartner();
+        }
         if(em.find(Airport.class, 1l) == null)
         {
             initialiseAirport();
@@ -88,7 +94,11 @@ public class DataInitSessionBean {
     
     private void initialisePartner()
     {
-        
+        try {
+            customerSessionBeanLocal.createNewPartner(new Partner("Partner","Test","partner","password"));
+        } catch (PartnerExistException | GeneralException ex) {
+            System.out.println(ex);
+        }
     }
     
     private void initialiseAirport()

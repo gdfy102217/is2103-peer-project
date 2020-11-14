@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.AircraftConfiguration;
 import entity.CabinClass;
 import entity.CabinClassConfiguration;
 import javax.ejb.Local;

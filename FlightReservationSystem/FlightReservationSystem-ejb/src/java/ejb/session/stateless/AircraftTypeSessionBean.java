@@ -36,8 +36,9 @@ public class AircraftTypeSessionBean implements AircraftTypeSessionBeanRemote, A
            
         try {         
             em.persist(aircraftType);
-            aircraftType.setConfigurations(new ArrayList<>());
-            em.flush();               
+            em.flush();        
+            
+            aircraftType.getConfigurations();
 
             return aircraftType;
         }catch(PersistenceException ex) {

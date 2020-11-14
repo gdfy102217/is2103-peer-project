@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,9 +47,11 @@ public class Flight implements Serializable {
     private Boolean disabled;
 
     public Flight() {
+        flightSchedulePlans = new ArrayList<>();
     }
 
     public Flight(String flightNumber, FlightRoute flightRoute, AircraftConfiguration aircraftConfiguration) {
+        this();
         this.flightNumber = flightNumber;
         this.flightRoute = flightRoute;
         this.aircraftConfiguration = aircraftConfiguration;

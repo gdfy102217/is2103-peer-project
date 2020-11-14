@@ -38,9 +38,9 @@ public class Airport implements Serializable {
     private String timeZoneAbbr;
     
     @OneToMany(mappedBy = "origin", fetch = FetchType.EAGER)
-    private List<FlightRoute> flightsFromAirport = new ArrayList<FlightRoute>();
+    private List<FlightRoute> flightsFromAirport;
     @OneToMany(mappedBy = "destination", fetch = FetchType.EAGER)
-    private List<FlightRoute> flightsToAirport = new ArrayList<FlightRoute>();
+    private List<FlightRoute> flightsToAirport;
 
     public Airport() {
         flightsFromAirport = new ArrayList<>();
@@ -48,6 +48,7 @@ public class Airport implements Serializable {
     }
 
     public Airport(String airportName, String iataAirportcode, String city, String stateOrProvince, String country, String timeZoneId) {
+        this();
         this.airportName = airportName;
         this.iataAirportcode = iataAirportcode;
         this.city = city;

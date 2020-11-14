@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Customer;
+import entity.Partner;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -16,6 +17,7 @@ import javax.persistence.Query;
 import util.exception.CustomerExistException;
 import util.exception.CustomerNotFoundException;
 import util.exception.GeneralException;
+import util.exception.PartnerExistException;
 
 
 @Stateless
@@ -25,8 +27,6 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
     @PersistenceContext(unitName = "FlightReservationSystem-ejbPU")
     private EntityManager em;
     
-    public CustomerSessionBean() {
-    }
 
     @Override
     public Long createNewCustomer(Customer customer) throws CustomerExistException, GeneralException {
@@ -44,6 +44,24 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
             }
         }
         return customer.getCustomerId();
+    }
+    
+    @Override
+    public Long createNewPartner(Partner partner) throws PartnerExistException, GeneralException {
+        try {
+            em.persist(partner);
+            em.flush();
+        } catch(PersistenceException ex) {
+            if(ex.getCause() != null && 
+                    ex.getCause().getCause() != null &&
+                    ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException"))
+            {
+                throw new PartnerExistException("Customer with same username already exist"); 
+            } else {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        }
+        return partner.getCustomerId();
     }
     
     @Override

@@ -29,15 +29,15 @@ public class FlightRoute implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightRouteId;
     
-    @ManyToOne(optional = false, cascade= CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,  fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Airport origin;
     
-    @ManyToOne(optional = false, cascade= CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,  fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Airport destination;
     
-    @OneToOne(optional = true)
+    @OneToOne()
     private FlightRoute complementaryReturnRoute;
     
     @OneToMany(mappedBy = "flightRoute", fetch = FetchType.EAGER)
@@ -51,7 +51,6 @@ public class FlightRoute implements Serializable {
 
     public FlightRoute(Airport origin, Airport destination) {
         this();
-        
         this.origin = origin;
         this.destination = destination;
         this.disabled = false;
@@ -124,7 +123,7 @@ public class FlightRoute implements Serializable {
 
     @Override
     public String toString() {
-        return "FlightRoute [" + "Origin = " + origin.getIataAirportcode() + ", Destination = " + destination.getIataAirportcode() + ']';
+        return "FlightRoute [" + "Origin = " + getOrigin().getIataAirportcode() + ", Destination = " + getDestination().getIataAirportcode() + ']';
     }
 
     

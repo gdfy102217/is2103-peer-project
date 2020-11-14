@@ -37,9 +37,10 @@ public class AirportSessionBean implements AirportSessionBeanRemote, AirportSess
         try
         {
             em.persist(airport);
-            airport.setFlightsFromAirport(new ArrayList<>());
-            airport.setFlightsToAirport(new ArrayList<>());
             em.flush();
+            
+            airport.getFlightsFromAirport();
+            airport.getFlightsToAirport();
  
             return airport;
         }
