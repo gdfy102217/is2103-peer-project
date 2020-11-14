@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlTransient;
 import util.enumeration.CabinClassType;
 
@@ -46,9 +47,10 @@ public class CabinClass implements Serializable {
     @OneToOne(optional = false)
     private CabinClassConfiguration cabinClassConfiguration;
     
+    @Min(0)
     private Integer numOfReservedSeats;
+    @Min(0)
     private Integer numOfAvailableSeats;
-    private Integer numOfBalanceSeats;
     
     public CabinClass() {
         this.numOfReservedSeats = 0;
@@ -105,10 +107,6 @@ public class CabinClass implements Serializable {
 
     public Integer getNumOfBalanceSeats() {
         return numOfAvailableSeats - numOfReservedSeats;
-    }
-
-    public void setNumOfBalanceSeats(Integer numOfBalanceSeats) {
-        this.numOfBalanceSeats = numOfBalanceSeats;
     }
 
     public CabinClassType getCabinClassType() {
