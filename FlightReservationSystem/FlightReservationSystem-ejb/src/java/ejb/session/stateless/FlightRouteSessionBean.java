@@ -47,19 +47,25 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
     {
         try
         {
-            Airport origin = airportSessionBeanLocal.retrieveAirportByIataCode(originIataCode);
-            Airport destination = airportSessionBeanLocal.retrieveAirportByIataCode(destinationIataCode);
+            try {
+                retrieveFlightRouteByOdPair(originIataCode, destinationIataCode);
+                throw new FlightRouteExistException("This flight route already exists!");
+            } catch (FlightRouteNotFoundException ex) {
+                Airport origin = airportSessionBeanLocal.retrieveAirportByIataCode(originIataCode);
+                Airport destination = airportSessionBeanLocal.retrieveAirportByIataCode(destinationIataCode);
+
+                FlightRoute flightRoute = new FlightRoute(origin, destination);
+                em.persist(flightRoute);    
+
+                origin.getFlightsFromAirport().add(flightRoute);
+                destination.getFlightsToAirport().add(flightRoute);
+
+
+                em.flush();
+
+                return flightRoute.getFlightRouteId();
+            }
             
-            FlightRoute flightRoute = new FlightRoute(origin, destination);
-            em.persist(flightRoute);    
-            
-            origin.getFlightsFromAirport().add(flightRoute);
-            destination.getFlightsToAirport().add(flightRoute);
-            
-             
-            em.flush();
-            
-            return flightRoute.getFlightRouteId();
         }
         catch(PersistenceException ex)
         {
