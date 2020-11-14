@@ -111,7 +111,7 @@ public class FlightPlanningModule {
                 } else if (response == 6 && employee.getEmployeeType().equals(EmployeeType.ROUTEPLANNER)) {
                     try {
                         doDeleteFlightRoute();
-                    } catch (FlightRouteNotFoundException | DeleteFlightRouteException ex) {
+                    } catch (FlightRouteNotFoundException ex) {
                         System.out.println(ex);
                     }
                 } else if (response == 7) {
@@ -237,24 +237,19 @@ public class FlightPlanningModule {
         System.out.println("*** FRSManagement :: Flight Planning Module :: Create New Flight Route ***\n");
 
         System.out.print("Enter Origin Airport IATA code> ");
-        Airport origin = airportSessionBeanRemote.retrieveAirportByIataCode(scanner.nextLine().trim());
-        newFlightRoute.setOrigin(origin);
+        String originIataCode = scanner.nextLine().trim();
 
         System.out.print("Enter Destination Airport IATA code> ");
-        Airport destination = airportSessionBeanRemote.retrieveAirportByIataCode(scanner.nextLine().trim());
-        newFlightRoute.setDestination(destination);
+        String destinationIataCode = scanner.nextLine().trim();
         
-        flightRouteSessionBeanRemote.createNewFlightRoute(newFlightRoute, origin, destination);
+        Long newFlightRouteId = flightRouteSessionBeanRemote.createNewFlightRoute(newFlightRoute, originIataCode, destinationIataCode);
 
         System.out.print("Create complementary flight? (Y/N)> ");
         String response = scanner.nextLine().trim();
         if ("Y".equals(response)) {
             FlightRoute newComplementaryFlightRoute = new FlightRoute();
-            newComplementaryFlightRoute.setOrigin(destination);
-            newComplementaryFlightRoute.setDestination(origin);
-            newComplementaryFlightRoute.setComplementaryReturnRoute(newFlightRoute);
-            newFlightRoute.setComplementaryReturnRoute(newComplementaryFlightRoute);
-            flightRouteSessionBeanRemote.createNewFlightRoute(newComplementaryFlightRoute, destination, origin);
+            Long newComplementaryFlightRouteId = flightRouteSessionBeanRemote.createNewFlightRoute(newComplementaryFlightRoute, destinationIataCode, originIataCode);
+            flightRouteSessionBeanRemote.associateComplementaryFlightRoute(newFlightRouteId, newComplementaryFlightRouteId);
             System.out.println("Complementary flight route is created!");
         }       
         System.out.println("Flight route is created!");
@@ -270,7 +265,7 @@ public class FlightPlanningModule {
         }
     }
 
-    private void doDeleteFlightRoute() throws FlightRouteNotFoundException, DeleteFlightRouteException {
+    private void doDeleteFlightRoute() throws FlightRouteNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("*** FRSManagement :: Flight Planning Module :: Delete Flight Route ***\n");
@@ -283,6 +278,10 @@ public class FlightPlanningModule {
 
         FlightRoute flightRoute = flightRouteSessionBeanRemote.retrieveFlightRouteByOdPair(originCode, destinationCode);
         System.out.println("The flight route deleted is " + flightRoute);
-        flightRouteSessionBeanRemote.deleteFlightRoute(flightRoute);
+        try {
+            flightRouteSessionBeanRemote.deleteFlightRoute(flightRoute);
+        } catch (DeleteFlightRouteException ex) {
+            System.out.println("Flight route from " + flightRoute.getOrigin() + " to " + flightRoute.getDestination() + " is set disabled!");
+        }
     }
 }
