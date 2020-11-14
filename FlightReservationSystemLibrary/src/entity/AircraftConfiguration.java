@@ -11,7 +11,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -53,14 +52,11 @@ public class AircraftConfiguration implements Serializable {
         
     }
 
-    public AircraftConfiguration(String aircraftConfigurationName, Integer numOfCabinClasses, AircraftType aircraftType, Flight flight, List<CabinClass> cabinClasses) {
+    public AircraftConfiguration(String aircraftConfigurationName, Integer numOfCabinClasses) {
         this();
         
         this.aircraftConfigurationName = aircraftConfigurationName;
         this.numOfCabinClasses = numOfCabinClasses;
-        this.aircraftType = aircraftType;
-        this.flight = flight;
-        this.cabinClasses = cabinClasses;
     }
 
     public Long getAircraftConfigurationId() {
@@ -87,7 +83,6 @@ public class AircraftConfiguration implements Serializable {
         this.numOfCabinClasses = numOfCabinClasses;
     }
 
-
     public AircraftType getAircraftType() {
         return aircraftType;
     }
@@ -110,7 +105,7 @@ public class AircraftConfiguration implements Serializable {
         Integer maximumSeatCapacity = 0;
         
         for (CabinClass cabinClass: cabinClasses) {
-            maximumSeatCapacity += cabinClass.getCabinClassConfiguration().getMaxSeatCapacity();
+            maximumSeatCapacity += cabinClass.getCabinClassConfiguration().getCabinClassCapacity();
         }
         
         return maximumSeatCapacity;

@@ -39,6 +39,9 @@ public class CabinClassConfiguration implements Serializable {
     private Integer numOfSeatsAbreast;
     @Column(nullable = false)
     private String seatingConfigurationPerColumn;
+    @Min(0)
+    @Column(nullable = false)
+    private Integer cabinClassCapacity;
     
     
     @OneToMany(mappedBy = "cabinClassConfiguration", fetch = FetchType.EAGER)
@@ -48,15 +51,13 @@ public class CabinClassConfiguration implements Serializable {
         this.fares = new ArrayList<>();
     }
 
-    public CabinClassConfiguration(Integer numOfAisles, Integer numOfRows, Integer numOfSeatsAbreast, String seatingConfigurationPerColumn) {
-        this();
+    public CabinClassConfiguration(Integer numOfAisles, Integer numOfRows, Integer numOfSeatsAbreast, String seatingConfigurationPerColumn, Integer cabinClassCapacity) {
         this.numOfAisles = numOfAisles;
         this.numOfRows = numOfRows;
         this.numOfSeatsAbreast = numOfSeatsAbreast;
         this.seatingConfigurationPerColumn = seatingConfigurationPerColumn;
+        this.cabinClassCapacity = cabinClassCapacity;
     }
-    
-    
 
     public Long getCabinClassConfigurationId() {
         return cabinClassConfigurationId;
@@ -98,8 +99,12 @@ public class CabinClassConfiguration implements Serializable {
         this.seatingConfigurationPerColumn = seatingConfigurationPerColumn;
     }
 
-    public Integer getMaxSeatCapacity() {
-        return this.numOfRows * this.numOfSeatsAbreast;
+    public Integer getCabinClassCapacity() {
+        return cabinClassCapacity;
+    }
+
+    public void setCabinClassCapacity(Integer cabinClassCapacity) {
+        this.cabinClassCapacity = cabinClassCapacity;
     }
 
     @Override

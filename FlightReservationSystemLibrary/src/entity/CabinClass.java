@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,7 +46,7 @@ public class CabinClass implements Serializable {
     @JoinColumn(nullable = false)
     private AircraftConfiguration aircraftConfiguration;
     
-    @OneToOne(optional = false, fetch = FetchType.EAGER)
+    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     private CabinClassConfiguration cabinClassConfiguration;
     
     @Min(0)
@@ -57,11 +58,11 @@ public class CabinClass implements Serializable {
         this.numOfReservedSeats = 0;
     }
 
-    public CabinClass(FlightSchedule flightSchedule, CabinClassConfiguration cabinClassConfiguration) {
+    public CabinClass(CabinClassType cabinClassType, CabinClassConfiguration cabinClassConfiguration) {
         this();
-        this.flightSchedule = flightSchedule;
+        this.cabinClassType = cabinClassType;
         this.cabinClassConfiguration = cabinClassConfiguration;
-        this.numOfAvailableSeats = cabinClassConfiguration.getMaxSeatCapacity();
+        this.numOfAvailableSeats = cabinClassConfiguration.getCabinClassCapacity();
     }
 
     @XmlTransient

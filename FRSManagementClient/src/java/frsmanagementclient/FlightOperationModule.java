@@ -202,7 +202,7 @@ public class FlightOperationModule {
         System.out.println(flight.getFlightRoute());
         for (CabinClass cabinClass: flight.getAircraftConfiguration().getCabinClasses()) {
             System.out.println(cabinClass.getCabinClassType());
-            System.out.println("Available seats = " + cabinClass.getCabinClassConfiguration().getMaxSeatCapacity());
+            System.out.println("Available seats = " + cabinClass.getCabinClassConfiguration().getCabinClassCapacity());
         }
 
         System.out.print("Update details of this flight? (Y/N)> ");
