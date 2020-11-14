@@ -216,7 +216,7 @@ public class FlightPlanningModule {
         System.out.println();
         System.out.println(aircraftConfiguration + "\n");
         for (CabinClass cabinClass: aircraftConfiguration.getCabinClasses()) {
-            System.out.println(cabinClass);
+            System.out.println("\t" + cabinClass);
         }
         System.out.println();
     }
