@@ -18,14 +18,18 @@ import javax.persistence.Id;
 
 public class Partner extends Customer implements Serializable {
 
+    @Column(nullable = false, length = 16)
+    private String partnerName;
+    
     private static final long serialVersionUID = 1L;
     
     public Partner() {
         super();
     }
 
-    public Partner(String firstName, String lastName, String username, String password) {
-        super(firstName, lastName, null, null, null, username, password);
+    public Partner(String partnerName, String username, String password) {
+        super("partner", "account", null, null, null, username, password);
+        this.partnerName = partnerName;
     }
     
     @Override
@@ -51,6 +55,14 @@ public class Partner extends Customer implements Serializable {
     @Override
     public String toString() {
         return "entity.Partner[ id=" + customerId + " ]";
+    }
+
+    public String getPartnerName() {
+        return partnerName;
+    }
+
+    public void setPartnerName(String partnerName) {
+        this.partnerName = partnerName;
     }
     
 }
