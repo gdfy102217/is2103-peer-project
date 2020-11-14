@@ -15,6 +15,7 @@ import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
 import util.exception.FlightExistException;
 import util.exception.FlightNotFoundException;
+import util.exception.FlightRouteDisabledException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.GeneralException;
 
@@ -25,8 +26,9 @@ import util.exception.GeneralException;
 @Local
 public interface FlightSessionBeanLocal {
 
-    public Flight createNewFlight(Flight flight, String aircraftConfigurationName, Long flightRouteId) throws FlightExistException, GeneralException, FlightRouteNotFoundException, AircraftConfigurationNotFoundException;
-
+    public Long createNewFlight(Flight newFlight, String originAirportIATACode, String destinationAirportIATACode, String aircraftConfigurationName) 
+            throws FlightExistException, GeneralException, FlightRouteNotFoundException, AircraftConfigurationNotFoundException, FlightRouteDisabledException;
+    
     public List<Flight> retrieveAllFlights();
 
     public Flight retrieveFlightByFlightNumber(String flightNumber) throws FlightNotFoundException;
@@ -35,14 +37,10 @@ public interface FlightSessionBeanLocal {
 
     public List<FlightSchedule> retrieveFlightSchedulesByFlightNumber(String flightNumber) throws FlightNotFoundException;
 
-    public void updateComplementaryFlight(Flight flight, Flight newReturnFlight);
-
-    public void updateFlightRoute(Flight flight, FlightRoute newFlightRoute);
-
-    public void updateAircraftConfiguration(Flight flight, AircraftConfiguration newAircraftConfiguration);
-
+    public void updateFlight(Flight flight, String newAircraftConfigurationName) throws AircraftConfigurationNotFoundException;
+    
     public Flight retrieveFlightById(Long flightId) throws FlightNotFoundException;
 
-    public void associateComplementaryFlight(Flight flight, Flight complementaryFlight);
+    public void associateComplementaryFlight(Long flightId, Long complementaryFlightId);
     
 }

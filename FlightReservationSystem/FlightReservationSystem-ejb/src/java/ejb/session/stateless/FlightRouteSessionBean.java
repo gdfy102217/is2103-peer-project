@@ -162,7 +162,18 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
             flightRoute.setDisabled(true);
             
             throw new DeleteFlightRouteException("Flight route from " + flightRoute.getOrigin() + " to " + flightRoute.getDestination() +
-                    " is in use and cannot be deleted!");
+                    " is in use and cannot be deleted! Instaed, it is set as diabled. ");
+        }
+    }
+    
+    public Boolean checkIfComplementaryFlightRouteExist(String originCode, String destinationCode) throws FlightRouteNotFoundException {
+        
+        FlightRoute flightRoute = retrieveFlightRouteByOdPair(originCode, destinationCode);
+        
+        if (flightRoute.getComplementaryReturnRoute() == null) {
+            return false;
+        } else {
+            return true;
         }
     }
 }
