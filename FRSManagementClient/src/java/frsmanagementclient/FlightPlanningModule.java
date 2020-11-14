@@ -162,7 +162,7 @@ public class FlightPlanningModule {
         List<CabinClass> cabinClasses = new ArrayList<>();
         for (int i = 0; i < numOfCabinClasses; i++) {
             
-            System.out.println("Select Cabin Class Code to be created> ");
+            System.out.print("Select Cabin Class Code to be created> ");
             String cabinClassCode = scanner.nextLine().trim();
             System.out.print("Enter Number of Aisles> ");
             Integer numOfAisles = Integer.valueOf(scanner.nextLine().trim());
@@ -190,7 +190,7 @@ public class FlightPlanningModule {
             
             Long aircraftConfigurationId;
             try {
-                aircraftConfigurationId = aircraftConfigurationSessionBeanRemote.createNewAircraftConfiguration(newAircraftConfiguration, cabinClasses);
+                aircraftConfigurationId = aircraftConfigurationSessionBeanRemote.createNewAircraftConfiguration(newAircraftConfiguration, aircraftType, cabinClasses);
                 System.out.println("Aircraft Confirguration With ID: " + aircraftConfigurationId + "is created successfully!");
             } catch (AircraftConfigurationExistExcetpion | GeneralException ex) {
                 System.out.println("Error: " + ex.getMessage());
@@ -202,7 +202,7 @@ public class FlightPlanningModule {
         System.out.println("*** FRSManagement :: Flight Planning Module :: View All Aircraft Configurations ***\n");
         List<AircraftConfiguration> aircraftConfigurations = aircraftConfigurationSessionBeanRemote.retrieveAllAircraftConfigurations();
         if (aircraftConfigurations.isEmpty()) {
-            System.out.println("No Available Aircraft Configurations!");
+            System.out.println("No Available Aircraft Configurations!\n");
         } else {
             for (AircraftConfiguration aircraftConfiguration : aircraftConfigurations) {
                 System.out.println(aircraftConfiguration);

@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.AircraftConfiguration;
+import entity.AircraftType;
 import entity.CabinClass;
 import java.util.List;
 import javax.ejb.Remote;
@@ -20,7 +21,7 @@ import util.exception.GeneralException;
 @Remote
 public interface AircraftConfigurationSessionBeanRemote {
     
-    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException;
+    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, AircraftType aircraftType, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException;
     
     public List<AircraftConfiguration> retrieveAllAircraftConfigurations();
     
