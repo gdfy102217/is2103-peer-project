@@ -162,6 +162,7 @@ public class MainApp {
             System.out.println("Invalid date input!\n");
         } catch (AirportNotFoundException | FlightScheduleNotFountException ex) {
             System.out.println("Error: " + ex.getMessage());
+            System.out.println();
         }
             
 
@@ -714,18 +715,25 @@ public class MainApp {
         
         System.out.println("*** FRS Reservation :: View My Flight Reservations ***\n");
         List<FlightReservation> flightReservations = customer.getFlightReservations();
-        
-        System.out.printf("%3s%21s%15s%20s%20s%15s\n","   ", "Flight Reservation ID", "Departure Date", "Departure Airport", "Destination Airport", "Return Date");
-        Integer num = 0;
+        if (flightReservations.isEmpty()) {
+            System.out.println("No available reservations.");
+            System.out.println("Press any key to continue...> ");
+            scanner.nextLine();
+        } else {
+            System.out.printf("%3s%21s%15s%20s%20s%15s\n","   ", "Flight Reservation ID", "Departure Date", "Departure Airport", "Destination Airport", "Return Date");
+            Integer num = 0;
 
-        for(FlightReservation flightReservation: customer.getFlightReservations())
-        {
-            num++;
-            System.out.printf("%3s%21s%15s%20s%15s%20s\n", num,flightReservation.getFlightReservationId(), flightReservation.getDepartureDate(), flightReservation.getDepartureAirport(), flightReservation.getDestinationAirport(), flightReservation.getReturnDate());
+            for(FlightReservation flightReservation: customer.getFlightReservations())
+            {
+                num++;
+                System.out.printf("%3s%21s%15s%20s%15s%20s\n", num,flightReservation.getFlightReservationId(), flightReservation.getDepartureDate(), flightReservation.getDepartureAirport(), flightReservation.getDestinationAirport(), flightReservation.getReturnDate());
+            }
+
+            System.out.println("Press any key to continue...> ");
+            scanner.nextLine();
         }
         
-        System.out.println("Press any key to continue...> ");
-        scanner.nextLine();
+        
         
     }
     
