@@ -139,13 +139,20 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
 
     @Override
     public void deleteFlight(Flight flight) throws FlightNotFoundException, DeleteFlightException {
-        em.merge(flight);
         
+
         if (flight.getFlightSchedulePlans().isEmpty()) {
             flight.getFlightRoute().getFlights().remove(flight);
             flight.getAircraftConfiguration().getFlights().remove(flight);
-            flight.getComplementaryReturnFlight().setComplementaryReturnFlight(null);
-            flight.setComplementaryReturnFlight(null);
+            
+            if (flight.getComplementaryReturnFlight() != null) {
+                flight.getComplementaryReturnFlight().setComplementaryReturnFlight(null);
+                flight.setComplementaryReturnFlight(null);
+            }
+            if (!em.contains(flight)) {
+                flight = em.merge(flight);
+            }
+            
             em.remove(flight);
         } else {
             flight.setDisabled(true);
@@ -173,12 +180,13 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
         
     @Override
     public void updateFlight(Flight flight, String newAircraftConfigurationName) throws AircraftConfigurationNotFoundException {
-        em.merge(flight);
         
         AircraftConfiguration newAircraftConfiguration = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName(newAircraftConfigurationName);
-        
+
         flight.getAircraftConfiguration().getFlights().remove(flight);
         flight.setAircraftConfiguration(newAircraftConfiguration);
+        
+        em.merge(flight);
         
         Flight complementaryFlight = flight.getComplementaryReturnFlight();
         complementaryFlight.getAircraftConfiguration().getFlights().remove(complementaryFlight);
