@@ -53,13 +53,14 @@ public class FlightSchedule implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private FlightSchedulePlan flightSchedulePlan;
-    
-    @OneToMany(mappedBy = "flightSchedule")
+
     @ManyToMany(mappedBy = "flightSchedules")
     private List<FlightReservation> flightReservations;
     
     @OneToMany(mappedBy = "flightSchedule")
     private List<CabinClass> cabinClasses;
+    
+    private Boolean[][] seatInventory;
 
     public FlightSchedule() {
         flightReservations = new ArrayList<>();
@@ -188,6 +189,14 @@ public class FlightSchedule implements Serializable {
 
     public void setCabinClasses(List<CabinClass> cabinClasses) {
         this.cabinClasses = cabinClasses;
+    }
+
+    public Boolean[][] getSeatInventory() {
+        return seatInventory;
+    }
+
+    public void setSeatInventory(Boolean[][] seatInventory) {
+        this.seatInventory = seatInventory;
     }
     
 }
