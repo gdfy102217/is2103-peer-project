@@ -44,7 +44,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
     // "Insert Code > Add Business Method")
     @Override
     public FlightSchedulePlan createNewSingleFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Flight flight,
-            Date departureDateTime, Date durationTime) throws FlightSchedulePlanExistException, GeneralException {
+            Date departureDate, Date departureTime, Date durationTime) throws FlightSchedulePlanExistException, GeneralException {
         try {
             em.merge(flight);
             em.flush();
@@ -57,7 +57,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
                 fare.setFlightSchedulePlan(newFlightSchedulePlan);
             }
 
-            FlightSchedule newFlightSchedule = new FlightSchedule(departureDateTime, durationTime, flight.getFlightNumber(),
+            FlightSchedule newFlightSchedule = new FlightSchedule(departureDate, departureTime, durationTime, flight.getFlightNumber(),
                     flight.getFlightRoute().getOrigin(), flight.getFlightRoute().getDestination(), newFlightSchedulePlan,
                     flight.getAircraftConfiguration().getCabinClasses());
             em.persist(newFlightSchedule);
@@ -80,7 +80,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
 
     @Override
     public FlightSchedulePlan createNewMultipleFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Flight flight,
-            List<Date> departureDateTimes, List<Date> durationTimes) throws FlightSchedulePlanExistException, GeneralException {
+            List<Date> departureDates, List<Date> departureTimes, List<Date> durationTimes) throws FlightSchedulePlanExistException, GeneralException {
         try {
             em.merge(flight);
             em.persist(newFlightSchedulePlan);
@@ -91,8 +91,8 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
                 fare.setFlightSchedulePlan(newFlightSchedulePlan);
             }
 
-            for (int i = 0; i < departureDateTimes.size(); i++) {
-                FlightSchedule newFlightSchedule = new FlightSchedule(departureDateTimes.get(i), durationTimes.get(i),
+            for (int i = 0; i < departureDates.size(); i++) {
+                FlightSchedule newFlightSchedule = new FlightSchedule(departureDates.get(i), departureTimes.get(i), durationTimes.get(i),
                         flight.getFlightNumber(), flight.getFlightRoute().getOrigin(), flight.getFlightRoute().getDestination(),
                         newFlightSchedulePlan, flight.getAircraftConfiguration().getCabinClasses());
                 em.persist(newFlightSchedule);
@@ -116,7 +116,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
 
     @Override
     public FlightSchedulePlan createNewRecurrentFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Flight flight,
-            Date departureDateTime, Date durationTime, Integer recurrence, Date endDateTime) throws FlightSchedulePlanExistException, GeneralException {
+            Date departureTime, Date durationTime, Integer recurrence, Date startDateTime, Date endDateTime) throws FlightSchedulePlanExistException, GeneralException {
         try {
             em.merge(flight);
             em.persist(newFlightSchedulePlan);
@@ -127,15 +127,15 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
                 fare.setFlightSchedulePlan(newFlightSchedulePlan);
             }
 
-            while (departureDateTime.getTime() <= endDateTime.getTime()) {
-                FlightSchedule newFlightSchedule = new FlightSchedule(departureDateTime, durationTime, flight.getFlightNumber(),
+            while (departureTime.getTime() + startDateTime.getTime() <= endDateTime.getTime()) {
+                FlightSchedule newFlightSchedule = new FlightSchedule(startDateTime, departureTime, durationTime, flight.getFlightNumber(),
                         flight.getFlightRoute().getOrigin(), flight.getFlightRoute().getDestination(), newFlightSchedulePlan,
                         flight.getAircraftConfiguration().getCabinClasses());
                 em.persist(newFlightSchedule);
                 newFlightSchedule.setFlightSchedulePlan(newFlightSchedulePlan);
                 newFlightSchedulePlan.getFlightSchedules().add(newFlightSchedule);
 
-                departureDateTime = new Date(departureDateTime.getTime() + recurrence * 24 * 60 * 60 * 1000);
+                startDateTime = new Date(startDateTime.getTime() + recurrence * 24 * 60 * 60 * 1000);
             }
 
             em.flush();
@@ -202,7 +202,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
     }
 
     @Override
-    public void updateSingleFlightSchedule(FlightSchedulePlan flightSchedulePlan, FlightSchedule flightSchedule, Date departureDateTime, Date durationTime) throws UpdateFlightSchedulePlanException {
+    public void updateSingleFlightSchedule(FlightSchedulePlan flightSchedulePlan, FlightSchedule flightSchedule, Date departureDate, Date departureTime, Date durationTime) throws UpdateFlightSchedulePlanException {
         em.merge(flightSchedulePlan);
         em.merge(flightSchedule);
 
@@ -215,7 +215,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
             flightSchedulePlan.setFlight(flight);
             flight.getFlightSchedulePlans().add(flightSchedulePlan);
 
-            FlightSchedule newFlightSchedule = new FlightSchedule(departureDateTime, durationTime, flight.getFlightNumber(),
+            FlightSchedule newFlightSchedule = new FlightSchedule(departureDate, departureTime, durationTime, flight.getFlightNumber(),
                     flight.getFlightRoute().getOrigin(), flight.getFlightRoute().getDestination(), flightSchedulePlan,
                     flight.getAircraftConfiguration().getCabinClasses());
             em.persist(newFlightSchedule);
@@ -240,16 +240,17 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         Flight flight = flightSchedulePlan.getFlight();
         flightSchedulePlan.getFlightSchedules().clear();
 
-        Date departureDateTime = firstFlightSchedule.getDepartureDateTime();
-        while (departureDateTime.getTime() <= endDate.getTime()) {
-            FlightSchedule newFlightSchedule = new FlightSchedule(departureDateTime, firstFlightSchedule.getFlightDuration(), flight.getFlightNumber(),
+        Date departureDate = firstFlightSchedule.getDepartureDate();
+        Date departureTime = firstFlightSchedule.getDepartureTime();
+        while (departureDate.getTime() + departureTime.getTime() <= endDate.getTime()) {
+            FlightSchedule newFlightSchedule = new FlightSchedule(departureDate, departureTime, firstFlightSchedule.getFlightDuration(), flight.getFlightNumber(),
                     flight.getFlightRoute().getOrigin(), flight.getFlightRoute().getDestination(), flightSchedulePlan,
                     flight.getAircraftConfiguration().getCabinClasses());
             em.persist(newFlightSchedule);
             newFlightSchedule.setFlightSchedulePlan(flightSchedulePlan);
             flightSchedulePlan.getFlightSchedules().add(newFlightSchedule);
 
-            departureDateTime = new Date(departureDateTime.getTime() + recurrence * 24 * 60 * 60 * 1000);
+            departureDate = new Date(departureDate.getTime() + recurrence * 24 * 60 * 60 * 1000);
         }
 
     }
@@ -259,7 +260,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         em.merge(flightSchedulePlan);
 
         for (FlightSchedule flightSchedule : flightSchedulePlan.getFlightSchedules()) {
-            if (flightSchedule.getDepartureDateTime().getTime() > endDate.getTime() && !flightSchedule.getFlightReservations().isEmpty()) {
+            if (flightSchedule.getDepartureTime().getTime() + flightSchedule.getDepartureDate().getTime() > endDate.getTime() && !flightSchedule.getFlightReservations().isEmpty()) {
                 throw new UpdateFlightSchedulePlanException("Flight schedule cannot be updated because tickets have already been issued!");
             }
         }
@@ -267,7 +268,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         flightSchedulePlan.setEndDate(endDate);
 
         for (FlightSchedule flightSchedule : flightSchedulePlan.getFlightSchedules()) {
-            if (flightSchedule.getDepartureDateTime().getTime() > endDate.getTime()) {
+            if (flightSchedule.getDepartureTime().getTime() + flightSchedule.getDepartureDate().getTime() > endDate.getTime()) {
                 flightSchedulePlan.getFlightSchedules().remove(flightSchedule);
             }
         }
@@ -303,42 +304,48 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         }
 
         Date duration;
-        Date departureDateTime;
+        Date departureDate;
+        Date departureTime;
         FlightSchedulePlan returnFlightSchedulePlan = new FlightSchedulePlan();
 
         if (newFlightSchedulePlan.getFlightScheduleType().equals(FlightScheduleType.SINGLE)) {
             duration = newFlightSchedulePlan.getFlightSchedules().get(0).getFlightDuration();
-            departureDateTime = new Date(newFlightSchedulePlan.getFlightSchedules().get(0).getArrivalDateTime().getTime() + layoverDurationTime.getTime());
-
-            returnFlightSchedulePlan = new FlightSchedulePlan(newFlightSchedulePlan.getFlightScheduleType(), fares, departureDateTime.getTime());
-            createNewSingleFlightSchedulePlan(returnFlightSchedulePlan, flight.getComplementaryReturnFlight(), departureDateTime, duration);
+            departureDate = newFlightSchedulePlan.getFlightSchedules().get(0).getDepartureDate();
+            departureTime = new Date(newFlightSchedulePlan.getFlightSchedules().get(0).getArrivalDateTime().getTime() + layoverDurationTime.getTime());
+            
+            returnFlightSchedulePlan = new FlightSchedulePlan(newFlightSchedulePlan.getFlightScheduleType(), fares, departureTime.getTime());
+            createNewSingleFlightSchedulePlan(returnFlightSchedulePlan, flight.getComplementaryReturnFlight(), departureDate, departureTime, duration);
         } else if (newFlightSchedulePlan.getFlightScheduleType().equals(FlightScheduleType.MULTIPLE)) {
             List<Date> durations = new ArrayList<>();
-            List<Date> departureDateTimes = new ArrayList<>();
+            List<Date> departureDates = new ArrayList<>();
+            List<Date> departureTimes = new ArrayList<>();
             Date firstDepartureTime = new Date();
 
             for (FlightSchedule flightSchedule : newFlightSchedulePlan.getFlightSchedules()) {
                 duration = flightSchedule.getFlightDuration();
-                departureDateTime = new Date(newFlightSchedulePlan.getFlightSchedules().get(0).getArrivalDateTime().getTime() + layoverDurationTime.getTime());
+                departureDate = newFlightSchedulePlan.getFlightSchedules().get(0).getDepartureDate();
+                departureTime = new Date(newFlightSchedulePlan.getFlightSchedules().get(0).getArrivalDateTime().getTime() + layoverDurationTime.getTime());
 
-                if (departureDateTimes.isEmpty()) {
-                    firstDepartureTime = departureDateTime;
+                if (departureDates.isEmpty()) {
+                    firstDepartureTime = departureTime;
                 }
                 durations.add(duration);
-                departureDateTimes.add(departureDateTime);
+                departureDates.add(departureDate);
+                departureTimes.add(departureTime);
             }
 
             returnFlightSchedulePlan = new FlightSchedulePlan(newFlightSchedulePlan.getFlightScheduleType(), fares, firstDepartureTime.getTime());
-            createNewMultipleFlightSchedulePlan(returnFlightSchedulePlan, flight.getComplementaryReturnFlight(), departureDateTimes, durations);
+            createNewMultipleFlightSchedulePlan(returnFlightSchedulePlan, flight.getComplementaryReturnFlight(), departureDates, departureTimes, durations);
         } else if (newFlightSchedulePlan.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYDAY)
                 || newFlightSchedulePlan.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYWEEK)) {
 
             duration = newFlightSchedulePlan.getFlightSchedules().get(0).getFlightDuration();
-            departureDateTime = new Date(newFlightSchedulePlan.getFlightSchedules().get(0).getArrivalDateTime().getTime() + layoverDurationTime.getTime());
+            departureDate = newFlightSchedulePlan.getFlightSchedules().get(0).getDepartureDate();
+            departureTime = new Date(newFlightSchedulePlan.getFlightSchedules().get(0).getArrivalDateTime().getTime() + layoverDurationTime.getTime());
 
-            returnFlightSchedulePlan = new FlightSchedulePlan(newFlightSchedulePlan.getFlightScheduleType(), fares, departureDateTime.getTime());
-            createNewRecurrentFlightSchedulePlan(newFlightSchedulePlan, flight, departureDateTime, duration, newFlightSchedulePlan.getRecurrence(),
-                    new Date(departureDateTime.getTime() + newFlightSchedulePlan.getEndDate().getTime() - newFlightSchedulePlan.getFirstDepartureTime()));
+            returnFlightSchedulePlan = new FlightSchedulePlan(newFlightSchedulePlan.getFlightScheduleType(), fares, departureTime.getTime());
+            createNewRecurrentFlightSchedulePlan(newFlightSchedulePlan, flight, departureTime, duration, newFlightSchedulePlan.getRecurrence(), newFlightSchedulePlan.getStartDate(),
+                    new Date(departureTime.getTime() + departureDate.getTime() + newFlightSchedulePlan.getEndDate().getTime() - newFlightSchedulePlan.getFirstDepartureTime()));
 
         }
 

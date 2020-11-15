@@ -21,6 +21,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 import util.enumeration.CabinClassType;
@@ -238,16 +240,20 @@ public class FlightOperationModule {
             System.out.print("> ");
             Integer response = Integer.valueOf(scanner.nextLine().trim());
 
-            String departureDateTimeString;
-            DateFormat format = new SimpleDateFormat("year-month-day hr:min");
-            Date departureDateTime;
+            String departureDateString;
+            String departureTimeString;
+            DateFormat departureTimeFormat = new SimpleDateFormat("hh:mm aa");
+            DateFormat departureDateFormat = new SimpleDateFormat("dd MMM yy");
+            Date departureDate;
+            Date departureTime;
             String durationString;
-            DateFormat durationFormat = new SimpleDateFormat("hr:min");
+            DateFormat durationFormat = new SimpleDateFormat("hh Hours mm Minute");
             Date durationTime;
             List<Fare> fares = new ArrayList<>();
             boolean option = true;
             Long firstDepartureTimeLong = Long.MIN_VALUE;
             FlightSchedulePlan newFlightSchedulePlan = new FlightSchedulePlan();
+            Date startDateTime;
             Date endDateTime;
             Integer recurrence = 0;
 
@@ -255,11 +261,15 @@ public class FlightOperationModule {
                 case (1):
 
                     System.out.println("*** Create Single Flight Schedule ***\n");
-                    System.out.print("Enter Departure Date/Time (yyyy-mm-dd hh:mm)> ");
-                    departureDateTimeString = scanner.nextLine().trim();
-                    departureDateTime = format.parse(departureDateTimeString);
+                    System.out.print("Enter Departure Date (day MONTH year) > ");
+                    departureDateString = scanner.nextLine().trim();
+                    departureDate = departureDateFormat.parse(departureDateString);
+                    
+                    System.out.print("Enter Departure Time (hr:min AM/PM)> ");
+                    departureTimeString = scanner.nextLine().trim();
+                    departureTime = departureTimeFormat.parse(departureTimeString);
 
-                    System.out.print("Enter Flight Duration (hr:min)> ");
+                    System.out.print("Enter Flight Duration (xx Hours xx Minute)> ");
                     durationString = scanner.nextLine().trim();
                     durationTime = durationFormat.parse(durationString);
 
@@ -293,28 +303,34 @@ public class FlightOperationModule {
                             option = false;
                         }
                     }
-                    newFlightSchedulePlan = new FlightSchedulePlan(FlightScheduleType.SINGLE, fares, departureDateTime.getTime()); //rmb to merge flight
-                    newFlightSchedulePlan = flightSchedulePlanSessionBeanRemote.createNewSingleFlightSchedulePlan(newFlightSchedulePlan, flight, departureDateTime, durationTime);
+                    newFlightSchedulePlan = new FlightSchedulePlan(FlightScheduleType.SINGLE, fares, departureTime.getTime()); //rmb to merge flight
+                    newFlightSchedulePlan = flightSchedulePlanSessionBeanRemote.createNewSingleFlightSchedulePlan(newFlightSchedulePlan, flight, departureDate, departureTime, durationTime);
 
                     System.out.println("Flight Schedule Plan with ID: " + newFlightSchedulePlan.getFlightSchedulePlanId() + " is created successfully!\n");
                     break;
                 case (2):
                     System.out.println("*** Create Multiple Flight Schedule ***\n");
                     System.out.println("*** Create Single Flight Schedule :: Enter Schedules ***\n");
-                    List<Date> departureDateTimes = new ArrayList<>();
+                    List<Date> departureDates = new ArrayList<>();
+                    List<Date> departureTimes = new ArrayList<>();
                     List<Date> durationTimes = new ArrayList<>();
 
                     option = true;
                     while (option) {
-                        System.out.print("Enter Departure Date/Time (yyyy-mm-dd hh:mm)> ");
-                        departureDateTimeString = scanner.nextLine().trim();
-                        departureDateTime = format.parse(departureDateTimeString);
-                        if (departureDateTimes.isEmpty()) {
-                            firstDepartureTimeLong = departureDateTime.getTime();
+                        System.out.print("Enter Departure Date (day MONTH year) > ");
+                        departureDateString = scanner.nextLine().trim();
+                        departureDate = departureDateFormat.parse(departureDateString);
+                        
+                        System.out.print("Enter Departure Time (hr:min AM/PM) > ");
+                        departureTimeString = scanner.nextLine().trim();
+                        departureTime = departureTimeFormat.parse(departureTimeString);
+                        if (departureDates.isEmpty()) {
+                            firstDepartureTimeLong = departureDate.getTime() + departureTime.getTime();
                         }
-                        departureDateTimes.add(departureDateTime);
+                        departureDates.add(departureDate);
+                        departureTimes.add(departureTime);
 
-                        System.out.print("Enter Flight Duration (hr:min)> ");
+                        System.out.print("Enter Flight Duration (xx Hours xx Minute) > ");
                         durationString = scanner.nextLine().trim();
                         durationTime = durationFormat.parse(durationString);
                         durationTimes.add(durationTime);
@@ -357,25 +373,33 @@ public class FlightOperationModule {
                         }
                     }
                     newFlightSchedulePlan = new FlightSchedulePlan(FlightScheduleType.MULTIPLE, fares, firstDepartureTimeLong); //rmb to merge flight
-                    newFlightSchedulePlan = flightSchedulePlanSessionBeanRemote.createNewMultipleFlightSchedulePlan(newFlightSchedulePlan, flight, departureDateTimes, durationTimes);
+                    newFlightSchedulePlan = flightSchedulePlanSessionBeanRemote.createNewMultipleFlightSchedulePlan(newFlightSchedulePlan, flight, departureDates, departureTimes, durationTimes);
 
                     System.out.println("Flight Schedule Plan with ID: " + newFlightSchedulePlan.getFlightSchedulePlanId() + " is created successfully!\n");
                     break;
                 case (3):
                     System.out.println("*** Create Recurrent by Day Schedule ***\n");
+                    
                     System.out.print("Recurrence by how many days> ");
                     recurrence = Integer.valueOf(scanner.nextLine().trim());
-                    System.out.print("Enter Departure Date/Time (yyyy-mm-dd hh:mm)> ");
-                    departureDateTimeString = scanner.nextLine().trim();
-                    departureDateTime = format.parse(departureDateTimeString);
+ 
+                    System.out.print("Enter Departure Time (hr:min AM/PM) > ");
+                    departureTimeString = scanner.nextLine().trim();
+                    departureTime = departureTimeFormat.parse(departureTimeString);
+                    
                     System.out.print("Enter Flight Duration (hr:min)> ");
                     durationString = scanner.nextLine().trim();
                     durationTime = durationFormat.parse(durationString);
+                    
+                    System.out.print("Enter Start Date (day MONTH year)> ");
+                    String startDateString = scanner.nextLine().trim();
+                    DateFormat startDateFormat = new SimpleDateFormat("dd MMM yy");
+                    startDateTime = startDateFormat.parse(startDateString);
 
-                    System.out.print("Enter End Date (yyyy-mm-dd)> ");
+                    System.out.print("Enter End Date (day MONTH year))> ");
                     String endDateString = scanner.nextLine().trim();
-                    format = new SimpleDateFormat("year-month-day");
-                    endDateTime = format.parse(endDateString);
+                    DateFormat endDateFormat = new SimpleDateFormat("dd MMM yy");
+                    endDateTime = endDateFormat.parse(endDateString);
 
                     System.out.println("*** Create Recurrent by Day Flight Schedule :: Enter Fares ***\n");
                     option = true;
@@ -408,26 +432,53 @@ public class FlightOperationModule {
                         }
                     }
 
-                    newFlightSchedulePlan = new FlightSchedulePlan(FlightScheduleType.RECURRENTBYDAY, fares, departureDateTime.getTime()); //rmb to merge flight
-                    newFlightSchedulePlan = flightSchedulePlanSessionBeanRemote.createNewRecurrentFlightSchedulePlan(newFlightSchedulePlan, flight, departureDateTime, durationTime, recurrence, endDateTime);
+                    newFlightSchedulePlan = new FlightSchedulePlan(FlightScheduleType.RECURRENTBYDAY, fares, departureTime.getTime()); //rmb to merge flight
+                    newFlightSchedulePlan = flightSchedulePlanSessionBeanRemote.createNewRecurrentFlightSchedulePlan(newFlightSchedulePlan, flight,
+                            departureTime, durationTime, recurrence, startDateTime, endDateTime);
 
                     System.out.println("Flight Schedule Plan with ID: " + newFlightSchedulePlan.getFlightSchedulePlanId() + " is created successfully!\n");
                     break;
                 case (4):
                     System.out.println("*** Create Recurrent by Week Schedule ***\n");
-                    System.out.print("Enter Departure Date/Time (yyyy-mm-dd hh:mm)> ");
-                    format = new SimpleDateFormat("year-month-day hr:min");
-                    departureDateTimeString = scanner.nextLine().trim();
-                    departureDateTime = format.parse(departureDateTimeString);
+                    
+                    System.out.print("Enter Recurrent Day in a week (Monday - Sunday)> ");
+                    String dayOfWeekString = scanner.nextLine().trim();
+                    DateFormat dayOfWeekFormat = new SimpleDateFormat("EEE");
+                    Date dayOfWeek = dayOfWeekFormat.parse(dayOfWeekString);
+                     
+
+                    
+                    System.out.print("Enter Departure Time (hr:min AM/PM) > ");
+                    departureTimeString = scanner.nextLine().trim();
+                    departureTime = departureTimeFormat.parse(departureTimeString);
+                    
                     System.out.print("Enter Flight Duration (hr:min)> ");
                     durationString = scanner.nextLine().trim();
                     durationTime = durationFormat.parse(durationString);
 
-                    System.out.print("Enter End Date (yyyy-mm-dd)> ");
-                    endDateString = scanner.nextLine().trim();
-                    format = new SimpleDateFormat("year-month-day");
-                    endDateTime = format.parse(endDateString);
+                    System.out.print("Enter Start Date (day MONTH year)> ");
+                    startDateString = scanner.nextLine().trim();
+                    startDateFormat = new SimpleDateFormat("dd MMM yy");
+                    startDateTime = startDateFormat.parse(startDateString);
+                    
+//                    Calendar calendar = Calendar.getInstance();
+//                    calendar.setTime(startDateTime);
+//                    int weekday = calendar.get(Calendar.DAY_OF_WEEK);
+//                    int days = Calendar.WEDNESDAY - weekday;
+//                    if (days < 0)
+//                    {
+//                        days += 7;
+//                    }
+//                    calendar.add(Calendar.DAY_OF_YEAR, days);
+//                    System.out.println(sdf.format(calendar.getTime()));
 
+                    System.out.print("Enter End Date (day MONTH year))> ");
+                    endDateString = scanner.nextLine().trim();
+                    endDateFormat = new SimpleDateFormat("dd MMM yy");
+                    endDateTime = endDateFormat.parse(endDateString);
+
+
+                    
                     System.out.println("*** Create Recurrent by Week Flight Schedule :: Enter Fares ***\n");
                     option = true;
                     while (option) {
@@ -460,8 +511,9 @@ public class FlightOperationModule {
                     }
 
                     recurrence = 7;
-                    newFlightSchedulePlan = new FlightSchedulePlan(FlightScheduleType.RECURRENTBYDAY, fares, departureDateTime.getTime()); //rmb to merge flight
-                    newFlightSchedulePlan = flightSchedulePlanSessionBeanRemote.createNewRecurrentFlightSchedulePlan(newFlightSchedulePlan, flight, departureDateTime, durationTime, recurrence, endDateTime);
+                    newFlightSchedulePlan = new FlightSchedulePlan(FlightScheduleType.RECURRENTBYDAY, fares, departureTime.getTime()); //rmb to merge flight
+                    newFlightSchedulePlan = flightSchedulePlanSessionBeanRemote.createNewRecurrentFlightSchedulePlan(newFlightSchedulePlan, flight,
+                            departureTime, durationTime, 7, startDateTime, endDateTime);
 
                     System.out.println("Flight Schedule Plan with ID: " + newFlightSchedulePlan.getFlightSchedulePlanId() + " is created successfully!\n");
                     break;
@@ -604,11 +656,14 @@ public class FlightOperationModule {
         } else if (response == 2) {
             System.out.println("*** FRSManagement :: Flight Operation Module :: Update Flight Schedule Plan :: Update Flight Schedules***\n");
 
-            String departureDateTimeString;
-            DateFormat format = new SimpleDateFormat("year-month-day hr:min");
-            Date departureDateTime;
+           String departureDateString;
+            String departureTimeString;
+            DateFormat departureTimeFormat = new SimpleDateFormat("hh:mm aa");
+            DateFormat departureDateFormat = new SimpleDateFormat("dd MMM yy");
+            Date departureDate;
+            Date departureTime;
             String durationString;
-            DateFormat durationFormat = new SimpleDateFormat("hr:min");
+            DateFormat durationFormat = new SimpleDateFormat("hh Hours mm Minute");
             Date durationTime;
             boolean option = true;
             Long firstDepartureTimeLong = Long.MIN_VALUE;
@@ -619,16 +674,20 @@ public class FlightOperationModule {
             if (flightSchedulePlanSelected.getFlightScheduleType().equals(FlightScheduleType.SINGLE)) {
                 try {
                     System.out.println("*** Update Single Flight Schedule ***\n");
-                    System.out.print("Enter New Departure Date/Time (yyyy-mm-dd hh:mm)> ");
-                    departureDateTimeString = scanner.nextLine().trim();
-                    departureDateTime = format.parse(departureDateTimeString);
+                    System.out.print("Enter New Departure Date > ");
+                    departureDateString = scanner.nextLine().trim();
+                    departureDate = departureTimeFormat.parse(departureDateString);
+                    
+                    System.out.print("Enter New Departure Time > ");
+                    departureTimeString = scanner.nextLine().trim();
+                    departureTime = departureDateFormat.parse(departureTimeString);
 
                     System.out.print("Enter Flight Duration (hr:min)> ");
                     durationString = scanner.nextLine().trim();
                     durationTime = durationFormat.parse(durationString);
 
                     flightSchedulePlanSessionBeanRemote.updateSingleFlightSchedule(flightSchedulePlanSelected,
-                            flightSchedulePlanSelected.getFlightSchedules().get(0), departureDateTime, durationTime);
+                            flightSchedulePlanSelected.getFlightSchedules().get(0), departureDate, departureTime, durationTime);
                     System.out.println("Flight Schedule Plan with ID: " + flightSchedulePlanSelected.getFlightSchedulePlanId() + " is created successfully!\n");
                 } catch (UpdateFlightSchedulePlanException ex) {
                     System.out.println("Error: " + ex.getMessage());
@@ -650,15 +709,19 @@ public class FlightOperationModule {
                     Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
                     FlightSchedule flightScheduleSelected = flightSchedulePlanSelected.getFlightSchedules().get(userSelection - 1);
 
-                    System.out.print("Enter New Departure Date/Time (yyyy-mm-dd hh:mm)> ");
-                    departureDateTimeString = scanner.nextLine().trim();
-                    departureDateTime = format.parse(departureDateTimeString);
+                    System.out.print("Enter New Departure Date > ");
+                    departureDateString = scanner.nextLine().trim();
+                    departureDate = departureTimeFormat.parse(departureDateString);
+                    
+                    System.out.print("Enter New Departure Time > ");
+                    departureTimeString = scanner.nextLine().trim();
+                    departureTime = departureDateFormat.parse(departureTimeString);
 
                     System.out.print("Enter Flight Duration (hr:min)> ");
                     durationString = scanner.nextLine().trim();
                     durationTime = durationFormat.parse(durationString);
 
-                    flightSchedulePlanSessionBeanRemote.updateSingleFlightSchedule(flightSchedulePlanSelected, flightScheduleSelected, departureDateTime, durationTime);
+                    flightSchedulePlanSessionBeanRemote.updateSingleFlightSchedule(flightSchedulePlanSelected, flightScheduleSelected, departureDate, departureTime, durationTime);
                     System.out.println("Flight Schedule Plan with ID: " + flightSchedulePlanSelected.getFlightSchedulePlanId() + " is created successfully!\n");
                 } catch (UpdateFlightSchedulePlanException ex) {
                     System.out.println("Error: " + ex.getMessage());
@@ -670,10 +733,10 @@ public class FlightOperationModule {
                     System.out.print("Recurrence by how many days> ");
                     recurrence = Integer.valueOf(scanner.nextLine().trim());
 
-                    System.out.print("Enter End Date (yyyy-mm-dd)> ");
+                    System.out.print("Enter End Date (day MONTH year))> ");
                     String endDateString = scanner.nextLine().trim();
-                    format = new SimpleDateFormat("year-month-day");
-                    endDateTime = format.parse(endDateString);
+                    DateFormat endDateFormat = new SimpleDateFormat("dd MMM yy");
+                    endDateTime = endDateFormat.parse(endDateString);
 
                     flightSchedulePlanSessionBeanRemote.updateRecurrentDayFlightSchedule(flightSchedulePlanSelected, recurrence, endDateTime);
                     System.out.println("Flight Schedule Plan with ID: " + flightSchedulePlanSelected.getFlightSchedulePlanId() + " is created successfully!\n");
@@ -683,10 +746,10 @@ public class FlightOperationModule {
 
             } else if (flightSchedulePlanSelected.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYWEEK)) {
                 try {
-                    System.out.print("Enter End Date (yyyy-mm-dd)> ");
+                    System.out.print("Enter End Date (day MONTH year))> ");
                     String endDateString = scanner.nextLine().trim();
-                    format = new SimpleDateFormat("year-month-day");
-                    endDateTime = format.parse(endDateString);
+                    DateFormat endDateFormat = new SimpleDateFormat("dd MMM yy");
+                    endDateTime = endDateFormat.parse(endDateString);
 
                     flightSchedulePlanSessionBeanRemote.updateRecurrentWeekFlightSchedule(flightSchedulePlanSelected, endDateTime);
                     System.out.println("Flight Schedule Plan with ID: " + flightSchedulePlanSelected.getFlightSchedulePlanId() + " is created successfully!\n");
@@ -696,4 +759,5 @@ public class FlightOperationModule {
             }
         }
     }
+    
 }
