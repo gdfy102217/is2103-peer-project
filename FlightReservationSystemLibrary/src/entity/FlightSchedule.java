@@ -6,11 +6,13 @@
 package entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -180,7 +182,13 @@ public class FlightSchedule implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.FlightSchedule[ id=" + flightScheduleId + " ]";
+        SimpleDateFormat outputDepartFormat = new SimpleDateFormat("EE,hh:mm", Locale.US);
+        SimpleDateFormat outputEndDateFormat = new SimpleDateFormat("dd MMM yy", Locale.US);
+        SimpleDateFormat outputDurationFormat = new SimpleDateFormat("hh Hours mm Minute");
+        String outputDepartString = outputDepartFormat.format(departureDateTime);
+        String endDateString = outputEndDateFormat.format("");
+        String flightDurationString = outputDurationFormat.format(this.flightDuration);
+        return "[ Departure time = " + outputDepartString + ", Flight duration = " + flightDurationString + " ]";
     }
 
     public List<CabinClass> getCabinClasses() {

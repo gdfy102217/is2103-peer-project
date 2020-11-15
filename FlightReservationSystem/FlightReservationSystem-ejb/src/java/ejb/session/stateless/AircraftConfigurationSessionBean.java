@@ -33,7 +33,8 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
     // "Insert Code > Add Business Method")
     
     @Override
-    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, AircraftType aircraftType, List<CabinClass> cabinClasses) throws AircraftConfigurationExistExcetpion, GeneralException
+    public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, AircraftType aircraftType, List<CabinClass> cabinClasses) throws
+            AircraftConfigurationExistExcetpion, GeneralException
     {
         try {
         em.persist(newAircraftConfiguration);
@@ -86,5 +87,22 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
         {
             throw new AircraftConfigurationNotFoundException("Aircraft configuration " + name + " does not exist!\n");
         }                
+    }
+    
+    @Override
+    public AircraftConfiguration retrieveAircraftConfigurationById(Long aircraftConfigurationId) throws AircraftConfigurationNotFoundException
+    {
+        AircraftConfiguration aircraftConfiguration = em.find(AircraftConfiguration.class, aircraftConfigurationId);
+        
+        if(aircraftConfiguration != null)
+        {
+            aircraftConfiguration.getCabinClasses().size();
+            aircraftConfiguration.getFlights().size();
+            return aircraftConfiguration;
+        }
+        else
+        {
+            throw new AircraftConfigurationNotFoundException("Aircraft configuration ID " + aircraftConfigurationId + " does not exist");
+        }
     }
 }
