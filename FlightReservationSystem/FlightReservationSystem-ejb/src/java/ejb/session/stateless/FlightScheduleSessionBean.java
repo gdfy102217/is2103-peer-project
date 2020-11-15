@@ -19,14 +19,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.enumeration.CabinClassType;
 import util.exception.AirportNotFoundException;
 import util.exception.DeleteFlightScheduleException;
-import util.exception.FlightScheduleExistException;
 import util.exception.FlightScheduleNotFountException;
-import util.exception.GeneralException;
 
 /**
  *
@@ -128,7 +125,14 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
     }
     
     @Override
-    public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule) {
+    public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule) throws FlightScheduleNotFountException{
+        if (!em.contains(flightSchedule)) {
+            throw new FlightScheduleNotFountException("Flight Schedule is not found!");
+        } else {
+        
+            em.merge(flightSchedule);
+            em.flush();
+            
         Query query = em.createQuery("SELECT fres FROM FlightReservation fres WHERE fres.flightSchedule = :inFlightSchedule ORDER BY fres.cabinClassType");
         query.setParameter("inFlightSchedule", flightSchedule);
         
@@ -144,6 +148,7 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
 //                }
 //            }
 //        }
+        }
     }
     
     @Override

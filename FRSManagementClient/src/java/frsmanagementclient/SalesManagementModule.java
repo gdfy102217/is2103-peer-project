@@ -9,10 +9,14 @@ import ejb.session.stateless.FlightScheduleSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
 import entity.CabinClass;
 import entity.Employee;
+import entity.FlightReservation;
 import entity.FlightSchedule;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.exception.FlightNotFoundException;
+import util.exception.FlightScheduleNotFountException;
 
 /**
  *
@@ -153,24 +157,34 @@ public class SalesManagementModule {
     }
 
     private void viewFlightReservation() throws FlightNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("*** FRSManagement :: Sales Management Module :: View Flight Reservation ***\n");
-
-        System.out.print("Enter Flight Number> ");
-        String flightNumber = scanner.nextLine().trim();
-        List<FlightSchedule> list = flightSessionBeanRemote.retrieveFlightSchedulesByFlightNumber(flightNumber);
-
-        Integer selection = 0;
-        System.out.println("Available Flight Schedule: ");
-        for (FlightSchedule flightSchedule : list) {
-            System.out.println("No." + selection + " " + flightSchedule);
-            selection++;
+        try {
+            Scanner scanner = new Scanner(System.in);
+            
+            System.out.println("*** FRSManagement :: Sales Management Module :: View Flight Reservation ***\n");
+            
+            System.out.print("Enter Flight Number> ");
+            String flightNumber = scanner.nextLine().trim();
+            List<FlightSchedule> list = flightSessionBeanRemote.retrieveFlightSchedulesByFlightNumber(flightNumber);
+            
+            Integer selection = 0;
+            System.out.println("Available Flight Schedule: ");
+            for (FlightSchedule flightSchedule : list) {
+                System.out.println("No." + selection + " " + flightSchedule);
+                selection++;
+            }
+            System.out.print("Enter no. to view details> ");
+            Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
+            FlightSchedule flightScheduleSelected = list.get(userSelection);
+            
+            List<FlightReservation> fkuFlightReservations = flightScheduleSessionBeanRemote.viewFlightReservation(flightScheduleSelected);
+            
+            for (FlightReservation flightReservation: fkuFlightReservations) {
+                System.out.println(flightReservation);
+            }
+            System.out.println();
+            
+        } catch (FlightScheduleNotFountException ex) {
+            System.out.println("Error: " + ex.getMessage());
         }
-        System.out.print("Enter no. to view details> ");
-        Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
-        FlightSchedule flightScheduleSelected = list.get(userSelection);
-
-        flightScheduleSessionBeanRemote.viewFlightReservation(flightScheduleSelected);
     }
 }
