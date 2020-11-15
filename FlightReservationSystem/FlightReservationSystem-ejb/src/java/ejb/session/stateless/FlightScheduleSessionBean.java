@@ -10,9 +10,11 @@ import entity.Flight;
 import entity.FlightReservation;
 import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -58,7 +60,9 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         List<FlightSchedule> flightSchedules = query.getResultList();
 
         if (flightSchedules.isEmpty()) {
-            throw new FlightScheduleNotFountException("Flight schedule departure from: " + departureAirport.getIataAirportcode() + " to " + departureAirport + " on date: " + departureDate + " does not exist!");
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd MMM", Locale.US);
+            String departureDateString = inputDateFormat.format(departureDate);
+            throw new FlightScheduleNotFountException("Flight schedule departure from: " + departureAirportiATACode + " to " + destinationAirportiATACode + " on " + departureDateString + " does not exist!");
         }
 
         for (FlightSchedule flightSchedule : flightSchedules) {
@@ -69,7 +73,8 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         return flightSchedules;
     }
     
-    public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
+    public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate,
+            CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
         
         Airport departureAirport = airportSessionBeanLocal.retrieveAirportByIataCode(departureAirportiATACode);
         Airport destinationAirport = airportSessionBeanLocal.retrieveAirportByIataCode(destinationAirportiATACode);
@@ -110,7 +115,10 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         }
         
         if (flightSchedules.isEmpty()) {
-            throw new FlightScheduleNotFountException("Connecting Flight schedule departure from: " + departureAirport.getIataAirportcode() + " to " + departureAirport + " on date: " + departureDate + " does not exist!");
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd MMM", Locale.US);
+            String departureDateString = inputDateFormat.format(departureDate);
+            throw new FlightScheduleNotFountException("Connecting Flight schedule departure from " + departureAirportiATACode + " to " +
+                    destinationAirportiATACode + " on " + departureDateString + " does not exist!");
         }
         
         return flightSchedules;

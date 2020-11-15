@@ -19,10 +19,10 @@ import util.exception.FlightNotFoundException;
  * @author Administrator
  */
 public class SalesManagementModule {
-    
+
     private FlightSessionBeanRemote flightSessionBeanRemote;
     private FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote;
-    
+
     private Employee employee;
 
     public SalesManagementModule() {
@@ -33,13 +33,12 @@ public class SalesManagementModule {
         this.flightScheduleSessionBeanRemote = flightScheduleSessionBeanRemote;
         this.employee = employee;
     }
-    
+
     public void menuSalesManagement() {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
-        
-        while(true)
-        {
+
+        while (true) {
             System.out.println("*** FRS Management :: Sales Management Module ***\n");
             System.out.println("1: View Seats Inventory ");
             System.out.println("2: View Flight Reservation");
@@ -50,8 +49,8 @@ public class SalesManagementModule {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
-                if (response == 1) { 
-                    try {          
+                if (response == 1) {
+                    try {
                         viewSeatsInventory();
                     } catch (FlightNotFoundException ex) {
                         System.out.println(ex);
@@ -74,7 +73,7 @@ public class SalesManagementModule {
             }
         }
     }
-    
+
     private void viewSeatsInventory() throws FlightNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
@@ -83,40 +82,75 @@ public class SalesManagementModule {
         System.out.print("Enter Flight Number> ");
         String flightNumber = scanner.nextLine().trim();
         List<FlightSchedule> list = flightSessionBeanRemote.retrieveFlightSchedulesByFlightNumber(flightNumber);
-        
+
         Integer selection = 0;
         System.out.println("Available Flight Schedule: ");
-        for(FlightSchedule flightSchedule : list) {
+        for (FlightSchedule flightSchedule : list) {
             System.out.println("No." + selection + " " + flightSchedule);
             selection++;
         }
         System.out.print("Enter no. to view details> ");
         Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
         FlightSchedule flightScheduleSelected = list.get(userSelection);
-        
+
         List<CabinClass> cabinClasses = flightScheduleSelected.getCabinClasses();
         cabinClasses.size();
         Boolean[][] seatInventory = flightScheduleSelected.getSeatInventory();
         for (int r = 0; r < seatInventory.length; r++) {
             for (int c = 0; c < seatInventory[0].length; c++) {
+                System.out.print(r + 1);
+                switch (c) {
+                    case (0):
+                        System.out.print("A");
+                        break;
+                    case (1):
+                        System.out.print("B");
+                        break;
+                    case (2):
+                        System.out.print("C");
+                        break;
+                    case (3):
+                        System.out.print("D");
+                        break;
+                    case (4):
+                        System.out.print("E");
+                        break;
+                    case (5):
+                        System.out.print("F");
+                        break;
+                    case (6):
+                        System.out.print("G");
+                        break;
+                    case (7):
+                        System.out.print("H");
+                        break;
+                    case (8):
+                        System.out.print("J");
+                        break;
+                    case (9):
+                        System.out.print("K");
+                        break;
+                    case (10):
+                        System.out.print("L");
+                        break;
+                }
                 if (seatInventory[r][c] == true) {
-                    System.out.print("o");
+                    System.out.print(": Occupied\n");
                 } else {
-                    System.out.print("x");
+                    System.out.print(": Empty\n");
                 }
             }
-            System.out.println();
         }
-        
-        for (CabinClass cabinClass: cabinClasses) {
+
+        for (CabinClass cabinClass : cabinClasses) {
             System.out.println("Cabin class type: " + cabinClass.getCabinClassType());
             System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getCabinClassCapacity());
             System.out.println("No. of seats reserved: " + cabinClass.getNumOfReservedSeats());
             System.out.println("No. of balance seats: " + (cabinClass.getCabinClassConfiguration().getCabinClassCapacity() - cabinClass.getNumOfReservedSeats()));
         }
-        
+
     }
-    
+
     private void viewFlightReservation() throws FlightNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
@@ -125,17 +159,17 @@ public class SalesManagementModule {
         System.out.print("Enter Flight Number> ");
         String flightNumber = scanner.nextLine().trim();
         List<FlightSchedule> list = flightSessionBeanRemote.retrieveFlightSchedulesByFlightNumber(flightNumber);
-        
+
         Integer selection = 0;
         System.out.println("Available Flight Schedule: ");
-        for(FlightSchedule flightSchedule : list) {
+        for (FlightSchedule flightSchedule : list) {
             System.out.println("No." + selection + " " + flightSchedule);
             selection++;
         }
         System.out.print("Enter no. to view details> ");
         Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
-        FlightSchedule flightScheduleSelected = list.get(userSelection);    
-        
+        FlightSchedule flightScheduleSelected = list.get(userSelection);
+
         flightScheduleSessionBeanRemote.viewFlightReservation(flightScheduleSelected);
     }
 }

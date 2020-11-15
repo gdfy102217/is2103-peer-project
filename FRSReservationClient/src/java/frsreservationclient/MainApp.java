@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +30,7 @@ import util.exception.FlightReservationNotFoundException;
 import util.exception.FlightScheduleNotFountException;
 import util.exception.GeneralException;
 import util.exception.NoAvailableSeatsException;
+import util.exception.WrongPasswordException;
 
 
 public class MainApp {
@@ -74,8 +76,12 @@ public class MainApp {
                 } else if (response == 2) {
                     register();
                 } else if (response == 3) {
-                    login();
-                    menuMain();
+                    try {
+                        login();
+                        menuMain();
+                    } catch(CustomerNotFoundException | WrongPasswordException ex) {
+                        System.out.println("Error: " + ex.getMessage());
+                    }
                 } else if (response == 4) {
                     break;
                 } else {
@@ -93,8 +99,8 @@ public class MainApp {
 
         try {
             Scanner scanner = new Scanner(System.in);
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
-            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd MMM", Locale.US);
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd MMM", Locale.US);
             Integer tripType;
             String departureAirportiATACode = "";
             String destinationAirportiATACode = "";
@@ -105,24 +111,24 @@ public class MainApp {
             Integer cabinClass;
             
             System.out.println("*** FRS Reservation :: Search Flight ***\n");
-            System.out.println("Enter Trip Type:  1: One-way, 2: Round-trip> ");
+            System.out.println("Enter Trip Type:  1: One-way, 2: Round-trip > ");
             tripType = scanner.nextInt();
             scanner.nextLine();
             System.out.println("Enter Departure Airport IATA Code> ");
             departureAirportiATACode = scanner.nextLine().trim();
             System.out.println("Enter Destination Airport IATA Code> ");
             destinationAirportiATACode = scanner.nextLine().trim();
-            System.out.println("Enter Departure Date (dd/mm/yyyy)> ");
+            System.out.println("Enter Departure Date (dd MMM)> ");
             departureDate = inputDateFormat.parse(scanner.nextLine().trim());
             if (tripType == 2) {
-                System.out.println("Enter Return Date (dd/mm/yyyy)> ");
+                System.out.println("Enter Return Date (dd MMM)> ");
                 returnDate = inputDateFormat.parse(scanner.nextLine().trim());
             }
             System.out.println("Enter Number Of Passengers> ");
             numOfPassengers = scanner.nextInt();
-            System.out.println("Enter Flight Type Preference:  1: Direct Flight, 2: Connecting Flight, 3: No Preference> ");
+            System.out.println("Enter Flight Type Preference:  1: Direct Flight, 2: Connecting Flight, 3: No Preference > ");
             flightTypePreference = scanner.nextInt();
-            System.out.println("Enter Cabin Class Preference:  1: First Class, 2: Business Class, 3: Premium Economy Class, 4: Economy Class, 5: No Preference> ");
+            System.out.println("Enter Cabin Class Preference:  1: First Class, 2: Business Class, 3: Premium Economy Class, 4: Economy Class, 5: No Preference > ");
             cabinClass = scanner.nextInt();
             
             CabinClassType cabinClassType = null;
@@ -145,21 +151,26 @@ public class MainApp {
                 searchConnectingFlights(departureAirportiATACode, destinationAirportiATACode, departureDate, returnDate, numOfPassengers, tripType, cabinClassType);
             }
             
-            System.out.println("Do you wish to reserve a flight? Y/N> ");
+            scanner.nextLine();
+            System.out.println("Do you wish to reserve a flight? (Y/N) > ");
             String reserve = scanner.nextLine().trim();
             
-            if (reserve.charAt(0) == 'Y') {
+            if (reserve.equals("Y")) {
                 reserveFlight(tripType, numOfPassengers, cabinClassType);
             }
         } catch (ParseException ex) {
             System.out.println("Invalid date input!\n");
+        } catch (AirportNotFoundException | FlightScheduleNotFountException ex) {
+            System.out.println("Error: " + ex.getMessage());
         }
+            
 
     
             
     }
     
-    public void searchDirectFlight(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, Date returnDate, Integer numOfPassengers, Integer tripType, CabinClassType cabinClassType) {
+    public void searchDirectFlight(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, Date returnDate, Integer numOfPassengers,
+            Integer tripType, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
         try {
             System.out.println("Departure Flight Information :: Direct Flight\n");
             //on required departure date
@@ -208,11 +219,11 @@ public class MainApp {
                 }
             }
         } catch (AirportNotFoundException | FlightScheduleNotFountException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            throw ex;
         }
     }
     
-    public void searchConnectingFlights(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, Date returnDate, Integer numOfPassengers, Integer tripType, CabinClassType cabinClassType) {
+    public void searchConnectingFlights(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, Date returnDate, Integer numOfPassengers, Integer tripType, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
         try {
             System.out.println("\nDeparture Flight Information :: Connecting Flights\n");
             //on required departure date
@@ -261,7 +272,7 @@ public class MainApp {
                 }
             }
         } catch (AirportNotFoundException | FlightScheduleNotFountException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            throw ex;
         }
     }
     
@@ -494,7 +505,7 @@ public class MainApp {
     public void reserveFlight(Integer tripType, Integer numOfPassengers, CabinClassType cabinClassType) {
         try {
             Scanner scanner = new Scanner(System.in);
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd MMM", Locale.US);
             SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
             System.out.println("*** FRS Reservation :: Search Flight :: Reserve Flight***\n");
             
@@ -626,7 +637,7 @@ public class MainApp {
  
     }
     
-    public void login(){
+    public void login() throws CustomerNotFoundException, WrongPasswordException{
         Scanner scanner = new Scanner(System.in);
         String username = "";
         String password = "";
@@ -645,11 +656,11 @@ public class MainApp {
                     customer = currentCustomer;
                     System.out.println("Login Succesfully! Current Customer ID: " + customer.getCustomerId() + "\n");
                 } else {
-                    System.out.println("Wrong password, please try again!\n");
+                    throw new WrongPasswordException("Wrong password, please try again!\n");
                 }
                 
             } catch (CustomerNotFoundException ex) {
-                System.out.println("Error: " + ex.getMessage() + "\n");
+                throw ex;
             }
         } else {
             System.out.println("Incomplete information, please try again!\n");

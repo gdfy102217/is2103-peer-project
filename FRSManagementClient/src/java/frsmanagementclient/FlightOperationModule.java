@@ -132,7 +132,9 @@ public class FlightOperationModule {
 
             System.out.print("Enter Aircraft Configuration Name> ");
             String aircraftConfigurationName = scanner.nextLine().trim();
-
+            
+            aircraftConfigurationName = aircraftConfigurationName.replace(" ", "");
+            
             Long newFlightId = flightSessionBeanRemote.createNewFlight(newFlight, originCode, destinationCode, aircraftConfigurationName);
             System.out.println("Flight with ID: " + newFlightId + " is created!\n");
 

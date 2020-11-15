@@ -38,7 +38,7 @@ public class Flight implements Serializable {
     @JoinColumn(nullable = false)
     private FlightRoute flightRoute;
     
-    @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "flight")
     private List<FlightSchedulePlan> flightSchedulePlans;
     
     @ManyToOne(optional = false)
@@ -48,7 +48,7 @@ public class Flight implements Serializable {
     private Boolean disabled;
 
     public Flight() {
-        flightSchedulePlans = new ArrayList<>();
+        this.flightSchedulePlans = new ArrayList<>();
         this.disabled = false;
     }
 

@@ -12,6 +12,7 @@ import ejb.session.stateless.CabinClassSessionBeanLocal;
 import ejb.session.stateless.CustomerSessionBeanLocal;
 import ejb.session.stateless.EmployeeSessionBeanLocal;
 import ejb.session.stateless.FlightRouteSessionBeanLocal;
+import ejb.session.stateless.FlightSessionBeanLocal;
 import entity.AircraftConfiguration;
 import entity.AircraftType;
 import entity.Airport;
@@ -41,7 +42,10 @@ import util.exception.AircraftTypeNotFoundException;
 import util.exception.AirportExistException;
 import util.exception.AirportNotFoundException;
 import util.exception.EmployeeExistException;
+import util.exception.FlightExistException;
+import util.exception.FlightRouteDisabledException;
 import util.exception.FlightRouteExistException;
+import util.exception.FlightRouteNotFoundException;
 import util.exception.GeneralException;
 import util.exception.PartnerExistException;
 
@@ -53,6 +57,9 @@ import util.exception.PartnerExistException;
 @LocalBean
 @Startup
 public class DataInitSessionBean {
+
+    @EJB(name = "FlightSessionBeanLocal")
+    private FlightSessionBeanLocal flightSessionBeanLocal;
 
     @EJB(name = "FlightRouteSessionBeanLocal")
     private FlightRouteSessionBeanLocal flightRouteSessionBeanLocal;
@@ -166,7 +173,7 @@ public class DataInitSessionBean {
             AircraftType boeing747 = aircraftTypeSessionBeanLocal.retrieveAircraftTypeByName("Boeing 747");
             
             //Boeing 737 All Economy
-            AircraftConfiguration boeing737AllEconomy = new AircraftConfiguration("Boeing 737 All Economy", 1);
+            AircraftConfiguration boeing737AllEconomy = new AircraftConfiguration("Boeing737AllEconomy", 1);
             List<CabinClass> boeing737AllEconomyList = new ArrayList<>();
             
             CabinClassConfiguration allEconomyEconomyConfig = new CabinClassConfiguration(1, 30, 6, "3-3", 180);
@@ -175,7 +182,7 @@ public class DataInitSessionBean {
             aircraftConfigurationSessionBeanLocal.createNewAircraftConfiguration(boeing737AllEconomy, boeing737, boeing737AllEconomyList);
             
             //Boeing 737 Three Classes
-            AircraftConfiguration boeing737ThreeClasses = new AircraftConfiguration("Boeing 737 Three Classes", 3);
+            AircraftConfiguration boeing737ThreeClasses = new AircraftConfiguration("Boeing737ThreeClasses", 3);
             List<CabinClass> boeing737ThreeClassesList = new ArrayList<>();
             
             
@@ -189,7 +196,7 @@ public class DataInitSessionBean {
             aircraftConfigurationSessionBeanLocal.createNewAircraftConfiguration(boeing737ThreeClasses, boeing737, boeing737ThreeClassesList);
             
             //Boeing 747 All Economy
-            AircraftConfiguration boeing747AllEconomy = new AircraftConfiguration("Boeing 747 All Economy", 1);
+            AircraftConfiguration boeing747AllEconomy = new AircraftConfiguration("Boeing747AllEconomy", 1);
             List<CabinClass> boeing747AllEconomyList = new ArrayList<>();
             
             CabinClassConfiguration boeing747AllEconomyEconomy = new CabinClassConfiguration(2, 38, 10, "3-4-3", 380);
@@ -198,7 +205,7 @@ public class DataInitSessionBean {
             aircraftConfigurationSessionBeanLocal.createNewAircraftConfiguration(boeing747AllEconomy, boeing747, boeing747AllEconomyList);
             
             //Boeing 747 Three Classes
-            AircraftConfiguration boeing747ThreeClasses = new AircraftConfiguration("Boeing 747 Three Classes", 3);
+            AircraftConfiguration boeing747ThreeClasses = new AircraftConfiguration("Boeing747ThreeClasses", 3);
             List<CabinClass> boeing747ThreeClassesList = new ArrayList<>();
             
             
@@ -253,14 +260,19 @@ public class DataInitSessionBean {
     
     public void initialiseFlight()
     {
-        try {
-            AircraftConfiguration boeing737AllEconomy = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing 737 All Economy");
-            AircraftConfiguration boeing737ThreeClasses = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing 737 Three Classes");
-            AircraftConfiguration boeing747ThreeClasses = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing 747 Three Classes");
-            
-            
-        } catch (AircraftConfigurationNotFoundException ex) {
-            System.out.println("Error: " + ex.getMessage());
-        }
+//        try {
+//            AircraftConfiguration boeing737AllEconomy = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing737AllEconomy");
+//            AircraftConfiguration boeing737ThreeClasses = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing737ThreeClasses");
+//            AircraftConfiguration boeing747ThreeClasses = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing747ThreeClasses");
+//            
+////            Flight ml111 = new Flight("ML111");
+////            flightSessionBeanLocal.createNewFlight(ml111, "SIN", "HKG", "Boeing737ThreeClasses");
+////            
+////            Flight ml211 = new Flight("ML211");
+////            flightSessionBeanLocal.createNewFlight(ml211, "SIN", "TPE", "Boeing737ThreeClasses");
+//        } catch (AircraftConfigurationNotFoundException | FlightExistException | GeneralException 
+//                | FlightRouteNotFoundException | FlightRouteDisabledException ex) {
+//            System.out.println("Error: " + ex.getMessage());
+//        }
     }
 }
