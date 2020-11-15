@@ -272,7 +272,9 @@ public class MainApp {
                 }
             }
         } catch (AirportNotFoundException | FlightScheduleNotFountException ex) {
-            throw ex;
+
+                throw ex;
+
         }
     }
     
@@ -299,25 +301,25 @@ public class MainApp {
             for (CabinClass cabinClass: flightSchedule.getCabinClasses()) {
                 if (cabinClassType.equals(CabinClassType.FIRSTCLASS)) {
                     firstClassAvailableSeats = cabinClass.getNumOfBalanceSeats().toString();
-                    for (Fare fare: cabinClass.getCabinClassConfiguration().getFares()) {
+                    for (Fare fare: cabinClass.getFares()) {
                             lowestFareFirstClass = Math.min(lowestFareFirstClass, fare.getFareAmount());
                     }
                 }
                 if (cabinClassType.equals(CabinClassType.BUSINESSCLASS)) {
                     businessClassAvailableSeats = cabinClass.getNumOfBalanceSeats().toString();
-                    for (Fare fare: cabinClass.getCabinClassConfiguration().getFares()) {
+                    for (Fare fare: cabinClass.getFares()) {
                             lowestFareBusinessClass = Math.min(lowestFareBusinessClass, fare.getFareAmount());
                     }
                 }
                 if (cabinClassType.equals(CabinClassType.PREMIUMECONOMYCLASS)) {
                     premiumEcoClassAvailableSeats = cabinClass.getNumOfBalanceSeats().toString();
-                    for (Fare fare: cabinClass.getCabinClassConfiguration().getFares()) {
+                    for (Fare fare: cabinClass.getFares()) {
                             lowestFarePremiumEconomyClass = Math.min(lowestFarePremiumEconomyClass, fare.getFareAmount());
                     }
                 }
                 if (cabinClassType.equals(CabinClassType.ECONOMYCLASS)) {
                     economyClassAvailableSeats = cabinClass.getNumOfBalanceSeats().toString();
-                    for (Fare fare: cabinClass.getCabinClassConfiguration().getFares()) {
+                    for (Fare fare: cabinClass.getFares()) {
                             lowestFareEconomyClass = Math.min(lowestFareEconomyClass, fare.getFareAmount());
                     }
                 }
@@ -386,25 +388,25 @@ public class MainApp {
             for (CabinClass cabinClass : firstFlightSchedule.getCabinClasses()) {
                 if (cabinClassType.equals(CabinClassType.FIRSTCLASS)) {
                     firstClassAvailableSeats1 = cabinClass.getNumOfBalanceSeats().toString();
-                    for (Fare fare : cabinClass.getCabinClassConfiguration().getFares()) {
+                    for (Fare fare : cabinClass.getFares()) {
                         lowestFareFirstClass1 = Math.min(lowestFareFirstClass1, fare.getFareAmount());
                     }
                 }
                 if (cabinClassType.equals(CabinClassType.BUSINESSCLASS)) {
                     businessClassAvailableSeats1 = cabinClass.getNumOfBalanceSeats().toString();
-                    for (Fare fare : cabinClass.getCabinClassConfiguration().getFares()) {
+                    for (Fare fare : cabinClass.getFares()) {
                         lowestFareBusinessClass1 = Math.min(lowestFareBusinessClass1, fare.getFareAmount());
                     }
                 }
                 if (cabinClassType.equals(CabinClassType.PREMIUMECONOMYCLASS)) {
                     premiumEcoClassAvailableSeats1 = cabinClass.getNumOfBalanceSeats().toString();
-                    for (Fare fare : cabinClass.getCabinClassConfiguration().getFares()) {
+                    for (Fare fare : cabinClass.getFares()) {
                         lowestFarePremiumEconomyClass1 = Math.min(lowestFarePremiumEconomyClass1, fare.getFareAmount());
                     }
                 }
                 if (cabinClassType.equals(CabinClassType.ECONOMYCLASS)) {
                     economyClassAvailableSeats1 = cabinClass.getNumOfBalanceSeats().toString();
-                    for (Fare fare : cabinClass.getCabinClassConfiguration().getFares()) {
+                    for (Fare fare : cabinClass.getFares()) {
                         lowestFareEconomyClass1 = Math.min(lowestFareEconomyClass1, fare.getFareAmount());
                     }
                 }
@@ -440,25 +442,25 @@ public class MainApp {
                 for (CabinClass cabinClass : secondFlightSchedule.getCabinClasses()) {
                     if (cabinClassType.equals(CabinClassType.FIRSTCLASS)) {
                         firstClassAvailableSeats2 = cabinClass.getNumOfBalanceSeats().toString();
-                        for (Fare fare : cabinClass.getCabinClassConfiguration().getFares()) {
+                        for (Fare fare : cabinClass.getFares()) {
                             lowestFareFirstClass2 = Math.min(lowestFareFirstClass2, fare.getFareAmount());
                         }
                     }
                     if (cabinClassType.equals(CabinClassType.BUSINESSCLASS)) {
                         businessClassAvailableSeats2 = cabinClass.getNumOfBalanceSeats().toString();
-                        for (Fare fare : cabinClass.getCabinClassConfiguration().getFares()) {
+                        for (Fare fare : cabinClass.getFares()) {
                             lowestFareBusinessClass2 = Math.min(lowestFareBusinessClass2, fare.getFareAmount());
                         }
                     }
                     if (cabinClassType.equals(CabinClassType.PREMIUMECONOMYCLASS)) {
                         premiumEcoClassAvailableSeats2 = cabinClass.getNumOfBalanceSeats().toString();
-                        for (Fare fare : cabinClass.getCabinClassConfiguration().getFares()) {
+                        for (Fare fare : cabinClass.getFares()) {
                             lowestFarePremiumEconomyClass2 = Math.min(lowestFarePremiumEconomyClass2, fare.getFareAmount());
                         }
                     }
                     if (cabinClassType.equals(CabinClassType.ECONOMYCLASS)) {
                         economyClassAvailableSeats2 = cabinClass.getNumOfBalanceSeats().toString();
-                        for (Fare fare : cabinClass.getCabinClassConfiguration().getFares()) {
+                        for (Fare fare : cabinClass.getFares()) {
                             lowestFareEconomyClass2 = Math.min(lowestFareEconomyClass2, fare.getFareAmount());
                         }
                     }

@@ -17,6 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlTransient;
@@ -48,6 +49,9 @@ public class CabinClass implements Serializable {
     
     @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     private CabinClassConfiguration cabinClassConfiguration;
+    
+    @OneToMany()
+    private List<Fare> fares;
     
     @Min(0)
     private Integer numOfReservedSeats;
@@ -139,6 +143,14 @@ public class CabinClass implements Serializable {
     @Override
     public String toString() {
         return "Cabin Class Type = " + cabinClassType + ", Cabin Class Configuration = [" + cabinClassConfiguration + ']';
+    }
+
+    public List<Fare> getFares() {
+        return fares;
+    }
+
+    public void setFares(List<Fare> fares) {
+        this.fares = fares;
     }
     
     

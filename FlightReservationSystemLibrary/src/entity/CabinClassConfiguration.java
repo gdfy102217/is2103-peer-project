@@ -43,12 +43,7 @@ public class CabinClassConfiguration implements Serializable {
     @Column(nullable = false)
     private Integer cabinClassCapacity;
     
-    
-    @OneToMany(mappedBy = "cabinClassConfiguration", fetch = FetchType.EAGER)
-    private List<Fare> fares;
-
     public CabinClassConfiguration() {
-        this.fares = new ArrayList<>();
     }
 
     public CabinClassConfiguration(Integer numOfAisles, Integer numOfRows, Integer numOfSeatsAbreast, String seatingConfigurationPerColumn, Integer cabinClassCapacity) {
@@ -134,15 +129,5 @@ public class CabinClassConfiguration implements Serializable {
         return "No. Of Aisles = " + numOfAisles + ", No. Of Rows = " + numOfRows +
                 ", No. Of Seats Abreast = " + numOfSeatsAbreast + ", Seating Configuration Per Column = " + seatingConfigurationPerColumn;
     }
-
-    public List<Fare> getFares() {
-        return fares;
-    }
-
-    public void setFares(List<Fare> fares) {
-        this.fares = fares;
-    }
-
-    
-    
+  
 }
