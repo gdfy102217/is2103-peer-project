@@ -33,12 +33,16 @@ import javax.persistence.PersistenceContext;
 import util.enumeration.CabinClassType;
 import util.enumeration.EmployeeType;
 import util.exception.AircraftConfigurationExistExcetpion;
+import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.AircraftTypeExistException;
 import util.exception.AircraftTypeNotFoundException;
 import util.exception.AirportExistException;
 import util.exception.AirportNotFoundException;
 import util.exception.EmployeeExistException;
+import util.exception.FlightExistException;
+import util.exception.FlightRouteDisabledException;
 import util.exception.FlightRouteExistException;
+import util.exception.FlightRouteNotFoundException;
 import util.exception.GeneralException;
 import util.exception.PartnerExistException;
 
@@ -166,7 +170,7 @@ public class DataInitSessionBean {
             AircraftType boeing747 = aircraftTypeSessionBeanLocal.retrieveAircraftTypeByName("Boeing 747");
             
             //Boeing 737 All Economy
-            AircraftConfiguration boeing737AllEconomy = new AircraftConfiguration("Boeing737AllEconomy", 1);
+            AircraftConfiguration boeing737AllEconomy = new AircraftConfiguration("Boeing 737 All Economy", 1);
             List<CabinClass> boeing737AllEconomyList = new ArrayList<>();
             
             CabinClassConfiguration allEconomyEconomyConfig = new CabinClassConfiguration(1, 30, 6, "3-3", 180);
@@ -175,7 +179,7 @@ public class DataInitSessionBean {
             aircraftConfigurationSessionBeanLocal.createNewAircraftConfiguration(boeing737AllEconomy, boeing737, boeing737AllEconomyList);
             
             //Boeing 737 Three Classes
-            AircraftConfiguration boeing737ThreeClasses = new AircraftConfiguration("Boeing737ThreeClasses", 3);
+            AircraftConfiguration boeing737ThreeClasses = new AircraftConfiguration("Boeing 737 Three Classes", 3);
             List<CabinClass> boeing737ThreeClassesList = new ArrayList<>();
             
             
@@ -189,7 +193,7 @@ public class DataInitSessionBean {
             aircraftConfigurationSessionBeanLocal.createNewAircraftConfiguration(boeing737ThreeClasses, boeing737, boeing737ThreeClassesList);
             
             //Boeing 747 All Economy
-            AircraftConfiguration boeing747AllEconomy = new AircraftConfiguration("Boeing747AllEconomy", 1);
+            AircraftConfiguration boeing747AllEconomy = new AircraftConfiguration("Boeing 747 All Economy", 1);
             List<CabinClass> boeing747AllEconomyList = new ArrayList<>();
             
             CabinClassConfiguration boeing747AllEconomyEconomy = new CabinClassConfiguration(2, 38, 10, "3-4-3", 380);
@@ -198,7 +202,7 @@ public class DataInitSessionBean {
             aircraftConfigurationSessionBeanLocal.createNewAircraftConfiguration(boeing747AllEconomy, boeing747, boeing747AllEconomyList);
             
             //Boeing 747 Three Classes
-            AircraftConfiguration boeing747ThreeClasses = new AircraftConfiguration("Boeing747ThreeClasses", 3);
+            AircraftConfiguration boeing747ThreeClasses = new AircraftConfiguration("Boeing 747 Three Classes", 3);
             List<CabinClass> boeing747ThreeClassesList = new ArrayList<>();
             
             
@@ -253,19 +257,60 @@ public class DataInitSessionBean {
     
     public void initialiseFlight()
     {
-//        try {
-//            AircraftConfiguration boeing737AllEconomy = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing737AllEconomy");
-//            AircraftConfiguration boeing737ThreeClasses = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing737ThreeClasses");
-//            AircraftConfiguration boeing747ThreeClasses = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing747ThreeClasses");
-//            
-////            Flight ml111 = new Flight("ML111");
-////            flightSessionBeanLocal.createNewFlight(ml111, "SIN", "HKG", "Boeing737ThreeClasses");
-////            
-////            Flight ml211 = new Flight("ML211");
-////            flightSessionBeanLocal.createNewFlight(ml211, "SIN", "TPE", "Boeing737ThreeClasses");
-//        } catch (AircraftConfigurationNotFoundException | FlightExistException | GeneralException 
-//                | FlightRouteNotFoundException | FlightRouteDisabledException ex) {
-//            System.out.println("Error: " + ex.getMessage());
-//        }
+        try {
+            
+            Flight ml111 = new Flight("ML111");
+            Long newFlightId = flightSessionBeanLocal.createNewFlight(ml111, "SIN", "HKG", "Boeing 737 Three Classes");
+            Flight ml112 = new Flight("ML112");
+            Long newComplementaryReturnFlightId = flightSessionBeanLocal.createNewFlight(ml112, "HKG", "SIN", "Boeing 737 Three Classes");
+            flightSessionBeanLocal.associateComplementaryFlight(newFlightId, newComplementaryReturnFlightId);
+            
+            Flight ml211 = new Flight("ML211");
+            newFlightId = flightSessionBeanLocal.createNewFlight(ml211, "SIN", "TPE", "Boeing 737 Three Classes");
+            Flight ml212 = new Flight("ML212");
+            newComplementaryReturnFlightId = flightSessionBeanLocal.createNewFlight(ml212, "TPE", "SIN", "Boeing 737 Three Classes");
+            flightSessionBeanLocal.associateComplementaryFlight(newFlightId, newComplementaryReturnFlightId);
+            
+            Flight ml311 = new Flight("ML311");
+            newFlightId = flightSessionBeanLocal.createNewFlight(ml311, "SIN", "NRT", "Boeing 747 Three Classes");
+            Flight ml312 = new Flight("ML312");
+            newComplementaryReturnFlightId = flightSessionBeanLocal.createNewFlight(ml312, "NRT", "SIN", "Boeing 747 Three Classes");
+            flightSessionBeanLocal.associateComplementaryFlight(newFlightId, newComplementaryReturnFlightId);
+            
+            Flight ml411 = new Flight("ML411");
+            newFlightId = flightSessionBeanLocal.createNewFlight(ml411, "HKG", "NRT", "Boeing 737 Three Classes");
+            Flight ml412 = new Flight("ML412");
+            newComplementaryReturnFlightId = flightSessionBeanLocal.createNewFlight(ml412, "NRT", "HKG", "Boeing 737 Three Classes");
+            flightSessionBeanLocal.associateComplementaryFlight(newFlightId, newComplementaryReturnFlightId);
+            
+            Flight ml511 = new Flight("ML511");
+            newFlightId = flightSessionBeanLocal.createNewFlight(ml511, "TPE", "NRT", "Boeing 737 Three Classes");
+            Flight ml512 = new Flight("ML512");
+            newComplementaryReturnFlightId = flightSessionBeanLocal.createNewFlight(ml512, "NRT", "TPE", "Boeing 737 Three Classes");
+            flightSessionBeanLocal.associateComplementaryFlight(newFlightId, newComplementaryReturnFlightId);
+            
+            Flight ml611 = new Flight("ML611");
+            newFlightId = flightSessionBeanLocal.createNewFlight(ml611, "SIN", "SYD", "Boeing 737 Three Classes");
+            Flight ml612 = new Flight("ML612");
+            newComplementaryReturnFlightId = flightSessionBeanLocal.createNewFlight(ml612, "SYD", "SIN", "Boeing 737 Three Classes");
+            flightSessionBeanLocal.associateComplementaryFlight(newFlightId, newComplementaryReturnFlightId);
+            
+            Flight ml621 = new Flight("ML621");
+            newFlightId = flightSessionBeanLocal.createNewFlight(ml621, "SIN", "SYD", "Boeing 737 All Economy");
+            Flight ml622 = new Flight("ML622");
+            newComplementaryReturnFlightId = flightSessionBeanLocal.createNewFlight(ml622, "SYD", "SIN", "Boeing 737 All Economy");
+            flightSessionBeanLocal.associateComplementaryFlight(newFlightId, newComplementaryReturnFlightId);
+            
+            Flight ml711 = new Flight("ML711");
+            newFlightId = flightSessionBeanLocal.createNewFlight(ml711, "SYD", "NRT", "Boeing 747 Three Classes");
+            Flight ml712 = new Flight("ML712");
+            newComplementaryReturnFlightId = flightSessionBeanLocal.createNewFlight(ml712, "NRT", "SYD", "Boeing 747 Three Classes");
+            flightSessionBeanLocal.associateComplementaryFlight(newFlightId, newComplementaryReturnFlightId);
+            
+            
+        } catch (AircraftConfigurationNotFoundException | FlightExistException | GeneralException 
+                | FlightRouteNotFoundException | FlightRouteDisabledException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 }

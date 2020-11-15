@@ -145,7 +145,6 @@ public class FlightPlanningModule {
                 numOfCabinClasses = Integer.valueOf(scanner.nextLine().trim());
             }
             
-            aircraftConfigurationName = aircraftConfigurationName.replace(" ", "");
             AircraftConfiguration newAircraftConfiguration = new AircraftConfiguration(aircraftConfigurationName, numOfCabinClasses);
 
         //to create each cabin class configuration
