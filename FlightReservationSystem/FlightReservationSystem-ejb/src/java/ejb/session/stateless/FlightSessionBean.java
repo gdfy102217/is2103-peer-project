@@ -156,9 +156,13 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
     public List<FlightSchedule> retrieveFlightSchedulesByFlightNumber(String flightNumber) throws FlightNotFoundException {
         Flight flight = retrieveFlightByFlightNumber(flightNumber);
         List<FlightSchedule> list = new ArrayList<>();
-        for (FlightSchedulePlan flightSchedulePlan : flight.getFlightSchedulePlans()) {
+        List<FlightSchedulePlan> flightSchedulePlans = flight.getFlightSchedulePlans();
+        flightSchedulePlans.size();
+        for (FlightSchedulePlan flightSchedulePlan : flightSchedulePlans) {
             if (flightSchedulePlan.getDisabled() == false) {
-                for (FlightSchedule flightSchedule : flightSchedulePlan.getFlightSchedules()) {
+                List<FlightSchedule> flightSchedules = flightSchedulePlan.getFlightSchedules();
+                flightSchedules.size();
+                for (FlightSchedule flightSchedule : flightSchedules) {
                     list.add(flightSchedule);
                 }
             }

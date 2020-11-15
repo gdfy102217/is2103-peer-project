@@ -94,7 +94,9 @@ public class SalesManagementModule {
         Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
         FlightSchedule flightScheduleSelected = list.get(userSelection);
         
-        for (CabinClass cabinClass: flightScheduleSelected.getCabinClasses()) {
+        List<CabinClass> cabinClasses = flightScheduleSelected.getCabinClasses();
+        cabinClasses.size();
+        for (CabinClass cabinClass: cabinClasses) {
             System.out.println("Cabin class type: " + cabinClass.getCabinClassType());
             System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getCabinClassCapacity());
             System.out.println("No. of seats reserved: " + cabinClass.getNumOfReservedSeats());
