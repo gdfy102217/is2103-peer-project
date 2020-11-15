@@ -23,6 +23,8 @@ import entity.FlightRoute;
 import entity.Partner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -250,7 +252,7 @@ public class DataInitSessionBean {
             newComplementaryFlightRouteId = flightRouteSessionBeanLocal.createNewFlightRoute("NRT", "SYD");
             flightRouteSessionBeanLocal.associateComplementaryFlightRoute(newFlightRouteId, newComplementaryFlightRouteId);
             
-        } catch (FlightRouteExistException | GeneralException | AirportNotFoundException ex) {
+        } catch (FlightRouteExistException | GeneralException | AirportNotFoundException | FlightRouteNotFoundException ex) {
             System.out.println("Error: " + ex.getMessage());
         }
     }

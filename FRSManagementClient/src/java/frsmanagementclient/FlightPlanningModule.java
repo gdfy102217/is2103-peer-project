@@ -19,6 +19,8 @@ import entity.FlightRoute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.enumeration.CabinClassType;
 import util.enumeration.EmployeeType;
 import util.exception.AircraftConfigurationExistExcetpion;
@@ -234,7 +236,7 @@ public class FlightPlanningModule {
                 flightRouteSessionBeanRemote.associateComplementaryFlightRoute(newFlightRouteId, newComplementaryFlightRouteId);
                 System.out.println("Complementary flight route " + newComplementaryFlightRouteId + " is created!\n");       
             }
-        } catch (FlightRouteExistException | GeneralException | AirportNotFoundException ex) {
+        } catch (FlightRouteExistException | GeneralException | AirportNotFoundException | FlightRouteNotFoundException ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         
