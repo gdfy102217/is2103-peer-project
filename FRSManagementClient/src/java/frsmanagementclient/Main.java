@@ -10,7 +10,6 @@ import ejb.session.stateless.AircraftTypeSessionBeanRemote;
 import ejb.session.stateless.AirportSessionBeanRemote;
 import ejb.session.stateless.CabinClassSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
-import ejb.session.stateless.FareSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import ejb.session.stateless.FlightSchedulePlanSessionBeanRemote;
 import ejb.session.stateless.FlightScheduleSessionBeanRemote;
@@ -36,8 +35,6 @@ public class Main {
     @EJB
     private static FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote;
     @EJB
-    private static FareSessionBeanRemote fareSessionBeanRemote;
-    @EJB
     private static AirportSessionBeanRemote airportSessionBeanRemote;
     @EJB
     private static AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote;
@@ -52,7 +49,7 @@ public class Main {
         MainApp mainApp = new MainApp(employeeSessionBeanRemote, flightSessionBeanRemote,
             flightScheduleSessionBeanRemote, flightRouteSessionBeanRemote,
             aircraftConfigurationSessionBeanRemote, flightSchedulePlanSessionBeanRemote,
-            fareSessionBeanRemote, airportSessionBeanRemote, aircraftTypeSessionBeanRemote, 
+            airportSessionBeanRemote, aircraftTypeSessionBeanRemote, 
             cabinClassSessionBeanRemote);
         mainApp.runApp();
     }
