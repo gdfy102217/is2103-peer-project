@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -146,12 +147,16 @@ public class FlightSchedulePlan implements Serializable {
 
     @Override
     public String toString() {
+        SimpleDateFormat outputEndDateFormat = new SimpleDateFormat("dd MMM yy", Locale.US);
+        SimpleDateFormat outputLayoverFormat = new SimpleDateFormat("hh Hours mm Minutes");
+        String endDateString = outputEndDateFormat.format(endDate);
+        String layoverString = outputLayoverFormat.format(layoverDuration);
         if (this.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYWEEK)) {
-            return "FlightSchedulePlan{" + "Flight Schedule Type = " + flightScheduleType + ", End Date = " + endDate + ", Layover Duration = " + layoverDuration + ", Flight=" + flight + '}';
+            return "[Flight = " + flight + "Flight Schedule Type = " + flightScheduleType + ", End Date = " + endDateString + ", Layover Duration = " + layoverString +  ']';
         } else if (this.getFlightScheduleType().equals(FlightScheduleType.RECURRENTBYDAY)) {
-            return "FlightSchedulePlan{" + "Flight Schedule Type = " + flightScheduleType + ", Recurrence = " + recurrence + ", End Date = " + endDate + ", Layover Duration = " + layoverDuration + ", Flight=" + flight + '}';
+            return "[Flight = " + flight + "Flight Schedule Type = " + flightScheduleType + ", Recurrence = " + recurrence + ", End Date = " + endDateString + ", Layover Duration = " + layoverString +  ']';
         } else {
-            return "FlightSchedulePlan{" + "Flight Schedule Type = " + flightScheduleType + ", Layover Duration = " + layoverDuration + ", Flight=" + flight + '}';
+            return "[Flight = " + flight + "Flight Schedule Type = " + flightScheduleType + ", Layover Duration = " + layoverString +  ']';
         }
     }
 

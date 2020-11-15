@@ -94,56 +94,57 @@ public class SalesManagementModule {
         FlightSchedule flightScheduleSelected = list.get(userSelection);
 
         List<CabinClass> cabinClasses = flightScheduleSelected.getCabinClasses();
-        cabinClasses.size();
-        Boolean[][] seatInventory = flightScheduleSelected.getSeatInventory();
-        for (int r = 0; r < seatInventory.length; r++) {
-            for (int c = 0; c < seatInventory[0].length; c++) {
-                System.out.print(r + 1);
-                switch (c) {
-                    case (0):
-                        System.out.print("A");
-                        break;
-                    case (1):
-                        System.out.print("B");
-                        break;
-                    case (2):
-                        System.out.print("C");
-                        break;
-                    case (3):
-                        System.out.print("D");
-                        break;
-                    case (4):
-                        System.out.print("E");
-                        break;
-                    case (5):
-                        System.out.print("F");
-                        break;
-                    case (6):
-                        System.out.print("G");
-                        break;
-                    case (7):
-                        System.out.print("H");
-                        break;
-                    case (8):
-                        System.out.print("J");
-                        break;
-                    case (9):
-                        System.out.print("K");
-                        break;
-                    case (10):
-                        System.out.print("L");
-                        break;
-                }
-                if (seatInventory[r][c] == true) {
-                    System.out.print(": Occupied\n");
-                } else {
-                    System.out.print(": Empty\n");
-                }
-            }
-        }
 
         for (CabinClass cabinClass : cabinClasses) {
             System.out.println("Cabin class type: " + cabinClass.getCabinClassType());
+            
+            Boolean[][] seatInventory = cabinClass.getSeatInventory();
+            for (int r = 0; r < seatInventory.length; r++) {
+                for (int c = 0; c < seatInventory[0].length; c++) {
+                    System.out.print(r + 1);
+                    switch (c) {
+                        case (0):
+                            System.out.print("A");
+                            break;
+                        case (1):
+                            System.out.print("B");
+                            break;
+                        case (2):
+                            System.out.print("C");
+                            break;
+                        case (3):
+                            System.out.print("D");
+                            break;
+                        case (4):
+                            System.out.print("E");
+                            break;
+                        case (5):
+                            System.out.print("F");
+                            break;
+                        case (6):
+                            System.out.print("G");
+                            break;
+                        case (7):
+                            System.out.print("H");
+                            break;
+                        case (8):
+                            System.out.print("J");
+                            break;
+                        case (9):
+                            System.out.print("K");
+                            break;
+                        case (10):
+                            System.out.print("L");
+                            break;
+                    }
+                    if (seatInventory[r][c] == true) {
+                        System.out.print(": Occupied\n");
+                    } else {
+                        System.out.print(": Empty\n");
+                    }
+                }
+            }
+            
             System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getCabinClassCapacity());
             System.out.println("No. of seats reserved: " + cabinClass.getNumOfReservedSeats());
             System.out.println("No. of balance seats: " + (cabinClass.getCabinClassConfiguration().getCabinClassCapacity() - cabinClass.getNumOfReservedSeats()));
