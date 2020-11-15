@@ -158,10 +158,9 @@ public class FlightSchedule implements Serializable {
     }
     
     public void calculateArrivalTime(){
-        Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone(departureAirport.getTimeZoneAbbr()));
-        calendar.setTime(new Date(this.departureDateTime.getTime() + this.flightDuration.getTime()));;
-        calendar.setTimeZone(TimeZone.getTimeZone(destinationAirport.getTimeZoneAbbr()));
-        this.arrivalDateTime = calendar.getTime();
+
+        this.arrivalDateTime = new Date(this.arrivalDateTime.getTime() + this.flightDuration.getTime() + 
+                (this.destinationAirport.getTimeZone() - this.departureAirport.getTimeZone()) * 60 * 60 * 1000);
     }
 
     @Override

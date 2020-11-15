@@ -34,10 +34,10 @@ import util.exception.GeneralException;
 @Stateless
 public class FlightSessionBean implements FlightSessionBeanRemote, FlightSessionBeanLocal {
 
-    @EJB(name = "AircraftConfigurationSessionBeanLocal")
+    @EJB
     private AircraftConfigurationSessionBeanLocal aircraftConfigurationSessionBeanLocal;
 
-    @EJB(name = "FlightRouteSessionBeanLocal")
+    @EJB
     private FlightRouteSessionBeanLocal flightRouteSessionBeanLocal;
 
     @PersistenceContext(unitName = "FlightReservationSystem-ejbPU")
@@ -50,7 +50,6 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
             throws FlightExistException, GeneralException, FlightRouteNotFoundException, AircraftConfigurationNotFoundException, FlightRouteDisabledException {
         
         try {
-            em.persist(newFlight);
             
             FlightRoute flightRoute = flightRouteSessionBeanLocal.retrieveFlightRouteByOdPair(originAirportIATACode, destinationAirportIATACode);
             
@@ -59,13 +58,14 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
                 throw new FlightRouteDisabledException("The flight route from " + originAirportIATACode + " to " + destinationAirportIATACode + " is disabled!");
             
             } else {
-                flightRoute.getFlights().add(newFlight);
-                newFlight.setFlightRoute(flightRoute);
                 
                 AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName(aircraftConfigurationName);
-                aircraftConfiguration.getFlights().add(newFlight);
+                em.persist(newFlight);
+                flightRoute.getFlights().add(newFlight);
+                newFlight.setFlightRoute(flightRoute);
                 newFlight.setAircraftConfiguration(aircraftConfiguration);
-            
+                aircraftConfiguration.getFlights().add(newFlight);
+                
                 em.flush();
 
                 return newFlight.getFlightId();

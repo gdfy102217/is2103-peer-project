@@ -24,8 +24,6 @@ import entity.FlightRoute;
 import entity.Partner;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -146,11 +144,11 @@ public class DataInitSessionBean {
     private void initialiseAirport()
     {
         try {
-            airportSessionBeanLocal.createNewAirport(new Airport("Changi", "SIN", "Singapore", "Singapore", "Singapore", "+8"));
-            airportSessionBeanLocal.createNewAirport(new Airport("Hong Kong", "HKG", "Chek Lap Kok", "HongKong", "China", "+8"));
-            airportSessionBeanLocal.createNewAirport(new Airport("Taoyuan", "TPE", "Taipei", "Taiwan Province", "China", "+8"));
-            airportSessionBeanLocal.createNewAirport(new Airport("Narita", "NRT", "Narita", "Chiba", "Japan", "+9"));
-            airportSessionBeanLocal.createNewAirport(new Airport("Sydney", "SYD", "Sydney", "New South Wales", "Australia", "+11"));
+            airportSessionBeanLocal.createNewAirport(new Airport("Changi", "SIN", "Singapore", "Singapore", "Singapore", 8));
+            airportSessionBeanLocal.createNewAirport(new Airport("Hong Kong", "HKG", "Chek Lap Kok", "HongKong", "China", 8));
+            airportSessionBeanLocal.createNewAirport(new Airport("Taoyuan", "TPE", "Taipei", "Taiwan Province", "China", 8));
+            airportSessionBeanLocal.createNewAirport(new Airport("Narita", "NRT", "Narita", "Chiba", "Japan", 9));
+            airportSessionBeanLocal.createNewAirport(new Airport("Sydney", "SYD", "Sydney", "New South Wales", "Australia", 11));
         } catch (AirportExistException | GeneralException ex) {
             System.out.println("Error: " + ex.getMessage());
         }

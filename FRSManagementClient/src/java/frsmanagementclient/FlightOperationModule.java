@@ -160,7 +160,13 @@ public class FlightOperationModule {
 
     private void viewAllFlights() {
         System.out.println("*** FRSManagement :: Flight Operation Module :: View All Flights ***\n");
-        for (Flight flight : flightSessionBeanRemote.retrieveAllFlights()) {
+        List<Flight> flights = flightSessionBeanRemote.retrieveAllFlights();
+        
+        if (flights.isEmpty()) {
+            System.out.println("No Available Flights!\n");
+        }
+        
+        for (Flight flight : flights) {
             System.out.println(flight);
             if (flight.getComplementaryReturnFlight() != null) {
                 System.out.println("Complementary Flight = [" + flight.getComplementaryReturnFlight() + "]");
