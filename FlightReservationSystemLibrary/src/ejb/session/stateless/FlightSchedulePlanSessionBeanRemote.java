@@ -27,13 +27,13 @@ import util.exception.UpdateFlightSchedulePlanException;
 public interface FlightSchedulePlanSessionBeanRemote {
 
     public FlightSchedulePlan createNewSingleFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Flight flight,
-            Date departureDateTime, Date durationTime) throws FlightSchedulePlanExistException, GeneralException;
+            Date departureDate, Date departureTime, Date durationTime) throws FlightSchedulePlanExistException, GeneralException;
 
     public FlightSchedulePlan createNewMultipleFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Flight flight,
-            List<Date> departureDateTimes, List<Date> durationTimes) throws FlightSchedulePlanExistException, GeneralException;
+            List<Date> departureDates, List<Date> departureTimes, List<Date> durationTimes) throws FlightSchedulePlanExistException, GeneralException;
 
     public FlightSchedulePlan createNewRecurrentFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Flight flight,
-            Date departureDateTime, Date durationTime, Integer recurrence, Date endDateTime) throws FlightSchedulePlanExistException, GeneralException;
+            Date departureTime, Date durationTime, Integer recurrence, Date startDateTime, Date endDateTime) throws FlightSchedulePlanExistException, GeneralException;
 
     public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans();
 
@@ -46,7 +46,7 @@ public interface FlightSchedulePlanSessionBeanRemote {
 
     public void updateFlightSchedulePlanFares(FlightSchedulePlan flightSchedulePlan, List<Fare> fares);
 
-    public void updateSingleFlightSchedule(FlightSchedulePlan flightSchedulePlan, FlightSchedule flightSchedule, Date departureDateTime, Date durationTime) throws UpdateFlightSchedulePlanException;
+    public void updateSingleFlightSchedule(FlightSchedulePlan flightSchedulePlan, FlightSchedule flightSchedule, Date departureDate, Date departureTime, Date durationTime) throws UpdateFlightSchedulePlanException;
 
     public void updateRecurrentDayFlightSchedule(FlightSchedulePlan flightSchedulePlan, Integer recurrence, Date endDate) throws UpdateFlightSchedulePlanException;
 

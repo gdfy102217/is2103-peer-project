@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +39,9 @@ public class FlightSchedule implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightScheduleId;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date departureDateTime;
+    private Date departureDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date departureTime;
     @Temporal(TemporalType.TIMESTAMP)
     private Date flightDuration;
     @Temporal(TemporalType.TIMESTAMP)
@@ -69,8 +72,9 @@ public class FlightSchedule implements Serializable {
         cabinClasses = new ArrayList<>();
     }
 
-    public FlightSchedule(Date departureDateTime, Date flightDuration, String flightNumber, Airport departureAirport, Airport destinationAirport, FlightSchedulePlan flightSchedulePlan, List<CabinClass> cabinClasses) {
-        this.departureDateTime = departureDateTime;
+    public FlightSchedule(Date departureDate, Date departureTime, Date flightDuration, String flightNumber, Airport departureAirport, Airport destinationAirport, FlightSchedulePlan flightSchedulePlan, List<CabinClass> cabinClasses) {
+        this.departureDate = departureDate;
+        this.departureTime = departureTime;
         this.flightDuration = flightDuration;
         this.flightNumber = flightNumber;
         this.departureAirport = departureAirport;
@@ -89,13 +93,6 @@ public class FlightSchedule implements Serializable {
         this.flightScheduleId = flightScheduleId;
     }
 
-    public Date getDepartureDateTime() {
-        return departureDateTime;
-    }
-
-    public void setDepartureDateTime(Date departureDateTime) {
-        this.departureDateTime = departureDateTime;
-    }
 
     public Date getFlightDuration() {
         return flightDuration;
@@ -185,11 +182,13 @@ public class FlightSchedule implements Serializable {
 
     @Override
     public String toString() {
-        SimpleDateFormat outputDepartFormat = new SimpleDateFormat("EE,hh:mm", Locale.US);
+        DateFormat departureTimeFormat = new SimpleDateFormat("hh:mm aa");
+        DateFormat departureDateFormat = new SimpleDateFormat("dd MMM yy");
         SimpleDateFormat outputDurationFormat = new SimpleDateFormat("hh Hours mm Minutes");
-        String outputDepartString = outputDepartFormat.format(departureDateTime);
+        String outputDepartDateString = departureDateFormat.format(departureDate);
+        String outputDepartTimeString = departureTimeFormat.format(departureTime);
         String flightDurationString = outputDurationFormat.format(this.flightDuration);
-        return "[ Departure time = " + outputDepartString + ", Flight duration = " + flightDurationString + " ]";
+        return "[ Departure date = " + outputDepartDateString + ", Departure time = " +  outputDepartTimeString + ", Flight duration = " + flightDurationString + " ]";
     }
 
     public List<CabinClass> getCabinClasses() {
@@ -198,6 +197,22 @@ public class FlightSchedule implements Serializable {
 
     public void setCabinClasses(List<CabinClass> cabinClasses) {
         this.cabinClasses = cabinClasses;
+    }
+
+    public Date getDepartureDate() {
+        return departureDate;
+    }
+
+    public void setDepartureDate(Date departureDate) {
+        this.departureDate = departureDate;
+    }
+
+    public Date getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
     }
     
 }

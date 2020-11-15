@@ -6,7 +6,6 @@
 package entity;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,9 +34,13 @@ public class FlightSchedulePlan implements Serializable {
     private Long flightSchedulePlanId;
     @Column(nullable = false)
     private FlightScheduleType flightScheduleType;
+    
     //only for n days recurrence
     private Integer recurrence;
     
+    //(Monday - Sunday) Only for reccurent by week
+    private Date reccurrentDay;
+    private Date startDate;
     private Date endDate;
     private Date layoverDuration;
     
@@ -196,15 +199,39 @@ public class FlightSchedulePlan implements Serializable {
     public Long getFirstDepartureTime() {
         Long firstDepartureTime = Long.MAX_VALUE;
         for(FlightSchedule flightSchedule: this.flightSchedules) {
-            if (flightSchedule.getDepartureDateTime().getTime() < firstDepartureTime) {
-                firstDepartureTime = flightSchedule.getDepartureDateTime().getTime();
+            if (flightSchedule.getDepartureTime().getTime() < firstDepartureTime) {
+                firstDepartureTime = flightSchedule.getDepartureTime().getTime();
             }
         }
         return firstDepartureTime;
     }
 
     public void setFirstDepartureTime(Long firstDepartureTime) {
-        this.firstDepartureTimeLong = firstDepartureTime;
+        this.setFirstDepartureTimeLong(firstDepartureTime);
+    }
+
+    public Date getReccurrentDay() {
+        return reccurrentDay;
+    }
+
+    public void setReccurrentDay(Date reccurrentDay) {
+        this.reccurrentDay = reccurrentDay;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Long getFirstDepartureTimeLong() {
+        return firstDepartureTimeLong;
+    }
+
+    public void setFirstDepartureTimeLong(Long firstDepartureTimeLong) {
+        this.firstDepartureTimeLong = firstDepartureTimeLong;
     }
     
 }

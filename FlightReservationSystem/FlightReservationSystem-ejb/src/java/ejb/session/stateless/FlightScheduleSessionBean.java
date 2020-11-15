@@ -164,8 +164,8 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         Flight flight = flightSchedule.getFlightSchedulePlan().getFlight();
         for (FlightSchedulePlan plan: flight.getFlightSchedulePlans()) {
             for (FlightSchedule schedule: plan.getFlightSchedules()) {
-                if (flightSchedule.getArrivalDateTime().getTime() > schedule.getDepartureDateTime().getTime() ||
-                        flightSchedule.getDepartureDateTime().getTime() < schedule.getArrivalDateTime().getTime()) {
+                if (flightSchedule.getArrivalDateTime().getTime() > schedule.getDepartureTime().getTime() ||
+                        flightSchedule.getDepartureTime().getTime() < schedule.getArrivalDateTime().getTime()) {
                     return false;
                 }
             }
