@@ -7,10 +7,7 @@ package ejb.session.stateless;
 
 import entity.Airport;
 import entity.FlightRoute;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -83,15 +80,11 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
     }
     
     @Override 
-    public void associateComplementaryFlightRoute(Long newFlightRouteId, Long newComplementaryFlightRouteId) {
-        try {
+    public void associateComplementaryFlightRoute(Long newFlightRouteId, Long newComplementaryFlightRouteId) throws FlightRouteNotFoundException{
             FlightRoute newFlightRoute = retrieveFlightRouteById(newFlightRouteId);
             FlightRoute newComplementaryFlightRoute = retrieveFlightRouteById(newComplementaryFlightRouteId);
             newFlightRoute.setComplementaryReturnRoute(newComplementaryFlightRoute);
             newComplementaryFlightRoute.setComplementaryReturnRoute(newFlightRoute);
-        } catch (FlightRouteNotFoundException ex) {
-            Logger.getLogger(FlightRouteSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     @Override

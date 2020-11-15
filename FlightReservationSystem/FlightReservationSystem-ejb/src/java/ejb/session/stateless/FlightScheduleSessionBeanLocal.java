@@ -28,8 +28,8 @@ public interface FlightScheduleSessionBeanLocal {
 
     public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
 
-    public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule);
-
+    public List<FlightReservation> viewFlightReservation(FlightSchedule flightSchedule) throws FlightScheduleNotFountException;
+     
     public void deleteFlightSchedule(FlightSchedule flightSchedule) throws DeleteFlightScheduleException;
 
     public Boolean checkOverlapFlightSchedules(FlightSchedule flightSchedule);

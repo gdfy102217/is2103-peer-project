@@ -38,7 +38,7 @@ public class Flight implements Serializable {
     @JoinColumn(nullable = false)
     private FlightRoute flightRoute;
     
-    @OneToMany(mappedBy = "flight")
+    @OneToMany(mappedBy = "flight", fetch = FetchType.EAGER)
     private List<FlightSchedulePlan> flightSchedulePlans;
     
     @ManyToOne(optional = false)

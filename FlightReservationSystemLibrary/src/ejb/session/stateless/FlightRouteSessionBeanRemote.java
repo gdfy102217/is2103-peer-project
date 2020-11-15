@@ -33,7 +33,7 @@ public interface FlightRouteSessionBeanRemote {
     
     public Long deleteFlightRoute(String originCode, String destinationCode) throws FlightRouteNotFoundException, DeleteFlightRouteException;
     
-    public void associateComplementaryFlightRoute(Long newFlightRouteId, Long newComplementaryFlightRouteId);
+    public void associateComplementaryFlightRoute(Long newFlightRouteId, Long newComplementaryFlightRouteId) throws FlightRouteNotFoundException;
     
     public Boolean checkIfComplementaryFlightRouteExist(String originCode, String destinationCode) throws FlightRouteNotFoundException;
 }

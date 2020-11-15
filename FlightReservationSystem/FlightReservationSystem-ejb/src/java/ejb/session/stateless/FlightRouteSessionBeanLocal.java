@@ -33,7 +33,7 @@ public interface FlightRouteSessionBeanLocal {
     
     public FlightRoute retrieveFlightRouteById(Long flightRouteId) throws FlightRouteNotFoundException;
 
-    public void associateComplementaryFlightRoute(Long newFlightRouteId, Long newComplementaryFlightRouteId);
+    public void associateComplementaryFlightRoute(Long newFlightRouteId, Long newComplementaryFlightRouteId) throws FlightRouteNotFoundException;
     
     public Boolean checkIfComplementaryFlightRouteExist(String originCode, String destinationCode) throws FlightRouteNotFoundException;
     
