@@ -58,9 +58,11 @@ public class FlightSchedulePlan implements Serializable {
 
     public FlightSchedulePlan() {
         flightSchedules = new ArrayList<>();
+        this.disabled = false;
     }
 
     public FlightSchedulePlan(FlightScheduleType flightScheduleType, Flight flight) {
+        this();
         this.flightScheduleType = flightScheduleType;
         this.flight = flight;
     }

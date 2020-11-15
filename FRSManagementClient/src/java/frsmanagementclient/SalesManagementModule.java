@@ -94,7 +94,21 @@ public class SalesManagementModule {
         Integer userSelection = Integer.valueOf(scanner.nextLine().trim());
         FlightSchedule flightScheduleSelected = list.get(userSelection);
         
-        for (CabinClass cabinClass: flightScheduleSelected.getCabinClasses()) {
+        List<CabinClass> cabinClasses = flightScheduleSelected.getCabinClasses();
+        cabinClasses.size();
+        Boolean[][] seatInventory = flightScheduleSelected.getSeatInventory();
+        for (int r = 0; r < seatInventory.length; r++) {
+            for (int c = 0; c < seatInventory[0].length; c++) {
+                if (seatInventory[r][c] == true) {
+                    System.out.print("o");
+                } else {
+                    System.out.print("x");
+                }
+            }
+            System.out.println();
+        }
+        
+        for (CabinClass cabinClass: cabinClasses) {
             System.out.println("Cabin class type: " + cabinClass.getCabinClassType());
             System.out.println("No. of seats available: " + cabinClass.getCabinClassConfiguration().getCabinClassCapacity());
             System.out.println("No. of seats reserved: " + cabinClass.getNumOfReservedSeats());

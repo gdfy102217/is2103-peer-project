@@ -18,6 +18,7 @@ import entity.Airport;
 import entity.CabinClass;
 import entity.CabinClassConfiguration;
 import entity.Employee;
+import entity.Flight;
 import entity.FlightRoute;
 import entity.Partner;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import javax.persistence.PersistenceContext;
 import util.enumeration.CabinClassType;
 import util.enumeration.EmployeeType;
 import util.exception.AircraftConfigurationExistExcetpion;
+import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.AircraftTypeExistException;
 import util.exception.AircraftTypeNotFoundException;
 import util.exception.AirportExistException;
@@ -105,6 +107,10 @@ public class DataInitSessionBean {
         if(em.find(FlightRoute.class, 1l) == null)
         {
             initialiseFlightRoute();
+        }
+        if(em.find(Flight.class, 1l) == null)
+        {
+            initialiseFlight();
         }
     }
     
@@ -241,6 +247,19 @@ public class DataInitSessionBean {
             flightRouteSessionBeanLocal.associateComplementaryFlightRoute(newFlightRouteId, newComplementaryFlightRouteId);
             
         } catch (FlightRouteExistException | GeneralException | AirportNotFoundException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+    
+    public void initialiseFlight()
+    {
+        try {
+            AircraftConfiguration boeing737AllEconomy = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing 737 All Economy");
+            AircraftConfiguration boeing737ThreeClasses = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing 737 Three Classes");
+            AircraftConfiguration boeing747ThreeClasses = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName("Boeing 747 Three Classes");
+            
+            
+        } catch (AircraftConfigurationNotFoundException ex) {
             System.out.println("Error: " + ex.getMessage());
         }
     }
