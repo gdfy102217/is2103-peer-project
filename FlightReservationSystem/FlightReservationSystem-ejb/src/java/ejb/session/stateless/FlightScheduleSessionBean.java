@@ -85,7 +85,9 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         
         List<FlightSchedule> firstFlightSchedules = query.getResultList();
         if (firstFlightSchedules.isEmpty()) {
-            throw new FlightScheduleNotFountException("Connecting Flight schedule departure from: " + departureAirport.getIataAirportcode() + " to " + departureAirport + " on date: " + departureDate + " does not exist!");
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd MMM", Locale.US);
+            String departureDateString = inputDateFormat.format(departureDate);
+            throw new FlightScheduleNotFountException("Flight schedule departure from: " + departureAirportiATACode + " to " + destinationAirportiATACode + " on " + departureDateString + " does not exist!");
         }
 
         
