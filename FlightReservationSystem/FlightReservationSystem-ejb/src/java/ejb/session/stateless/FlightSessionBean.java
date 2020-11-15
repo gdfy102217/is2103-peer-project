@@ -140,6 +140,7 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
     @Override
     public void deleteFlight(Flight flight) throws FlightNotFoundException, DeleteFlightException {
         em.merge(flight);
+        em.flush();
         
         if (flight.getFlightSchedulePlans().isEmpty()) {
             flight.getFlightRoute().getFlights().remove(flight);
@@ -174,6 +175,7 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
     @Override
     public void updateFlight(Flight flight, String newAircraftConfigurationName) throws AircraftConfigurationNotFoundException {
         em.merge(flight);
+        em.flush();
         
         AircraftConfiguration newAircraftConfiguration = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationByName(newAircraftConfigurationName);
         

@@ -45,6 +45,8 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
             Date departureDateTime, Date durationTime) throws FlightSchedulePlanExistException, GeneralException {
         try {
             em.merge(flight);
+            em.flush();
+            
             em.persist(newFlightSchedulePlan);
             newFlightSchedulePlan.setFlight(flight);
             flight.getFlightSchedulePlans().add(newFlightSchedulePlan);
