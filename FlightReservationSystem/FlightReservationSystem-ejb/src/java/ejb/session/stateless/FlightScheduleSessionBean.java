@@ -45,32 +45,6 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
     // "Insert Code > Add Business Method")
     
     @Override
-    public FlightSchedule createNewSingleFlightSchedule(Flight flight, FlightSchedulePlan newFlightSchedulePlan, Date departureDateTime, Date durationTime) throws FlightScheduleExistException, GeneralException {
-        try {
-            em.merge(flight);
-            em.persist(newFlightSchedulePlan);
-            newFlightSchedulePlan.setFlight(flight);
-            flight.getFlightSchedulePlans().add(newFlightSchedulePlan);
-            
-            FlightSchedule flightSchedule = new 
-            
-            em.persist(flightSchedule);
-            flightSchedule.getFlightSchedulePlan().getFlightSchedules().add(flightSchedule);
-            em.flush();
-
-            return flightSchedule;
-        } catch (PersistenceException ex) {
-            if (ex.getCause() != null
-                    && ex.getCause().getCause() != null
-                    && ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException")) {
-                throw new FlightScheduleExistException("This flight schedule already exist");
-            } else {
-                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
-            }
-        }
-    }
-
-    @Override
     public List<FlightSchedule> searchDirectFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
 
         Airport departureAirport = airportSessionBeanLocal.retrieveAirportByIataCode(departureAirportiATACode);

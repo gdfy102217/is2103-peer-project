@@ -23,8 +23,6 @@ import util.exception.GeneralException;
  */
 @Local
 public interface FlightScheduleSessionBeanLocal {
-
-    public FlightSchedule createNewFlightSchedule(FlightSchedule flightSchedule) throws FlightScheduleExistException, GeneralException;
     
     public List<FlightSchedule> searchDirectFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate, CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException;
 

@@ -54,6 +54,9 @@ public class CabinClass implements Serializable {
     @Min(0)
     private Integer numOfAvailableSeats;
     
+    //true for reserved, false for not yet reserved
+    public Boolean[][] seatInventory;
+    
     public CabinClass() {
         this.numOfReservedSeats = 0;
     }
@@ -63,6 +66,7 @@ public class CabinClass implements Serializable {
         this.cabinClassType = cabinClassType;
         this.cabinClassConfiguration = cabinClassConfiguration;
         this.numOfAvailableSeats = cabinClassConfiguration.getCabinClassCapacity();
+        this.seatInventory = new Boolean[cabinClassConfiguration.getNumOfRows()][cabinClassConfiguration.getNumOfSeatsAbreast()];
     }
 
     @XmlTransient
@@ -125,6 +129,12 @@ public class CabinClass implements Serializable {
     public void setAircraftConfiguration(AircraftConfiguration aircraftConfiguration) {
         this.aircraftConfiguration = aircraftConfiguration;
     }
+
+    public Boolean[][] getSeatInventory() {
+        return seatInventory;
+    }
+    
+    
 
     @Override
     public String toString() {

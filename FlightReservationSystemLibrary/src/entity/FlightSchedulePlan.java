@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -49,7 +50,7 @@ public class FlightSchedulePlan implements Serializable {
     @OneToMany(mappedBy = "flightSchedulePlan")
     private List<FlightSchedule> flightSchedules;
     
-    @OneToMany(mappedBy = "flightSchedulePlan")
+    @OneToMany(mappedBy = "flightSchedulePlan", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Fare> fares;
     
     private Long firstDepartureTimeLong;
@@ -61,12 +62,17 @@ public class FlightSchedulePlan implements Serializable {
         this.disabled = false;
     }
 
-    public FlightSchedulePlan(FlightScheduleType flightScheduleType, Flight flight) {
-        this();
+    public FlightSchedulePlan(FlightScheduleType flightScheduleType) {
         this.flightScheduleType = flightScheduleType;
-        this.flight = flight;
     }
 
+    public FlightSchedulePlan(FlightScheduleType flightScheduleType, List<Fare> fares, Long firstDepartureTimeLong) {
+        this.flightScheduleType = flightScheduleType;
+        this.fares = fares;
+        this.firstDepartureTimeLong = firstDepartureTimeLong;
+    }
+    
+   
 
     public Long getFlightSchedulePlanId() {
         return flightSchedulePlanId;
@@ -106,10 +112,6 @@ public class FlightSchedulePlan implements Serializable {
 
     public void setLayoverDuration(Date layoverDuration) {
         this.layoverDuration = layoverDuration;
-        this.setComplementaryReturnSchedulePlan(new FlightSchedulePlan(this.flightScheduleType, this.flight.getComplementaryReturnFlight()));
-        for(FlightSchedule flightSchedule: flightSchedules) {
-            this.complementaryReturnSchedulePlan.getFlightSchedules().add(new FlightSchedule(new Date(flightSchedule.getArrivalDateTime().getTime() + layoverDuration.getTime()), flightSchedule.getFlightDuration(), flightSchedule.getFlightSchedulePlan().getComplementaryReturnSchedulePlan().getFlight().getFlightNumber()));
-        }
     }
 
     public FlightSchedulePlan getComplementaryReturnSchedulePlan() {
