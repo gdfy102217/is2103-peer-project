@@ -126,6 +126,7 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
         Flight flight = (Flight) query.getSingleResult();
         if (flight != null) {
             flight.getFlightRoute();
+            flight.getComplementaryReturnFlight();
             for (CabinClass cabinClass: flight.getAircraftConfiguration().getCabinClasses()) {
                 cabinClass.getCabinClassType();
                 cabinClass.getCabinClassConfiguration().getCabinClassCapacity();

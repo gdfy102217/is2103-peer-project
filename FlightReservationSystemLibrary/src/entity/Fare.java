@@ -39,11 +39,17 @@ public class Fare implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private FlightSchedulePlan flightSchedulePlan;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
-    private CabinClassConfiguration cabinClassConfiguration;
 
+    public Fare() {
+    }
+
+    public Fare(String fareBasisCode, CabinClassType cabinClassType, Double fareAmount) {
+        this.fareBasisCode = fareBasisCode;
+        this.cabinClassType = cabinClassType;
+        this.fareAmount = fareAmount;
+    }
+   
+    
     public Long getId() {
         return id;
     }
@@ -74,7 +80,7 @@ public class Fare implements Serializable {
 
     @Override
     public String toString() {
-        return "Fare{" + "fareBasisCode=" + fareBasisCode + ", cabinClassType=" + cabinClassType + ", fareAmount=" + fareAmount + ", cabinClassConfiguration=" + cabinClassConfiguration + '}';
+        return "Fare{" + "fareBasisCode=" + fareBasisCode + ", cabinClassType=" + cabinClassType + ", fareAmount=" + fareAmount + '}';
     }
 
     public String getFareBasisCode() {
@@ -107,14 +113,6 @@ public class Fare implements Serializable {
 
     public void setFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) {
         this.flightSchedulePlan = flightSchedulePlan;
-    }
-
-    public CabinClassConfiguration getCabinClassConfiguration() {
-        return cabinClassConfiguration;
-    }
-
-    public void setCabinClassConfiguration(CabinClassConfiguration cabinClassConfiguration) {
-        this.cabinClassConfiguration = cabinClassConfiguration;
     }
     
 }

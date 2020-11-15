@@ -62,20 +62,24 @@ public class FlightSchedule implements Serializable {
     @OneToMany(mappedBy = "flightSchedule")
     private List<CabinClass> cabinClasses;
     
-    private Boolean[][] seatInventory;
+    
 
     public FlightSchedule() {
         flightReservations = new ArrayList<>();
         cabinClasses = new ArrayList<>();
     }
 
-    public FlightSchedule(Date departureDateTime, Date flightDuration, String flightNumber) {
-        this();
-        
+    public FlightSchedule(Date departureDateTime, Date flightDuration, String flightNumber, Airport departureAirport, Airport destinationAirport, FlightSchedulePlan flightSchedulePlan, List<CabinClass> cabinClasses) {
         this.departureDateTime = departureDateTime;
         this.flightDuration = flightDuration;
         this.flightNumber = flightNumber;
+        this.departureAirport = departureAirport;
+        this.destinationAirport = destinationAirport;
+        this.flightSchedulePlan = flightSchedulePlan;
+        this.cabinClasses = cabinClasses;
     }
+
+    
 
     public Long getFlightScheduleId() {
         return flightScheduleId;
@@ -197,14 +201,6 @@ public class FlightSchedule implements Serializable {
 
     public void setCabinClasses(List<CabinClass> cabinClasses) {
         this.cabinClasses = cabinClasses;
-    }
-
-    public Boolean[][] getSeatInventory() {
-        return seatInventory;
-    }
-
-    public void setSeatInventory(Boolean[][] seatInventory) {
-        this.seatInventory = seatInventory;
     }
     
 }
