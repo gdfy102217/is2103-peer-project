@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
@@ -21,6 +22,7 @@ import util.enumeration.FlightScheduleType;
 import util.exception.DeleteFlightSchedulePlanException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightScheduleExistException;
+import util.exception.FlightScheduleNotFountException;
 import util.exception.FlightSchedulePlanExistException;
 import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.GeneralException;
@@ -346,5 +348,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         em.flush();
         return returnFlightSchedulePlan.getFlightSchedulePlanId();
     }
+    
+    
 
 }

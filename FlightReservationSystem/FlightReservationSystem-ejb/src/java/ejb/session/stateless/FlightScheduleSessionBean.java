@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Airport;
+import entity.CabinClass;
 import entity.Flight;
 import entity.FlightReservation;
 import entity.FlightSchedule;
@@ -70,6 +71,7 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         return flightSchedules;
     }
     
+    @Override
     public List<List<FlightSchedule>> searchConnectingFlightScehdules(String departureAirportiATACode, String destinationAirportiATACode, Date departureDate,
             CabinClassType cabinClassType) throws AirportNotFoundException, FlightScheduleNotFountException {
         
@@ -176,5 +178,21 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
             }
         }
         return true;
+    }
+    
+    @Override
+    public FlightSchedule retrieveFlightScheduleById(Long flightScheduleId) throws FlightScheduleNotFountException {
+        
+       
+            FlightSchedule flightSchedule = em.find(FlightSchedule.class, flightScheduleId);
+        
+            if (flightSchedule == null) {
+                throw new FlightScheduleNotFountException("Flight schedule is not found!");
+            } else {
+                for (CabinClass cabinClass: flightSchedule.getCabinClasses()) {
+                    cabinClass.getCabinClassType();
+                }
+                return flightSchedule;
+            }
     }
 }

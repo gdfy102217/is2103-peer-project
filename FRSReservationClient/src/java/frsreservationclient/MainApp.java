@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.enumeration.CabinClassType;
 import util.exception.AirportNotFoundException;
 import util.exception.CustomerExistException;
@@ -68,12 +70,8 @@ public class MainApp {
                 } else if (response == 2) {
                     register();
                 } else if (response == 3) {
-                    try {
-                        login();
-                        menuMain();
-                    } catch (CustomerNotFoundException | WrongPasswordException ex) {
-                        System.out.println("Error: " + ex.getMessage());
-                    }
+                    login();
+                    menuMain();
                 } else if (response == 4) {
                     break;
                 } else {
@@ -148,7 +146,7 @@ public class MainApp {
             String reserve = scanner.nextLine().trim();
 
             if (reserve.equals("Y")) {
-                reserveFlight(tripType, numOfPassengers, cabinClassType);
+                reserveFlight(tripType, numOfPassengers);
             }
         } catch (ParseException ex) {
             System.out.println("Invalid date input!\n");
@@ -515,7 +513,7 @@ public class MainApp {
         }
     }
 
-    public void reserveFlight(Integer tripType, Integer numOfPassengers, CabinClassType cabinClassType) {
+    public void reserveFlight(Integer tripType, Integer numOfPassengers) {
         try {
             Scanner scanner = new Scanner(System.in);
             SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd MMM", Locale.US);
@@ -577,55 +575,6 @@ public class MainApp {
                 passenger[2] = scanner.nextLine().trim();
                 System.out.print("Select Cabin Class For Passenger " + i + ": 1: First Class, 2: Business Class, 3: Premium Economy Class, 4: Economy Class> ");
                 passenger[3] = scanner.nextLine().trim();
-                
-                //print out available seat numbers
-                FlightSchedule flightSchedule = 
-                Boolean[][] seatInventory = cabinClass.getSeatInventory();
-            for (int r = 0; r < seatInventory.length; r++) {
-                for (int c = 0; c < seatInventory[0].length; c++) {
-                    System.out.print(r + 1);
-                    switch (c) {
-                        case (0):
-                            System.out.print("A");
-                            break;
-                        case (1):
-                            System.out.print("B");
-                            break;
-                        case (2):
-                            System.out.print("C");
-                            break;
-                        case (3):
-                            System.out.print("D");
-                            break;
-                        case (4):
-                            System.out.print("E");
-                            break;
-                        case (5):
-                            System.out.print("F");
-                            break;
-                        case (6):
-                            System.out.print("G");
-                            break;
-                        case (7):
-                            System.out.print("H");
-                            break;
-                        case (8):
-                            System.out.print("J");
-                            break;
-                        case (9):
-                            System.out.print("K");
-                            break;
-                        case (10):
-                            System.out.print("L");
-                            break;
-                    }
-                    if (seatInventory[r][c] == true) {
-                        System.out.print(": Occupied\n");
-                    } else {
-                        System.out.print(": Empty\n");
-                    }
-                }
-                
                 System.out.print("Select Seat Number For Passenger " + i + "> ");
                 passenger[4] = scanner.nextLine().trim();
 
@@ -650,7 +599,6 @@ public class MainApp {
             } catch (NoAvailableSeatsException ex) {
                 System.out.println("Error: " + ex.getMessage());
                 System.out.println();
-            }
             }
         } catch (ParseException ex) {
             System.out.println("Invalid date input!\n");
@@ -699,7 +647,7 @@ public class MainApp {
 
     }
 
-    public void login() throws CustomerNotFoundException, WrongPasswordException {
+    public void login() {
         Scanner scanner = new Scanner(System.in);
         String username = "";
         String password = "";
@@ -718,11 +666,11 @@ public class MainApp {
                     customer = currentCustomer;
                     System.out.println("Login Succesfully! Current Customer ID: " + customer.getCustomerId() + "\n");
                 } else {
-                    throw new WrongPasswordException("Wrong password, please try again!\n");
+                    System.out.println("Wrong password, please try again!\n");
                 }
 
             } catch (CustomerNotFoundException ex) {
-                throw ex;
+                System.out.println("Error: " + ex.getMessage());
             }
         } else {
             System.out.println("Incomplete information, please try again!\n");

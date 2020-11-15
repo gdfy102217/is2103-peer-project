@@ -34,4 +34,7 @@ public interface FlightScheduleSessionBeanRemote {
     
     public Boolean checkOverlapFlightSchedules(FlightSchedule flightSchedule);
     
+    public FlightSchedule retrieveFlightScheduleById(Long flightScheduleId) throws FlightScheduleNotFountException;
+    
+    
 }

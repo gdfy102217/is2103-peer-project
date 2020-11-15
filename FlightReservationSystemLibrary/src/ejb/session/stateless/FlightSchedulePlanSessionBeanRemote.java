@@ -14,6 +14,7 @@ import java.util.List;
 import javax.ejb.Remote;
 import util.exception.DeleteFlightSchedulePlanException;
 import util.exception.FlightScheduleExistException;
+import util.exception.FlightScheduleNotFountException;
 import util.exception.FlightSchedulePlanExistException;
 import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.GeneralException;
@@ -51,5 +52,5 @@ public interface FlightSchedulePlanSessionBeanRemote {
     public void updateRecurrentDayFlightSchedule(FlightSchedulePlan flightSchedulePlan, Integer recurrence, Date endDate) throws UpdateFlightSchedulePlanException;
 
     public void updateRecurrentWeekFlightSchedule(FlightSchedulePlan flightSchedulePlan, Date endDate) throws UpdateFlightSchedulePlanException;
-
+    
 }
