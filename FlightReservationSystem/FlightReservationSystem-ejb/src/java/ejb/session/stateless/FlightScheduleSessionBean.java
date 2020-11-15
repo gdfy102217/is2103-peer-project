@@ -45,8 +45,15 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
     // "Insert Code > Add Business Method")
     
     @Override
-    public FlightSchedule createNewFlightSchedule(FlightSchedule flightSchedule) throws FlightScheduleExistException, GeneralException {
+    public FlightSchedule createNewSingleFlightSchedule(Flight flight, FlightSchedulePlan newFlightSchedulePlan, Date departureDateTime, Date durationTime) throws FlightScheduleExistException, GeneralException {
         try {
+            em.merge(flight);
+            em.persist(newFlightSchedulePlan);
+            newFlightSchedulePlan.setFlight(flight);
+            flight.getFlightSchedulePlans().add(newFlightSchedulePlan);
+            
+            FlightSchedule flightSchedule = new 
+            
             em.persist(flightSchedule);
             flightSchedule.getFlightSchedulePlan().getFlightSchedules().add(flightSchedule);
             em.flush();
